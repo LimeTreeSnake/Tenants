@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <IncidentDef>
+	<!--RequestForTenancy-->
+    <defName>RequestForTenancy</defName>
+    <label>Request for tenancy</label>
+    <targetTags>
+      <li>Map_PlayerHome</li>
+    </targetTags>
+    <workerClass>Tenants.IncidentWorker_TenantProposition</workerClass>
+    <category>Misc</category>
+    <baseChance>1.3</baseChance>
+    <pointsScaleable>true</pointsScaleable>
+    <minRefireDays>2</minRefireDays>
+  </IncidentDef>  
+</Defs>
