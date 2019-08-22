@@ -92,7 +92,7 @@ namespace Tenants {
         public static void CapturedBy_PostFix(Pawn_GuestTracker __instance, Faction by, Pawn byPawn) {
             Pawn pawn = Traverse.Create(__instance).Field("pawn").GetValue<Pawn>();
             if (pawn.IsTenant() && pawn.IsColonist) {
-                Utility.PawnLeave(pawn);    
+                Utility.PawnLeave(pawn);
             }
         }
         public static void AllSendablePawns_PostFix(ref List<Pawn> __result) {
@@ -105,14 +105,16 @@ namespace Tenants {
             }
         }
         public static void CalculateColonistsInGroup_PreFix() {
-            List<Entry> entries = Find.ColonistBar.Entries;
-            List<Entry> newentries = new List<Entry>();
-            foreach (Entry entry in entries) {
-                if (entry.pawn.IsTenant())
-                    newentries.Add(entry);
-            }
-            foreach (Entry entry in newentries) {
-                entries.Remove(entry);
+            List<Entry> entries = Traverse.Create(Find.ColonistBar).Field("cachedEntries").GetValue<List<Entry>>();
+            if (entries != null) {
+                List<Entry> newentries = new List<Entry>();
+                foreach (Entry entry in entries) {
+                    if (entry.pawn != null && entry.pawn.IsTenant())
+                        newentries.Add(entry);
+                }
+                foreach (Entry entry in newentries) {
+                    entries.Remove(entry);
+                }
             }
         }
     }

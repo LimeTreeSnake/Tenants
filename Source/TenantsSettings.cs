@@ -9,6 +9,9 @@ namespace Tenants {
         private static readonly int maxDailyCost = 100;
         private static readonly int minContractTime = 5;
         private static readonly int maxContractTime = 5;
+        private static readonly float stayChanceHappy = 95F;
+        private static readonly float stayChanceNeutral = 50F;
+        private static readonly float stayChanceSad = 5f;
         #endregion Fields
         #region Properties
 
@@ -16,6 +19,9 @@ namespace Tenants {
         public int MaxDailyCost = maxDailyCost;
         public int MinContractTime = minContractTime;
         public int MaxContractTime = maxContractTime;
+        public float StayChanceHappy = stayChanceHappy;
+        public float StayChanceNeutral = stayChanceNeutral;
+        public float StayChanceSad = stayChanceSad;
         #endregion Properties
 
         public override void ExposeData() {
@@ -24,12 +30,18 @@ namespace Tenants {
             Scribe_Values.Look(ref MaxDailyCost, "MaxDailyCost", maxDailyCost);
             Scribe_Values.Look(ref MinContractTime, "MinContractTime", minContractTime);
             Scribe_Values.Look(ref MaxContractTime, "MaxContractTime", maxContractTime);
+            Scribe_Values.Look(ref StayChanceHappy, "StayChanceHappy", stayChanceHappy);
+            Scribe_Values.Look(ref StayChanceNeutral, "StayChanceNeutral", stayChanceNeutral);
+            Scribe_Values.Look(ref StayChanceSad, "StayChanceSad", stayChanceSad);
         }
         public void Reset() {
             MinDailyCost = minDailyCost;
             MaxDailyCost = maxDailyCost;
             MinContractTime = minContractTime;
             MaxContractTime = maxContractTime;
+            StayChanceHappy = stayChanceHappy;
+            StayChanceNeutral = stayChanceNeutral;
+            StayChanceSad = stayChanceSad;
         }
     }
     internal static class SettingsHelper {
@@ -60,13 +72,19 @@ namespace Tenants {
             list.Begin(rect2);
 
             list.Label(string.Format("({0}) Min contract daily cost.", tenantsSettings.MinDailyCost));
-            tenantsSettings.MinDailyCost = (int)Mathf.Round(list.Slider((float)tenantsSettings.MinDailyCost, 50, 100));
+            tenantsSettings.MinDailyCost = (int)Mathf.Round(list.Slider(tenantsSettings.MinDailyCost, 50, 100));
             list.Label(string.Format("({0}) Max contract daily cost.", tenantsSettings.MaxDailyCost));
-            tenantsSettings.MaxDailyCost = (int)Mathf.Round(list.Slider((float)tenantsSettings.MaxDailyCost, tenantsSettings.MinDailyCost, 10 * tenantsSettings.MinDailyCost));
+            tenantsSettings.MaxDailyCost = (int)Mathf.Round(list.Slider(tenantsSettings.MaxDailyCost, tenantsSettings.MinDailyCost, 10 * tenantsSettings.MinDailyCost));
             list.Label(string.Format("({0}) Min contract time.", tenantsSettings.MinContractTime));
-            tenantsSettings.MinContractTime = (int)Mathf.Round(list.Slider((float)tenantsSettings.MinContractTime, 1, 100));
+            tenantsSettings.MinContractTime = (int)Mathf.Round(list.Slider(tenantsSettings.MinContractTime, 1, 100));
             list.Label(string.Format("({0}) Max contract time.", tenantsSettings.MaxContractTime));
-            tenantsSettings.MaxContractTime = (int)Mathf.Round(list.Slider((float)tenantsSettings.MaxContractTime, 1, 100));
+            tenantsSettings.MaxContractTime = (int)Mathf.Round(list.Slider(tenantsSettings.MaxContractTime, 1, 100));
+            list.Label(string.Format("({0}) Extend Contract Chance when Happy.", tenantsSettings.StayChanceHappy));
+            tenantsSettings.StayChanceHappy = (int)Mathf.Round(list.Slider(tenantsSettings.StayChanceHappy, tenantsSettings.StayChanceNeutral, 100f));
+            list.Label(string.Format("({0}) Extend Contract Chance when Neutral.", tenantsSettings.StayChanceNeutral));
+            tenantsSettings.StayChanceNeutral = (int)Mathf.Round(list.Slider(tenantsSettings.StayChanceNeutral, tenantsSettings.StayChanceSad, 100f));
+            list.Label(string.Format("({0}) Extend Contract Chance when Sad.", tenantsSettings.StayChanceSad));
+            tenantsSettings.StayChanceSad = (int)Mathf.Round(list.Slider(tenantsSettings.StayChanceSad, 0f, 100f));
 
             list.End();
             Widgets.EndScrollView();

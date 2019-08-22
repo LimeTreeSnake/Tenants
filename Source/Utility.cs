@@ -105,16 +105,16 @@ namespace Tenants {
             else {
                 Tenant.Mood mood = CalculateMood(pawn.TryGetComp<Tenant>().Moods);
                 if (mood == Tenant.Mood.happy) {
-                    Messages.Message("ContractDoneHappy".Translate(pawn.Name.ToStringFull, pawn.TryGetComp<Tenant>().Payment, pawn.Named("PAWN")), MessageTypeDefOf.PositiveEvent);
-                    ProlongContract(pawn, 0.9f);
+                    Messages.Message("ContractDoneHappy".Translate(pawn.Name.ToStringFull, pawn.TryGetComp<Tenant>().Payment * pawn.TryGetComp<Tenant>().ContractLength / 60000, pawn.Named("PAWN")), MessageTypeDefOf.PositiveEvent);
+                    ProlongContract(pawn, SettingsHelper.LatestVersion.StayChanceHappy / 100);
                 }
                 else if (mood == Tenant.Mood.sad) {
-                    Messages.Message("ContractDoneSad".Translate(pawn.Name.ToStringFull, pawn.TryGetComp<Tenant>().Payment, pawn.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
-                    PawnLeave(pawn);
+                    Messages.Message("ContractDoneSad".Translate(pawn.Name.ToStringFull, pawn.TryGetComp<Tenant>().Payment * pawn.TryGetComp<Tenant>().ContractLength / 60000, pawn.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
+                    ProlongContract(pawn, SettingsHelper.LatestVersion.StayChanceSad/100);
                 }
                 else {
-                    Messages.Message("ContractDone".Translate(pawn.Name.ToStringFull, pawn.TryGetComp<Tenant>().Payment, pawn.Named("PAWN")), MessageTypeDefOf.PositiveEvent);
-                    ProlongContract(pawn, 0.5f);
+                    Messages.Message("ContractDone".Translate(pawn.Name.ToStringFull, pawn.TryGetComp<Tenant>().Payment * pawn.TryGetComp<Tenant>().ContractLength / 60000, pawn.Named("PAWN")), MessageTypeDefOf.PositiveEvent);
+                    ProlongContract(pawn, SettingsHelper.LatestVersion.StayChanceNeutral / 100);
                 }
             }
             DebugThingPlaceHelper.DebugSpawn(ThingDefOf.Silver, pawn.Position, pawn.TryGetComp<Tenant>().ContractLength / 60000 * pawn.TryGetComp<Tenant>().Payment);
@@ -168,7 +168,7 @@ namespace Tenants {
                                 select p).ToList();
             if (pawns.Count < 10) {
                 //GENERATION CONTEXT
-                PawnGenerationRequest request = new PawnGenerationRequest(Utility.PawnKindDefList[Rand.Range(0, Utility.PawnKindDefList.Count)], null, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, newborn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: false, 10f);
+                PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDefList[Rand.Range(0, PawnKindDefList.Count)], null, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, newborn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: false, 10f);
                 Pawn newTenant = PawnGenerator.GeneratePawn(request);
                 newTenant.TryGetComp<Tenant>().IsTenant = true;
                 pawns.Add(newTenant);
@@ -193,7 +193,7 @@ namespace Tenants {
                 action = delegate {
                     //Accepted offer, generating tenant.
                     pawn.SetFaction(Faction.OfPlayer);
-                    pawn = GenSpawn.Spawn(pawn, spawnSpot, map) as Pawn;
+                    GenSpawn.Spawn(pawn, spawnSpot, map);
                     pawn.needs.SetInitialLevels();
                     pawn.playerSettings.AreaRestriction = map.areaManager.Home;
                     pawn.workSettings.DisableAll();
@@ -203,7 +203,6 @@ namespace Tenants {
                     for (int i = 0; i < 24; i++) {
                         pawn.timetable.times.Add(TimeAssignmentDefOf.Joy);
                     }
-                    List<Pawn> refugeeList = new List<Pawn>() { pawn };
                     CameraJumper.TryJump(pawn);
                 },
                 resolveTree = true

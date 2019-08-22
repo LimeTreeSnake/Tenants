@@ -2,18 +2,18 @@
 <LanguageData>
 	<!--RequestForTenancy-->
 	<RequestForTenancyTitle>Request for Tenancy in {0}</RequestForTenancyTitle>
-	<RequestForTenancyInitial>{PAWN_nameDef} is looking for a place to take shelter in for a while and {PAWN_pronoun} is willing to pay. Would you kindly consider this proposition?\n{PAWN_nameDef} lives with you for a total of {4} days and pays {3} silver per day. You shall see to all of {PAWN_possessive} needs including safety. Failure to do so may incur future consequenses.\n\n{PAWN_pronoun} may terminate the contract at any time although you may not. Full payment will be recieved at the end of a contract period or whenever if {PAWN_pronoun} terminates it.\n</RequestForTenancyInitial>
-	<RequestForTenancyRejected>{1_labelShort} claims who'd want to live with you anyways...</RequestForTenancyRejected>
+	<RequestForTenancyInitial>{PAWN_nameDef} is looking for a place to take shelter in for a while and {PAWN_pronoun} is willing to pay you for it. Would you kindly consider this proposition?\n{PAWN_nameDef} lives with you for a total of {4} days and pays {3} silver per day. You shall see to all of {PAWN_possessive} needs including safety. Failure to do so may incur future consequenses.\n\n{PAWN_pronoun} may terminate the contract at any time although you may not. Full payment will be recieved at the end of a contract period or whenever if {PAWN_pronoun} terminates it.\n</RequestForTenancyInitial>
+	<RequestForTenancyRejected>{1_labelShort} mutters something along the line 'who'd want to live with you anyways...'</RequestForTenancyRejected>
 
-	<RequestForTenancyContinued>{PAWN_nameDef} enjoyed {PAWN_possessive} time so {PAWN_pronoun} wants to stay longer. Would you kindly consider this proposition?\n{PAWN_nameDef} lives with you for a total of {4} days and pays {3} silver per day. You shall see to all of {PAWN_possessive} needs including safety. Failure to do so may cause future consequenses.\n\n{PAWN_pronoun} may terminate the contract at any time although you may not. Full payment will be recieved at the end of a contract period or whenever {PAWN_pronoun} terminates it.\n</RequestForTenancyContinued>
-	<RequestForTenancyContinuedRejected>{1_labelShort} is saddened but understands.</RequestForTenancyContinuedRejected>
+	<RequestForTenancyContinued>{PAWN_nameDef} asks to renew the contract. Would you like to extend the contract?\n{PAWN_nameDef} lives with you for a total of {4} days and pays {3} silver per day. You shall see to all of {PAWN_possessive} needs including safety. Failure to do so may cause future consequenses.\n\n{PAWN_pronoun} may terminate the contract at any time although you may not. Full payment will be recieved at the end of a contract period or whenever {PAWN_pronoun} terminates it.\n</RequestForTenancyContinued>
+	<RequestForTenancyContinuedRejected>{1_labelShort} is saddened but accepts your decision nevertheless.</RequestForTenancyContinuedRejected>
 	
 	<RequestForTenancy_Accept>Agree</RequestForTenancy_Accept>
 	<RequestForTenancy_Reject>Reject</RequestForTenancy_Reject>
 	
-	<ContractDoneHappy>The contract with {PAWN_nameDef} is concluded and full payment of {1} thus recieved. {PAWN_nameDef} is very happy with {PAWN_possessive} stay.</ContractDoneHappy>
-	<ContractDoneSad>The contract with {PAWN_nameDef} is concluded and full payment of {1} thus recieved. {PAWN_nameDef} is not satisfied at all...</ContractDoneSad>
-	<ContractDone>The contract with {PAWN_nameDef} is concluded and full payment of {1} thus recieved.</ContractDone>
-	<ContractDoneTerminated>The contract with {PAWN_nameDef} is terminated and full payment of {1} thus recieved. {PAWN_nameDef} is kind of bitter...</ContractDoneTerminated>
+	<ContractDoneHappy>The contract with {PAWN_nameDef} is concluded and full a payment of {1} recieved. {PAWN_nameDef} is very happy with {PAWN_possessive} stay.</ContractDoneHappy>
+	<ContractDoneSad>The contract with {PAWN_nameDef} is concluded and full a payment of {1} recieved. {PAWN_nameDef} is rather disatisfied...</ContractDoneSad>
+	<ContractDone>The contract with {PAWN_nameDef} is concluded and full a payment of {1} recieved.</ContractDone>
+	<ContractDoneTerminated>The contract with {PAWN_nameDef} is terminated and full a payment of {1} recieved. {PAWN_nameDef} leaves seemingly bitter...</ContractDoneTerminated>
 
 </LanguageData>
