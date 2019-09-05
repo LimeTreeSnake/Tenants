@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,17 +8,22 @@ using Verse.AI.Group;
 
 namespace Tenants {
     public static class Utility {
-        #region PropertiesFinder
-        public static List<PawnKindDef> PawnKindDefList { get; } = new List<PawnKindDef>() {
+        #region Fields
+        private static readonly List<PawnKindDef> pawnKindDefList = new List<PawnKindDef>() {
                 PawnKindDefOf.SpaceRefugee,
                 PawnKindDefOf.Colonist,
                 PawnKindDefOf.Villager };
+        #endregion Fields
+        #region PropertiesFinder
+        public static List<PawnKindDef> GetPawnKindDefList() => pawnKindDefList;
         public static bool IsTenant(this Pawn pawn) {
             try {
-                if (!pawn.AnimalOrWildMan())
-                    if (ThingCompUtility.TryGetComp<Tenant>(pawn) != null) {
-                        return ThingCompUtility.TryGetComp<Tenant>(pawn).IsTenant;
+                if (!pawn.AnimalOrWildMan()) {
+                    Tenant tenantComp = GetTenantComponent(pawn);
+                    if (tenantComp != null) {
+                        return tenantComp.IsTenant;
                     }
+                }
                 return false;
             }
             catch (Exception ex) {
@@ -25,10 +31,23 @@ namespace Tenants {
                 return false;
             }
         }
+        public static void SetTenant(this Pawn pawn, bool tenancy) {
+            Tenant tenantComp = GetTenantComponent(pawn);
+            if (tenantComp != null) {
+                tenantComp.IsTenant = tenancy;
+            }
+        }
+        public static Tenant GetTenantComponent(this Pawn pawn) {
+            if (ThingCompUtility.TryGetComp<Tenant>(pawn) != null) {
+                return ThingCompUtility.TryGetComp<Tenant>(pawn);
+            }
+            return null;
+        }
         public static int ContractLength(this Pawn pawn) {
             try {
-                if (ThingCompUtility.TryGetComp<Tenant>(pawn) != null) {
-                    return ThingCompUtility.TryGetComp<Tenant>(pawn).ContractLength;
+                Tenant tenantComp = GetTenantComponent(pawn);
+                if (tenantComp != null) {
+                    return tenantComp.ContractLength;
                 }
                 return 0;
             }
@@ -39,8 +58,9 @@ namespace Tenants {
         }
         public static int Payment(this Pawn pawn) {
             try {
-                if (ThingCompUtility.TryGetComp<Tenant>(pawn) != null) {
-                    return ThingCompUtility.TryGetComp<Tenant>(pawn).Payment;
+                Tenant tenantComp = GetTenantComponent(pawn);
+                if (tenantComp != null) {
+                    return tenantComp.Payment;
                 }
                 return 0;
             }
@@ -50,10 +70,7 @@ namespace Tenants {
             }
         }
         #endregion PropertiesFinder
-
-        public static void TenantKIA(Pawn pawn) {
-            //Do something
-        }
+        #region Methods
         public static bool TryFindSpawnSpot(Map map, out IntVec3 spawnSpot) {
             bool validator(IntVec3 c) => map.reachability.CanReachColony(c) && !c.Fogged(map);
             return CellFinder.TryFindRandomEdgeCellWith(validator, map, CellFinder.EdgeRoadChance_Neutral, out spawnSpot);
@@ -68,56 +85,46 @@ namespace Tenants {
             spot = IntVec3.Invalid;
             return false;
         }
-        public static Tenant.Mood CalculateMood(List<Tenant.Mood> moods) {
-            float x = 0f, y = 0f, z = 0f;
-            foreach (Tenant.Mood mood in moods) {
-                if (mood == Tenant.Mood.happy)
-                    x++;
-                else if (mood == Tenant.Mood.neutral)
-                    y++;
-                else if (mood == Tenant.Mood.sad)
-                    z++;
-            }
-            if (y / moods.Count >= 0.5f)
-                return Tenant.Mood.neutral;
-            else if (x > z)
-                return Tenant.Mood.happy;
+        public static int CalculateMood(Tenant tenant) {
+            float count = tenant.HappyMoodCount + tenant.NeutralMoodCount + tenant.SadMoodCount;
+
+            if (tenant.NeutralMoodCount / count >= 0.5f)
+                return 0;
+            else if (tenant.HappyMoodCount > tenant.SadMoodCount)
+                return 1;
             else
-                return Tenant.Mood.sad;
-        }
-        public static bool RecentMood(List<Tenant.Mood> moods) {
-            if (moods.Count > 7) {
-                for (int i = moods.Count - 1; i > moods.Count - 6; i--) {
-                    if (moods[i] != Tenant.Mood.sad) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-            return true;
+                return -1;
         }
         public static void ContractConclusion(Pawn pawn, bool terminated) {
-
+            Tenant tenantComp = GetTenantComponent(pawn);
             if (terminated) {
-                Messages.Message("ContractDoneTerminated".Translate(pawn.Name.ToStringFull, pawn.TryGetComp<Tenant>().Payment, pawn.Named("PAWN")), MessageTypeDefOf.PositiveEvent);
-                PawnLeave(pawn);
-            }
-            else {
-                Tenant.Mood mood = CalculateMood(pawn.TryGetComp<Tenant>().Moods);
-                if (mood == Tenant.Mood.happy) {
-                    Messages.Message("ContractDoneHappy".Translate(pawn.Name.ToStringFull, pawn.TryGetComp<Tenant>().Payment * pawn.TryGetComp<Tenant>().ContractLength / 60000, pawn.Named("PAWN")), MessageTypeDefOf.PositiveEvent);
-                    ProlongContract(pawn, SettingsHelper.LatestVersion.StayChanceHappy / 100);
-                }
-                else if (mood == Tenant.Mood.sad) {
-                    Messages.Message("ContractDoneSad".Translate(pawn.Name.ToStringFull, pawn.TryGetComp<Tenant>().Payment * pawn.TryGetComp<Tenant>().ContractLength / 60000, pawn.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
-                    ProlongContract(pawn, SettingsHelper.LatestVersion.StayChanceSad/100);
+                if (Rand.Value < 0.6f) {
+                    Messages.Message("ContractDoneTerminated".Translate(pawn.Name.ToStringFull, tenantComp.Payment * tenantComp.ContractLength / 60000, pawn.Named("PAWN")), MessageTypeDefOf.NeutralEvent);
+                    TenantLeave(pawn);
+                    DebugThingPlaceHelper.DebugSpawn(ThingDefOf.Silver, pawn.Position, tenantComp.ContractLength / 60000 * tenantComp.Payment);
                 }
                 else {
-                    Messages.Message("ContractDone".Translate(pawn.Name.ToStringFull, pawn.TryGetComp<Tenant>().Payment * pawn.TryGetComp<Tenant>().ContractLength / 60000, pawn.Named("PAWN")), MessageTypeDefOf.PositiveEvent);
-                    ProlongContract(pawn, SettingsHelper.LatestVersion.StayChanceNeutral / 100);
+                    Messages.Message("ContractDoneTheft".Translate(pawn.Name.ToStringFull, tenantComp.Payment * tenantComp.ContractLength / 60000, pawn.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
+                    pawn.jobs.ClearQueuedJobs();
+                    TenantTheft(pawn);
                 }
             }
-            DebugThingPlaceHelper.DebugSpawn(ThingDefOf.Silver, pawn.Position, pawn.TryGetComp<Tenant>().ContractLength / 60000 * pawn.TryGetComp<Tenant>().Payment);
+            else {
+                int mood = CalculateMood(GetTenantComponent(pawn));
+                if (mood == 1) {
+                    Messages.Message("ContractDoneHappy".Translate(pawn.Name.ToStringFull, tenantComp.Payment * tenantComp.ContractLength / 60000, pawn.Named("PAWN")), MessageTypeDefOf.PositiveEvent);
+                    ProlongContract(pawn, SettingsHelper.LatestVersion.StayChanceHappy / 100);
+                }
+                else if (mood == -1) {
+                    Messages.Message("ContractDoneSad".Translate(pawn.Name.ToStringFull, tenantComp.Payment * tenantComp.ContractLength / 60000, pawn.Named("PAWN")), MessageTypeDefOf.NeutralEvent);
+                    ProlongContract(pawn, SettingsHelper.LatestVersion.StayChanceSad / 100);
+                }
+                else {
+                    Messages.Message("ContractDone".Translate(pawn.Name.ToStringFull, tenantComp.Payment * tenantComp.ContractLength / 60000, pawn.Named("PAWN")), MessageTypeDefOf.PositiveEvent);
+                    ProlongContract(pawn, SettingsHelper.LatestVersion.StayChanceNeutral / 100);
+                }
+                DebugThingPlaceHelper.DebugSpawn(ThingDefOf.Silver, pawn.Position, tenantComp.ContractLength / 60000 * tenantComp.Payment);
+            }
         }
         public static void ProlongContract(Pawn pawn, float chance) {
             if (GenMath.RoundRandom(chance) > 0) {
@@ -131,12 +138,13 @@ namespace Tenants {
                     action = delegate {
                         //Accepted offer.
                         tenantComp.ContractDate = Find.TickManager.TicksGame;
-                        tenantComp.Moods.Clear();
+                        tenantComp.ContractEndDate = Find.TickManager.TicksAbs + tenantComp.ContractLength + 60000;
+                        tenantComp.ResetMood();
                     },
                     resolveTree = true,
                 };
                 diaNode.options.Add(diaOption);
-                //Denied tenant offer
+                //Denied offer
                 string text2 = "RequestForTenancyContinuedRejected".Translate(pawn.LabelShort, pawn, pawn.Named("PAWN"));
                 DiaNode diaNode2 = new DiaNode(text2);
                 DiaOption diaOption2 = new DiaOption("OK".Translate()) {
@@ -145,7 +153,7 @@ namespace Tenants {
                 diaNode2.options.Add(diaOption2);
                 DiaOption diaOption3 = new DiaOption("RequestForTenancy_Reject".Translate()) {
                     action = delegate {
-                        PawnLeave(pawn);
+                        TenantLeave(pawn);
                     },
                     link = diaNode2
                 };
@@ -155,7 +163,7 @@ namespace Tenants {
                 Find.Archive.Add(new ArchivedDialog(diaNode.text, title));
             }
             else {
-                PawnLeave(pawn);
+                TenantLeave(pawn);
             }
         }
         public static bool GenerateNewContract(Map map) {
@@ -168,9 +176,10 @@ namespace Tenants {
                                 select p).ToList();
             if (pawns.Count < 10) {
                 //GENERATION CONTEXT
-                PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDefList[Rand.Range(0, PawnKindDefList.Count)], null, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, newborn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: false, 10f);
+                PawnGenerationRequest request = new PawnGenerationRequest(GetPawnKindDefList()[Rand.Range(0, GetPawnKindDefList().Count)], null, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, newborn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: true, 10f);
                 Pawn newTenant = PawnGenerator.GeneratePawn(request);
-                newTenant.TryGetComp<Tenant>().IsTenant = true;
+                newTenant.SetFaction(Faction.OfAncients);
+                SetTenant(newTenant, true);
                 pawns.Add(newTenant);
             }
             pawns.Shuffle();
@@ -178,14 +187,13 @@ namespace Tenants {
             pawn.relations.everSeenByPlayer = true;
             Tenant tenantComp = pawn.TryGetComp<Tenant>();
 
-            tenantComp.Payment = Rand.Range(SettingsHelper.LatestVersion.MinDailyCost, SettingsHelper.LatestVersion.MaxDailyCost);
+            tenantComp.Payment = Rand.Range(SettingsHelper.LatestVersion.MinDailyCost, SettingsHelper.LatestVersion.MaxDailyCost); tenantComp.ContractLength = Rand.Range(SettingsHelper.LatestVersion.MinContractTime, SettingsHelper.LatestVersion.MaxContractTime) * 60000;
             tenantComp.ContractDate = Find.TickManager.TicksGame;
-            tenantComp.ContractLength = Rand.Range(SettingsHelper.LatestVersion.MinContractTime, SettingsHelper.LatestVersion.MaxContractTime) * 60000;
-            tenantComp.IsTenant = true;
-            tenantComp.Moods.Clear();
+            tenantComp.ContractEndDate = Find.TickManager.TicksAbs + tenantComp.ContractLength + 60000;
+            tenantComp.ResetMood();
 
             //Generates event
-            string text = "RequestForTenancyInitial".Translate(pawn.Name.ToStringFull, pawn.story.Title, pawn.ageTracker.AgeBiologicalYears, tenantComp.Payment, tenantComp.ContractLength / 60000, pawn.Named("PAWN"));
+            string text = "RequestForTenancyInitial".Translate(pawn.def.label, pawn.ageTracker.AgeBiologicalYears, tenantComp.Payment, tenantComp.ContractLength / 60000, pawn.Named("PAWN"));
             text = text.AdjustedFor(pawn);
             PawnRelationUtility.TryAppendRelationsWithColonistsInfo(ref text, pawn);
             DiaNode diaNode = new DiaNode(text);
@@ -196,12 +204,27 @@ namespace Tenants {
                     GenSpawn.Spawn(pawn, spawnSpot, map);
                     pawn.needs.SetInitialLevels();
                     pawn.playerSettings.AreaRestriction = map.areaManager.Home;
-                    pawn.workSettings.DisableAll();
-                    pawn.timetable = new Pawn_TimetableTracker(pawn) {
-                        times = new List<TimeAssignmentDef>(24)
-                    };
-                    for (int i = 0; i < 24; i++) {
-                        pawn.timetable.times.Add(TimeAssignmentDefOf.Joy);
+                    foreach (WorkTypeDef def in DefDatabase<WorkTypeDef>.AllDefs) {
+                        if (def.defName == "Firefighter") {
+                            pawn.workSettings.SetPriority(def, 3);
+                        }
+                        else if (def.defName == "Patient") {
+                            pawn.workSettings.SetPriority(def, 3);
+                        }
+                        else if (def.defName == "PatientBedRest") {
+                            pawn.workSettings.SetPriority(def, 3);
+                        }
+                        else if (def.defName == "BasicWorker") {
+                            pawn.workSettings.SetPriority(def, 3);
+                        }
+                        else if (def.defName == "Hauling") {
+                            pawn.workSettings.SetPriority(def, 3);
+                        }
+                        else if (def.defName == "Cleaning") {
+                            pawn.workSettings.SetPriority(def, 3);
+                        }
+                        else
+                            pawn.workSettings.Disable(def);
                     }
                     CameraJumper.TryJump(pawn);
                 },
@@ -230,9 +253,26 @@ namespace Tenants {
 
             return true;
         }
-        public static void PawnLeave(Pawn pawn) {
-            pawn.SetFaction(null);
+        public static void TenantLeave(Pawn pawn) {
+            pawn.SetFaction(Faction.OfAncients);
             LordMaker.MakeNewLord(pawn.Faction, new LordJob_ExitMapBest(), pawn.Map, new List<Pawn> { pawn });
+        }
+        public static void TenantTheft(Pawn pawn) {
+            pawn.SetFaction(Faction.OfAncients);
+            pawn.SetTenant(false);
+            LordMaker.MakeNewLord(pawn.Faction, new LordJob_TenantTheft(), pawn.Map, new List<Pawn> { pawn });
+        }
+        public static void TenantDeath(Pawn pawn) {
+            if (Rand.Value < 0.33f) {
+                MapComponent_Tenants.GetComponent(pawn.Map).DeadTenantsToAvenge.Add(pawn);
+                IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, pawn.Map);
+                parms.raidStrategy = RaidStrategyDefOf.Retribution;
+                parms.forced = true;
+                Find.Storyteller.incidentQueue.Add(IncidentDefOf.Retribution, Find.TickManager.TicksGame + Rand.Range(15000, 90000), parms, 240000);
+            }
+        }
+        public static void TenantCaptured(Pawn pawn) {
+
         }
         public static List<Pawn> RemoveTenantsFromList(List<Pawn> pawns) {
             List<Pawn> tenants = new List<Pawn>();
@@ -245,5 +285,20 @@ namespace Tenants {
             }
             return pawns;
         }
+        public static IEnumerable<GlobalTargetInfo> RemoveTenantsFromList(ref IEnumerable<GlobalTargetInfo> pawns) {
+            List<GlobalTargetInfo> tenants = new List<GlobalTargetInfo>();
+            foreach (GlobalTargetInfo pawn in pawns) {
+                if (pawn.Thing.TryGetComp<Tenant>().IsTenant) {
+                    tenants.Add(pawn);
+                }
+            }
+            List<GlobalTargetInfo> list = pawns.ToList();
+            foreach (GlobalTargetInfo pawn in tenants) {
+                list.Remove(pawn);
+            }
+            pawns = list.AsEnumerable();
+            return pawns;
+        }
+        #endregion Methods
     }
 }

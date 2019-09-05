@@ -2,7 +2,7 @@
 <LanguageData>
 	<!--RequestForTenancy-->
 	<RequestForTenancyTitle>Request for Tenancy in {0}</RequestForTenancyTitle>
-	<RequestForTenancyInitial>{PAWN_nameDef} is looking for a place to take shelter in for a while and {PAWN_pronoun} is willing to pay you for it. Would you kindly consider this proposition?\n{PAWN_nameDef} lives with you for a total of {4} days and pays {3} silver per day. You shall see to all of {PAWN_possessive} needs including safety. Failure to do so may incur future consequenses.\n\n{PAWN_pronoun} may terminate the contract at any time although you may not. Full payment will be recieved at the end of a contract period or whenever if {PAWN_pronoun} terminates it.\n</RequestForTenancyInitial>
+	<RequestForTenancyInitial>{PAWN_nameDef} is looking for a place to take shelter in for a while and {PAWN_pronoun} is willing to pay you for it. Would you kindly consider this proposition?\n{PAWN_nameDef} lives with you for a total of {3} days and pays {2} silver per day. You shall see to all of {PAWN_possessive} needs including safety. Failure to do so may incur future consequenses.\n\n{PAWN_pronoun} may terminate the contract at any time although you may not. Full payment will be recieved at the end of a contract period or whenever if {PAWN_pronoun} terminates it.\n\n {PAWN_nameDef} is {1} years old and {PAWN_pronoun} is a {0}.</RequestForTenancyInitial>
 	<RequestForTenancyRejected>{1_labelShort} mutters something along the line 'who'd want to live with you anyways...'</RequestForTenancyRejected>
 
 	<RequestForTenancyContinued>{PAWN_nameDef} asks to renew the contract. Would you like to extend the contract?\n{PAWN_nameDef} lives with you for a total of {4} days and pays {3} silver per day. You shall see to all of {PAWN_possessive} needs including safety. Failure to do so may cause future consequenses.\n\n{PAWN_pronoun} may terminate the contract at any time although you may not. Full payment will be recieved at the end of a contract period or whenever {PAWN_pronoun} terminates it.\n</RequestForTenancyContinued>
@@ -15,5 +15,9 @@
 	<ContractDoneSad>The contract with {PAWN_nameDef} is concluded and full a payment of {1} recieved. {PAWN_nameDef} is rather disatisfied...</ContractDoneSad>
 	<ContractDone>The contract with {PAWN_nameDef} is concluded and full a payment of {1} recieved.</ContractDone>
 	<ContractDoneTerminated>The contract with {PAWN_nameDef} is terminated and full a payment of {1} recieved. {PAWN_nameDef} leaves seemingly bitter...</ContractDoneTerminated>
+	<ContractDoneTheft>{PAWN_nameDef} decided to sneak away early without paying. {PAWN_pronoun} also has the audacity to try and steal from you!</ContractDoneTheft>
 
+	<TenantDeath>{PAWN_nameDef} died!\n\nYou've failed your duties as a host.</TenantDeath>
+	<TenantDeathRetribution>My name is {PAWN_nameDef}, you killed my {0}. Prepare to die.</TenantDeathRetribution>
+	<Retribution>Retribution</Retribution>
 </LanguageData>

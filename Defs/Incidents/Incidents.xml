@@ -13,4 +13,19 @@
     <pointsScaleable>true</pointsScaleable>
     <minRefireDays>2</minRefireDays>
   </IncidentDef>  
+  
+  
+  <IncidentDef>
+	<!--RequestForTenancy-->
+    <defName>Retribution</defName>
+    <label>Retribution</label>
+    <targetTags>
+      <li>Map_PlayerHome</li>
+    </targetTags>
+    <workerClass>Tenants.IncidentWorker_Retribution</workerClass>
+    <category>ThreatBig</category>
+    <baseChance>0</baseChance>
+    <pointsScaleable>true</pointsScaleable>
+    <tale>Raid</tale>
+  </IncidentDef>  
 </Defs>

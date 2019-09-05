@@ -14,15 +14,13 @@
     <workerClass>Tenants.PawnTable_Tenants</workerClass>
     <columns>
       <li>Label</li>
-      <li>MedicalCare</li>
       <li>GapTiny</li>
-      <li>Outfit</li>
+	  <li>ContractColumn</li>
       <li>GapTiny</li>
-      <li>FoodRestriction</li>
-      <li>GapTiny</li>
-      <li>DrugPolicy</li>
       <li>AllowedArea</li>
+      <li>GapTiny</li>
       <li>RemainingSpace</li>
     </columns>
+    <!--<minWidth>2000</minWidth>-->
   </PawnTableDef>
 </Defs>

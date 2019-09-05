@@ -53,14 +53,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HarmonyTenants.cs" />
-    <Compile Include="IncidentWorker_TenantProposition.cs" />
-    <Compile Include="MainTabWindow_Tenant.cs" />
+    <Compile Include="Harmony\HarmonyTenants.cs" />
+    <Compile Include="MapComponent_Tenants.cs" />
+    <Compile Include="Workers\IncidentWorker_Retribution.cs" />
+    <Compile Include="Workers\IncidentWorker_TenantProposition.cs" />
+    <Compile Include="Workers\LordJob_TenantTheft.cs" />
+    <Compile Include="UI\MainTabWindow_Tenant.cs" />
+    <Compile Include="UI\PawnColumnWorker_Contract.cs" />
     <Compile Include="Tenant.cs" />
-    <Compile Include="TenantsSettings.cs" />
+    <Compile Include="Settings\TenantsSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="TextFile1.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
