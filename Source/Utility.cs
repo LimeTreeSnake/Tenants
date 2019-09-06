@@ -240,7 +240,8 @@ namespace Tenants {
             diaNode2.options.Add(diaOption2);
             DiaOption diaOption3 = new DiaOption("RequestForTenancy_Reject".Translate()) {
                 action = delegate {
-                    Find.WorldPawns.PassToWorld(pawn);
+                    if (!Find.WorldPawns.Contains(pawn))
+                        Find.WorldPawns.PassToWorld(pawn);
                     tenantComp.Payment = 0;
                     tenantComp.ContractLength = 0;
                 },
