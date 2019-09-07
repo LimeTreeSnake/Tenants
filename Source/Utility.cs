@@ -204,28 +204,7 @@ namespace Tenants {
                     GenSpawn.Spawn(pawn, spawnSpot, map);
                     pawn.needs.SetInitialLevels();
                     pawn.playerSettings.AreaRestriction = map.areaManager.Home;
-                    foreach (WorkTypeDef def in DefDatabase<WorkTypeDef>.AllDefs) {
-                        if (def.defName == "Firefighter") {
-                            pawn.workSettings.SetPriority(def, 3);
-                        }
-                        else if (def.defName == "Patient") {
-                            pawn.workSettings.SetPriority(def, 3);
-                        }
-                        else if (def.defName == "PatientBedRest") {
-                            pawn.workSettings.SetPriority(def, 3);
-                        }
-                        else if (def.defName == "BasicWorker") {
-                            pawn.workSettings.SetPriority(def, 3);
-                        }
-                        else if (def.defName == "Hauling") {
-                            pawn.workSettings.SetPriority(def, 3);
-                        }
-                        else if (def.defName == "Cleaning") {
-                            pawn.workSettings.SetPriority(def, 3);
-                        }
-                        else
-                            pawn.workSettings.Disable(def);
-                    }
+                    UpdateTenantWork(pawn);
                     CameraJumper.TryJump(pawn);
                 },
                 resolveTree = true
@@ -299,6 +278,68 @@ namespace Tenants {
             }
             pawns = list.AsEnumerable();
             return pawns;
+        }
+
+        public static bool EmergencyWork(WorkGiver giver) {
+            if (giver is WorkGiver_PatientGoToBedEmergencyTreatment || giver is WorkGiver_PatientGoToBedTreatment) {
+                if (SettingsHelper.LatestVersion.Patient && !SettingsHelper.LatestVersion.PatientHappy)
+                    return true;
+            }
+            else if (giver is WorkGiver_PatientGoToBedRecuperate) {
+                if (SettingsHelper.LatestVersion.PatientBedRest && !SettingsHelper.LatestVersion.PatientBedRestHappy)
+                    return true;
+            }
+            else if (giver.def.workTags == WorkTags.Firefighting) {
+                if (SettingsHelper.LatestVersion.Firefighter && !SettingsHelper.LatestVersion.FirefighterHappy)
+                    return true;
+            }
+            else if (giver.def.workTags == WorkTags.Hauling) {
+                if (SettingsHelper.LatestVersion.Hauling && !SettingsHelper.LatestVersion.HaulingHappy)
+                    return true;
+            }
+            else if (giver.def.workTags == WorkTags.Cleaning) {
+                if (SettingsHelper.LatestVersion.Cleaning && !SettingsHelper.LatestVersion.CleaningHappy)
+                    return true;
+            }
+            else if (giver.def.workTags == WorkTags.ManualDumb) {
+                if (SettingsHelper.LatestVersion.BasicWorker && !SettingsHelper.LatestVersion.BasicWorkerHappy)
+                    return true;
+            }
+            return false;
+        }
+        public static void UpdateTenantsWork() {
+            foreach(Map map in Find.Maps) {
+                foreach(Pawn pawn in map.mapPawns.FreeColonistsAndPrisoners) {
+                    if (pawn.IsTenant()) {
+                        UpdateTenantWork(pawn);
+                    }
+                }
+            }
+            SettingsHelper.LatestVersion.WorkIsDirty = false;
+        }
+        public static void UpdateTenantWork(Pawn pawn) {
+            foreach (WorkTypeDef def in DefDatabase<WorkTypeDef>.AllDefs) {
+                if (def.defName == "Firefighter" && SettingsHelper.LatestVersion.Firefighter) {
+                    pawn.workSettings.SetPriority(def, 3);
+                }
+                else if (def.defName == "Patient" && SettingsHelper.LatestVersion.Patient) {
+                    pawn.workSettings.SetPriority(def, 3);
+                }
+                else if (def.defName == "PatientBedRest" && SettingsHelper.LatestVersion.PatientBedRest) {
+                    pawn.workSettings.SetPriority(def, 3);
+                }
+                else if (def.defName == "BasicWorker" && SettingsHelper.LatestVersion.BasicWorker) {
+                    pawn.workSettings.SetPriority(def, 3);
+                }
+                else if (def.defName == "Hauling" && SettingsHelper.LatestVersion.Hauling) {
+                    pawn.workSettings.SetPriority(def, 3);
+                }
+                else if (def.defName == "Cleaning" && SettingsHelper.LatestVersion.Cleaning) {
+                    pawn.workSettings.SetPriority(def, 3);
+                }
+                else
+                    pawn.workSettings.Disable(def);
+            }
         }
         #endregion Methods
     }
