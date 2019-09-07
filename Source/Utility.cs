@@ -3,6 +3,7 @@ using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Verse;
 using Verse.AI.Group;
 
@@ -31,10 +32,33 @@ namespace Tenants {
                 return false;
             }
         }
+        public static bool IsTerminated(this Pawn pawn) {
+            try {
+                if (!pawn.AnimalOrWildMan()) {
+                    Tenant tenantComp = GetTenantComponent(pawn);
+                    if (tenantComp != null) {
+                        return tenantComp.IsTerminated;
+                    }
+                }
+                return false;
+            }
+            catch (Exception ex) {
+                Log.Warning(pawn.Name.ToStringShort + ": \n" + ex.Message);
+                return false;
+            }
+        }
+
         public static void SetTenant(this Pawn pawn, bool tenancy) {
             Tenant tenantComp = GetTenantComponent(pawn);
             if (tenantComp != null) {
                 tenantComp.IsTenant = tenancy;
+            }
+        }
+        
+        public static void SetTerminated(this Pawn pawn, bool terminated) {
+            Tenant tenantComp = GetTenantComponent(pawn);
+            if (tenantComp != null) {
+                tenantComp.IsTerminated = terminated;
             }
         }
         public static Tenant GetTenantComponent(this Pawn pawn) {
@@ -105,7 +129,6 @@ namespace Tenants {
                 }
                 else {
                     Messages.Message("ContractDoneTheft".Translate(pawn.Name.ToStringFull, tenantComp.Payment * tenantComp.ContractLength / 60000, pawn.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
-                    pawn.jobs.ClearQueuedJobs();
                     TenantTheft(pawn);
                 }
             }
@@ -195,6 +218,7 @@ namespace Tenants {
             //Generates event
             string text = "RequestForTenancyInitial".Translate(pawn.def.label, pawn.ageTracker.AgeBiologicalYears, tenantComp.Payment, tenantComp.ContractLength / 60000, pawn.Named("PAWN"));
             text = text.AdjustedFor(pawn);
+            text = AppendPawnDescription(text, pawn);
             PawnRelationUtility.TryAppendRelationsWithColonistsInfo(ref text, pawn);
             DiaNode diaNode = new DiaNode(text);
             DiaOption diaOption = new DiaOption("RequestForTenancy_Accept".Translate()) {
@@ -234,10 +258,18 @@ namespace Tenants {
             return true;
         }
         public static void TenantLeave(Pawn pawn) {
+            pawn.jobs.ClearQueuedJobs();
+            pawn.SetFaction(Faction.OfAncients);
+            LordMaker.MakeNewLord(pawn.Faction, new LordJob_ExitMapBest(), pawn.Map, new List<Pawn> { pawn });
+        }
+        public static void TenantCancelContract(Pawn pawn) {
+            Messages.Message("ContractDonePlayerTerminated".Translate(pawn.Named("PAWN")), MessageTypeDefOf.NeutralEvent);
+            pawn.jobs.ClearQueuedJobs();
             pawn.SetFaction(Faction.OfAncients);
             LordMaker.MakeNewLord(pawn.Faction, new LordJob_ExitMapBest(), pawn.Map, new List<Pawn> { pawn });
         }
         public static void TenantTheft(Pawn pawn) {
+            pawn.jobs.ClearQueuedJobs();
             pawn.SetFaction(Faction.OfAncients);
             pawn.SetTenant(false);
             LordMaker.MakeNewLord(pawn.Faction, new LordJob_TenantTheft(), pawn.Map, new List<Pawn> { pawn });
@@ -252,7 +284,7 @@ namespace Tenants {
             }
         }
         public static void TenantCaptured(Pawn pawn) {
-
+            //NOTHING ATM
         }
         public static List<Pawn> RemoveTenantsFromList(List<Pawn> pawns) {
             List<Pawn> tenants = new List<Pawn>();
@@ -341,6 +373,32 @@ namespace Tenants {
                     pawn.workSettings.Disable(def);
             }
         }
+        
+       public static string AppendPawnDescription(string text, Pawn pawn) {
+            StringBuilder stringBuilder = new StringBuilder(text);
+            stringBuilder.AppendLine();
+            stringBuilder.AppendLine();
+            stringBuilder.Append("TenantDescription".Translate(pawn.ageTracker.AgeBiologicalYears, pawn.def.defName, pawn.Named("PAWN")));
+            stringBuilder.AppendLine();
+            stringBuilder.Append("Traits".Translate()+ ": ");
+            if (pawn.story.traits.allTraits.Count == 0) {
+                stringBuilder.AppendLine();
+                stringBuilder.Append("(" + "NoneLower".Translate() + ")");
+            }
+            else {
+                stringBuilder.Append("(");
+                for (int i = 0; i < pawn.story.traits.allTraits.Count; i++) {
+                    if (i != 0) {
+                        stringBuilder.Append(" ,");
+                    }
+                    stringBuilder.Append(pawn.story.traits.allTraits[i].LabelCap);
+                }
+                stringBuilder.Append(")");
+            }
+            return stringBuilder.ToString();
+        }
+
+
         #endregion Methods
     }
 }

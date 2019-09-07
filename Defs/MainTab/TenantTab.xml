@@ -21,6 +21,8 @@
       <li>GapTiny</li>
       <li>AllowedArea</li>
       <li>GapTiny</li>
+      <li>CancelContract</li>
+      <li>GapTiny</li>
       <li>RemainingSpace</li>
     </columns>
     <!--<minWidth>2000</minWidth>-->

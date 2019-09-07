@@ -4,6 +4,7 @@ namespace Tenants {
     public class Tenant : ThingComp {
         #region Fields
         private bool isTenant = false;
+        private bool isTerminated = false;
         private int contractLength;
         private int contractDate;
         private int contractEndDate;
@@ -16,6 +17,10 @@ namespace Tenants {
         public bool IsTenant {
             get { return isTenant; }
             set { isTenant = value; }
+        }
+        public bool IsTerminated {
+            get { return isTerminated; }
+            set { isTerminated = value; }
         }
         public int ContractLength {
             get { return contractLength; }
