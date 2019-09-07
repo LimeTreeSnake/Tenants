@@ -47,14 +47,12 @@ namespace Tenants {
                 return false;
             }
         }
-
         public static void SetTenant(this Pawn pawn, bool tenancy) {
             Tenant tenantComp = GetTenantComponent(pawn);
             if (tenantComp != null) {
                 tenantComp.IsTenant = tenancy;
             }
-        }
-        
+        }  
         public static void SetTerminated(this Pawn pawn, bool terminated) {
             Tenant tenantComp = GetTenantComponent(pawn);
             if (tenantComp != null) {
