@@ -5,6 +5,7 @@ namespace Tenants {
         #region Fields
         private bool isTenant = false;
         private bool isTerminated = false;
+        private bool wasTenant = false;
         private int contractLength;
         private int contractDate;
         private int contractEndDate;
@@ -21,6 +22,10 @@ namespace Tenants {
         public bool IsTerminated {
             get { return isTerminated; }
             set { isTerminated = value; }
+        }
+        public bool WasTenant {
+            get { return wasTenant; }
+            set { wasTenant = value; }
         }
         public int ContractLength {
             get { return contractLength; }
@@ -72,6 +77,8 @@ namespace Tenants {
         }
         public override void PostExposeData() {
             Scribe_Values.Look(ref isTenant, "IsTenant");
+            Scribe_Values.Look(ref isTerminated, "IsTerminated");
+            Scribe_Values.Look(ref wasTenant, "WasTenant");
             Scribe_Values.Look(ref contractLength, "ContractLength");
             Scribe_Values.Look(ref contractDate, "ContractDate");
             Scribe_Values.Look(ref contractEndDate, "ContractEndDate");

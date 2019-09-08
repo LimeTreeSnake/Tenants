@@ -4,14 +4,20 @@
 	<TenantDescription>{PAWN_nameDef} is {0} years old and is a {1}.</TenantDescription>
 	<!--RequestForTenancy-->
 	<RequestForTenancyTitle>Request for Tenancy in {0}</RequestForTenancyTitle>
-	<RequestForTenancyInitial>{PAWN_nameDef} is looking for a place to take shelter in for a while and {PAWN_pronoun} is willing to pay you for it. Would you kindly consider this proposition?\n{PAWN_nameDef} lives with you for a total of {3} days and pays {2} silver per day. You shall see to all of {PAWN_possessive} needs including safety. Failure to do so may incur future consequenses.\n\n{PAWN_pronoun} may terminate the contract at any time. Full payment will be recieved at the end of a contract period or whenever if {PAWN_pronoun} terminates it. You may terminate the contract but any payment due would be void.</RequestForTenancyInitial>
+	<RequestForTenancyInitial>{PAWN_nameDef} is looking for a place to take shelter in for a while and {PAWN_pronoun} is willing to pay you for it. Would you kindly consider this proposition?</RequestForTenancyInitial>
+	<RequestForTenancyContinued>{PAWN_nameDef} asks to renew the contract. Would you like to extend the contract?</RequestForTenancyContinued>
+	<RequestForTenancyContract>{PAWN_nameDef} lives with you for a total of {0} days and pays {1} silver per day. You shall see to all of {PAWN_possessive} needs including safety. Failure to do so may incur future consequenses.\n\n{PAWN_pronoun} may terminate the contract at any time. Full payment will be recieved at the end of a contract period or whenever if {PAWN_pronoun} terminates it. You may terminate the contract but any payment due would be void.</RequestForTenancyContract>
 	<RequestForTenancyRejected>{1_labelShort} mutters something along the line 'who'd want to live with you anyways...'</RequestForTenancyRejected>
-
-	<RequestForTenancyContinued>{PAWN_nameDef} asks to renew the contract. Would you like to extend the contract?\n{PAWN_nameDef} lives with you for a total of {4} days and pays {3} silver per day. You shall see to all of {PAWN_possessive} needs including safety. Failure to do so may cause future consequenses.\n\n{PAWN_pronoun} may terminate the contract at any time although you may not. Full payment will be recieved at the end of a contract period or whenever {PAWN_pronoun} terminates it.\n</RequestForTenancyContinued>
 	<RequestForTenancyContinuedRejected>{1_labelShort} is saddened but accepts your decision nevertheless.</RequestForTenancyContinuedRejected>
+	
+	<RequestTenantWantToJoinTitle>Request from tenant in {0}</RequestTenantWantToJoinTitle>
+	<RequestTenantWantToJoin>{PAWN_nameDef} loves staying here and wants to stay permanently! Will you accept {PAWN_objective}? </RequestTenantWantToJoin>
+	<RequestTenantWantToJoinRejected>{PAWN_nameDef} claims {PAWN_pronoun} will change your mind somehow!</RequestTenantWantToJoinRejected>
 	
 	<RequestForTenancy_Accept>Agree</RequestForTenancy_Accept>
 	<RequestForTenancy_Reject>Reject</RequestForTenancy_Reject>
+	<RequestForJoin_Accept>Agree</RequestForJoin_Accept>
+	<RequestForJoin_Reject>Reject</RequestForJoin_Reject>
 	
 	<ContractDoneHappy>The contract with {PAWN_nameDef} is concluded and full a payment of {1} recieved. {PAWN_nameDef} is very happy with {PAWN_possessive} stay.</ContractDoneHappy>
 	<ContractDoneSad>The contract with {PAWN_nameDef} is concluded and full a payment of {1} recieved. {PAWN_nameDef} is rather disatisfied...</ContractDoneSad>
@@ -20,8 +26,11 @@
 	<ContractDonePlayerTerminated>The contract with {PAWN_nameDef} is terminated and {PAWN_pronoun} is forced to leave.</ContractDonePlayerTerminated>
 	<ContractDoneTheft>{PAWN_nameDef} decided to sneak away early without paying. {PAWN_pronoun} also has the audacity to try and steal from you!</ContractDoneTheft>
 
-	<TenantDeath>{PAWN_nameDef} died!\n\nYou've failed your duties as a host.</TenantDeath>
-	<TenantDeathRetribution>My name is {PAWN_nameDef}, you killed my {0}. Prepare to die.</TenantDeathRetribution>
+	<Captured>Captured</Captured>
+	<TenantCaptured>You've captured {PAWN_nameDef}!\n\n Watch out as you might earn the ire of {PAWN_nameDef}'s friends and relatives.</TenantCaptured>
+	<TenantDeath>{PAWN_nameDef} died!\n\nYou've failed your duties as a host. Watch out as you might earn the ire of {PAWN_nameDef}'s friends and relatives.</TenantDeath>
+	<TenantDeathRetribution>Hello, My name is {PAWN_nameDef}, you killed my {0}. Prepare to die.</TenantDeathRetribution>
+	<TenantCapturedRetribution>Hello, My name is {PAWN_nameDef}, you disrespected my {0}. Prepare to die.</TenantCapturedRetribution>
 	<Retribution>Retribution</Retribution>
 	
 </LanguageData>

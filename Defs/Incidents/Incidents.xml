@@ -16,13 +16,26 @@
   
   
   <IncidentDef>
-	<!--RequestForTenancy-->
-    <defName>Retribution</defName>
-    <label>Retribution</label>
+	<!--RetributionForDeadTenant-->
+    <defName>RetributionForDead</defName>
+    <label>Retribution for dead tenant</label>
     <targetTags>
       <li>Map_PlayerHome</li>
     </targetTags>
-    <workerClass>Tenants.IncidentWorker_Retribution</workerClass>
+    <workerClass>Tenants.IncidentWorker_RetributionForDead</workerClass>
+    <category>ThreatBig</category>
+    <baseChance>0</baseChance>
+    <pointsScaleable>true</pointsScaleable>
+    <tale>Raid</tale>
+  </IncidentDef>  
+   <IncidentDef>
+	<!--RetributionForCapturedTenant-->
+    <defName>RetributionForCaptured</defName>
+    <label>Retribution for captured tenant</label>
+    <targetTags>
+      <li>Map_PlayerHome</li>
+    </targetTags>
+    <workerClass>Tenants.IncidentWorker_RetributionForCaptured</workerClass>
     <category>ThreatBig</category>
     <baseChance>0</baseChance>
     <pointsScaleable>true</pointsScaleable>
