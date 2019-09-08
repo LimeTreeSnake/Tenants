@@ -55,6 +55,8 @@
   <ItemGroup>
     <Compile Include="Harmony\HarmonyTenants.cs" />
     <Compile Include="MapComponent_Tenants.cs" />
+    <Compile Include="UI\PawnColumnWorker_MayJoin.cs" />
+    <Compile Include="UI\PawnColumnWorker_AutoRenew.cs" />
     <Compile Include="UI\PawnColumnWorker_CancelContract.cs" />
     <Compile Include="Workers\IncidentWorker_Retribution.cs" />
     <Compile Include="Workers\IncidentWorker_TenantProposition.cs" />

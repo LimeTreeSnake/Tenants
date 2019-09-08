@@ -6,6 +6,8 @@ namespace Tenants {
         private bool isTenant = false;
         private bool isTerminated = false;
         private bool wasTenant = false;
+        private bool mayJoin = false;
+        private bool autoRenew = false;
         private int contractLength;
         private int contractDate;
         private int contractEndDate;
@@ -26,6 +28,14 @@ namespace Tenants {
         public bool WasTenant {
             get { return wasTenant; }
             set { wasTenant = value; }
+        }
+        public bool MayJoin {
+            get { return mayJoin; }
+            set { mayJoin = value; }
+        }
+        public bool AutoRenew {
+            get { return autoRenew; }
+            set { autoRenew = value; }
         }
         public int ContractLength {
             get { return contractLength; }
@@ -79,6 +89,8 @@ namespace Tenants {
             Scribe_Values.Look(ref isTenant, "IsTenant");
             Scribe_Values.Look(ref isTerminated, "IsTerminated");
             Scribe_Values.Look(ref wasTenant, "WasTenant");
+            Scribe_Values.Look(ref mayJoin, "MayJoin");
+            Scribe_Values.Look(ref autoRenew, "AutoRenew");
             Scribe_Values.Look(ref contractLength, "ContractLength");
             Scribe_Values.Look(ref contractDate, "ContractDate");
             Scribe_Values.Look(ref contractEndDate, "ContractEndDate");

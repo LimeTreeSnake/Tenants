@@ -17,100 +17,12 @@ namespace Tenants {
         #endregion Fields
         #region PropertiesFinder
         public static List<PawnKindDef> GetPawnKindDefList() => pawnKindDefList;
-        public static bool IsTenant(this Pawn pawn) {
-            try {
-                if (!pawn.AnimalOrWildMan()) {
-                    Tenant tenantComp = GetTenantComponent(pawn);
-                    if (tenantComp != null) {
-                        return tenantComp.IsTenant;
-                    }
-                }
-                return false;
-            }
-            catch (Exception ex) {
-                Log.Warning(pawn.Name.ToStringShort + ": \n" + ex.Message);
-                return false;
-            }
-        }
-        public static bool WasTenant(this Pawn pawn) {
-            try {
-                if (!pawn.AnimalOrWildMan()) {
-                    Tenant tenantComp = GetTenantComponent(pawn);
-                    if (tenantComp != null) {
-                        return tenantComp.WasTenant;
-                    }
-                }
-                return false;
-            }
-            catch (Exception ex) {
-                Log.Warning(pawn.Name.ToStringShort + ": \n" + ex.Message);
-                return false;
-            }
-        }
-        public static bool IsTerminated(this Pawn pawn) {
-            try {
-                if (!pawn.AnimalOrWildMan()) {
-                    Tenant tenantComp = GetTenantComponent(pawn);
-                    if (tenantComp != null) {
-                        return tenantComp.IsTerminated;
-                    }
-                }
-                return false;
-            }
-            catch (Exception ex) {
-                Log.Warning(pawn.Name.ToStringShort + ": \n" + ex.Message);
-                return false;
-            }
-        }
-        public static void SetTenant(this Pawn pawn, bool tenancy) {
-            Tenant tenantComp = GetTenantComponent(pawn);
-            if (tenantComp != null) {
-                tenantComp.IsTenant = tenancy;
-            }
-        }
-        public static void SetTerminated(this Pawn pawn, bool terminated) {
-            Tenant tenantComp = GetTenantComponent(pawn);
-            if (tenantComp != null) {
-                tenantComp.IsTerminated = terminated;
-            }
-        }
-        public static void SetWasTenant(this Pawn pawn, bool terminated) {
-            Tenant tenantComp = GetTenantComponent(pawn);
-            if (tenantComp != null) {
-                tenantComp.WasTenant = terminated;
-            }
-        }
+
         public static Tenant GetTenantComponent(this Pawn pawn) {
             if (ThingCompUtility.TryGetComp<Tenant>(pawn) != null) {
                 return ThingCompUtility.TryGetComp<Tenant>(pawn);
             }
             return null;
-        }
-        public static int ContractLength(this Pawn pawn) {
-            try {
-                Tenant tenantComp = GetTenantComponent(pawn);
-                if (tenantComp != null) {
-                    return tenantComp.ContractLength;
-                }
-                return 0;
-            }
-            catch (Exception ex) {
-                Log.Warning(pawn.Name.ToStringShort + ": \n" + ex.Message);
-                return 0;
-            }
-        }
-        public static int Payment(this Pawn pawn) {
-            try {
-                Tenant tenantComp = GetTenantComponent(pawn);
-                if (tenantComp != null) {
-                    return tenantComp.Payment;
-                }
-                return 0;
-            }
-            catch (Exception ex) {
-                Log.Warning(pawn.Name.ToStringShort + ": \n" + ex.Message);
-                return 0;
-            }
         }
         #endregion PropertiesFinder
         #region Methods
@@ -130,7 +42,6 @@ namespace Tenants {
         }
         public static int CalculateMood(Tenant tenant) {
             float count = tenant.HappyMoodCount + tenant.NeutralMoodCount + tenant.SadMoodCount;
-
             if (tenant.NeutralMoodCount / count >= 0.5f)
                 return 0;
             else if (tenant.HappyMoodCount > tenant.SadMoodCount)
@@ -139,43 +50,62 @@ namespace Tenants {
                 return -1;
         }
         public static void ContractConclusion(Pawn pawn, bool terminated) {
-            Tenant tenantComp = GetTenantComponent(pawn);
+            Tenant tenantComp = pawn.GetTenantComponent();
             if (terminated) {
                 if (Rand.Value < 0.6f) {
-                    Messages.Message("ContractDoneTerminated".Translate(pawn.Name.ToStringFull, tenantComp.Payment * tenantComp.ContractLength / 60000, pawn.Named("PAWN")), MessageTypeDefOf.NeutralEvent);
+                    string letterLabel = "ContractEnd".Translate();
+                    string letterText = "ContractDoneTerminated".Translate(tenantComp.Payment * tenantComp.ContractLength / 60000, pawn.Named("PAWN"));
+                    Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.NeutralEvent);
                     TenantLeave(pawn);
                     SpawnPayment(pawn);
                 }
                 else {
-                    Messages.Message("ContractDoneTheft".Translate(pawn.Name.ToStringFull, tenantComp.Payment * tenantComp.ContractLength / 60000, pawn.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
+                    string letterLabel = "ContractNew".Translate();
+                    string letterText = "ContractDoneTheft".Translate(pawn.Named("PAWN"));
+                    Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.NegativeEvent);
                     TenantTheft(pawn);
                 }
             }
             else {
-                int mood = CalculateMood(GetTenantComponent(pawn));
+                int mood = CalculateMood(tenantComp);
                 if (mood == 1) {
-                    Messages.Message("ContractDoneHappy".Translate(pawn.Name.ToStringFull, tenantComp.Payment * tenantComp.ContractLength / 60000, pawn.Named("PAWN")), MessageTypeDefOf.PositiveEvent);
+                    string letterLabel = "ContractEnd".Translate();
+                    string letterText = "ContractDoneHappy".Translate(tenantComp.Payment * tenantComp.ContractLength / 60000, pawn.Named("PAWN"));
+                    Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.PositiveEvent);
                     ContractProlong(pawn, SettingsHelper.LatestVersion.StayChanceHappy / 100);
                 }
                 else if (mood == -1) {
-                    Messages.Message("ContractDoneSad".Translate(pawn.Name.ToStringFull, tenantComp.Payment * tenantComp.ContractLength / 60000, pawn.Named("PAWN")), MessageTypeDefOf.NeutralEvent);
+                    string letterLabel = "ContractEnd".Translate();
+                    string letterText = "ContractDoneSad".Translate(tenantComp.Payment * tenantComp.ContractLength / 60000, pawn.Named("PAWN"));
+                    Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.NeutralEvent);
                     ContractProlong(pawn, SettingsHelper.LatestVersion.StayChanceSad / 100);
                 }
                 else {
-                    Messages.Message("ContractDone".Translate(pawn.Name.ToStringFull, tenantComp.Payment * tenantComp.ContractLength / 60000, pawn.Named("PAWN")), MessageTypeDefOf.PositiveEvent);
+                    string letterLabel = "ContractEnd".Translate();
+                    string letterText = "ContractDone".Translate(tenantComp.Payment * tenantComp.ContractLength / 60000, pawn.Named("PAWN"));
+                    Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.NeutralEvent);
                     ContractProlong(pawn, SettingsHelper.LatestVersion.StayChanceNeutral / 100);
                 }
                 SpawnPayment(pawn);
             }
         }
         public static void ContractProlong(Pawn pawn, float chance) {
-            if (GenMath.RoundRandom(chance) > 0) {
+            if (Rand.Value < chance / 100f) {
                 Tenant tenantComp = pawn.TryGetComp<Tenant>();
+                if (tenantComp.AutoRenew) {
+                    tenantComp.ContractDate = Find.TickManager.TicksGame;
+                    tenantComp.ContractEndDate = Find.TickManager.TicksAbs + tenantComp.ContractLength + 60000;
+                    tenantComp.ResetMood();
+
+                    string letterLabel = "ContractNew".Translate();
+                    string letterText = "ContractRenewedMessage".Translate(pawn.Named("PAWN"));
+                    Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.PositiveEvent);
+                    return;
+                }
 
                 string text = ProlongContractMessage(pawn);
-
                 DiaNode diaNode = new DiaNode(text);
-                DiaOption diaOption = new DiaOption("RequestForTenancy_Accept".Translate()) {
+                DiaOption diaOption = new DiaOption("Agree".Translate()) {
                     action = delegate {
                         //Accepted offer.
                         tenantComp.ContractDate = Find.TickManager.TicksGame;
@@ -192,7 +122,7 @@ namespace Tenants {
                     resolveTree = true
                 };
                 diaNode2.options.Add(diaOption2);
-                DiaOption diaOption3 = new DiaOption("RequestForTenancy_Reject".Translate()) {
+                DiaOption diaOption3 = new DiaOption("Reject".Translate()) {
                     action = delegate {
                         TenantLeave(pawn);
                     },
@@ -213,15 +143,17 @@ namespace Tenants {
             }
             //Finds all generated tenants except those already spawned, creates and selects one for the event.
             List<Pawn> pawns = (from p in Find.WorldPawns.AllPawnsAlive
-                                where p.IsTenant() && !p.Dead && !p.Spawned && !p.Discarded
+                                where p.GetTenantComponent().IsTenant && !p.Dead && !p.Spawned && !p.Discarded
                                 select p).ToList();
             if (pawns.Count < 20) {
-                //GENERATION CONTEXT
-                PawnGenerationRequest request = new PawnGenerationRequest(GetPawnKindDefList()[Rand.Range(0, GetPawnKindDefList().Count)], null, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, newborn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: true, 10f);
-                Pawn newTenant = PawnGenerator.GeneratePawn(request);
-                newTenant.SetFaction(Faction.OfAncients);
-                SetTenant(newTenant, true);
-                pawns.Add(newTenant);
+                for (int i = 0; i < 3; i++) {
+                    //GENERATION CONTEXT
+                    PawnGenerationRequest request = new PawnGenerationRequest(GetPawnKindDefList()[Rand.Range(0, GetPawnKindDefList().Count)], null, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, newborn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: true, 10f);
+                    Pawn newTenant = PawnGenerator.GeneratePawn(request);
+                    newTenant.SetFaction(Faction.OfAncients);
+                    newTenant.GetTenantComponent().IsTenant = true;
+                    pawns.Add(newTenant);
+                }
             }
             pawns.Shuffle();
             Pawn pawn = pawns[0];
@@ -237,7 +169,7 @@ namespace Tenants {
             string text = NewContractMessage(pawn);
 
             DiaNode diaNode = new DiaNode(text);
-            DiaOption diaOption = new DiaOption("RequestForTenancy_Accept".Translate()) {
+            DiaOption diaOption = new DiaOption("Agree".Translate()) {
                 action = delegate {
                     //Accepted offer, generating tenant.
                     pawn.SetFaction(Faction.OfPlayer);
@@ -264,7 +196,7 @@ namespace Tenants {
                 resolveTree = true
             };
             diaNode2.options.Add(diaOption2);
-            DiaOption diaOption3 = new DiaOption("RequestForTenancy_Reject".Translate()) {
+            DiaOption diaOption3 = new DiaOption("Reject".Translate()) {
                 action = delegate {
                     if (!Find.WorldPawns.Contains(pawn))
                         Find.WorldPawns.PassToWorld(pawn);
@@ -294,7 +226,7 @@ namespace Tenants {
         public static void TenantTheft(Pawn pawn) {
             pawn.jobs.ClearQueuedJobs();
             pawn.SetFaction(Faction.OfAncients);
-            pawn.SetTenant(false);
+            pawn.GetTenantComponent().IsTenant = false;
             LordMaker.MakeNewLord(pawn.Faction, new LordJob_TenantTheft(), pawn.Map, new List<Pawn> { pawn });
         }
         public static void TenantDeath(Pawn pawn) {
@@ -316,15 +248,16 @@ namespace Tenants {
             }
         }
         public static void TenantWantToJoin(Pawn pawn) {
-            if (Rand.Value < 0.1f && pawn.GetTenantComponent().HappyMoodCount > 7) {
+            Tenant tenant = pawn.GetTenantComponent();
+            if (tenant.MayJoin && Rand.Value < 0.05f && tenant.HappyMoodCount > 7) {
 
                 string text = "RequestTenantWantToJoin".Translate(pawn.Named("PAWN"));
 
                 DiaNode diaNode = new DiaNode(text);
-                DiaOption diaOption = new DiaOption("RequestForJoin_Accept".Translate()) {
+                DiaOption diaOption = new DiaOption("Agree".Translate()) {
                     action = delegate {
-                        pawn.SetTenant(false);
-                        Messages.Message("ContractDone".Translate(pawn.Name.ToStringFull, pawn.GetTenantComponent().Payment * pawn.GetTenantComponent().ContractLength / 60000, pawn.Named("PAWN")), MessageTypeDefOf.PositiveEvent);
+                        tenant.IsTenant = false;
+                        Messages.Message("ContractDone".Translate(pawn.Name.ToStringFull, tenant.Payment * tenant.ContractLength / 60000, pawn.Named("PAWN")), MessageTypeDefOf.PositiveEvent);
                         SpawnPayment(pawn);
                         Find.ColonistBar.MarkColonistsDirty();
                     },
@@ -338,7 +271,7 @@ namespace Tenants {
                     resolveTree = true
                 };
                 diaNode2.options.Add(diaOption2);
-                DiaOption diaOption3 = new DiaOption("RequestForJoin_Reject".Translate()) {
+                DiaOption diaOption3 = new DiaOption("Reject".Translate()) {
                     action = delegate {
 
                     },
@@ -353,7 +286,8 @@ namespace Tenants {
         public static List<Pawn> RemoveTenantsFromList(List<Pawn> pawns) {
             List<Pawn> tenants = new List<Pawn>();
             foreach (Pawn pawn in pawns) {
-                if (pawn.IsTenant())
+                Tenant tenantComp = pawn.GetTenantComponent();
+                if (tenantComp != null && tenantComp.IsTenant)
                     tenants.Add(pawn);
             }
             foreach (Pawn pawn in tenants) {
@@ -406,7 +340,8 @@ namespace Tenants {
         public static void UpdateTenantsWork() {
             foreach (Map map in Find.Maps) {
                 foreach (Pawn pawn in map.mapPawns.FreeColonistsAndPrisoners) {
-                    if (pawn.IsTenant()) {
+                    Tenant tenantComp = pawn.GetTenantComponent();
+                    if (tenantComp != null && tenantComp.IsTenant) {
                         UpdateTenantWork(pawn);
                     }
                 }
@@ -455,7 +390,8 @@ namespace Tenants {
             }
         }
         public static void SpawnPayment(Pawn pawn) {
-            DebugThingPlaceHelper.DebugSpawn(ThingDefOf.Silver, pawn.Position, pawn.GetTenantComponent().ContractLength / 60000 * pawn.GetTenantComponent().Payment);
+            Tenant tenantComp = pawn.GetTenantComponent();
+            DebugThingPlaceHelper.DebugSpawn(ThingDefOf.Silver, pawn.Position, tenantComp.ContractLength / 60000 * tenantComp.Payment);
         }
         public static string AppendPawnDescription(string text, Pawn pawn) {
             StringBuilder stringBuilder = new StringBuilder(text);
@@ -481,9 +417,10 @@ namespace Tenants {
             return stringBuilder.ToString();
         }
         public static string AppendContractDetails(string text, Pawn pawn) {
+            Tenant tenantComp = pawn.GetTenantComponent();
             StringBuilder stringBuilder = new StringBuilder(text);
             stringBuilder.AppendLine();
-            stringBuilder.Append("RequestForTenancyContract".Translate(pawn.GetTenantComponent().ContractLength / 60000, pawn.GetTenantComponent().Payment, pawn.Named("PAWN")));
+            stringBuilder.Append("RequestForTenancyContract".Translate(tenantComp.ContractLength / 60000, tenantComp.Payment, pawn.Named("PAWN")));
             text = stringBuilder.ToString();
             text = text.AdjustedFor(pawn);
             text = AppendPawnDescription(text, pawn);
