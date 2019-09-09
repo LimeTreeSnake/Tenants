@@ -28,8 +28,8 @@
 	<ContractDaily>Payment/day: {0}</ContractDaily>
 	<TenantDescription>{PAWN_nameDef} is {0} years old and is a {1}.</TenantDescription>
 	
-	<Agree>Agree</Agree>
-	<Reject>Reject</Reject>
+	<ContractAgree>Agree</ContractAgree>
+	<ContractReject>Reject</ContractReject>
 	<MayJoin>May join</MayJoin>
 	<Terminate>Terminate</Terminate>
 	<AutoRenew>Auto renew</AutoRenew>

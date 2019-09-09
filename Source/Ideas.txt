@@ -1,0 +1,11 @@
+﻿Tweak colonists count for raiding option and colony limit.
+Gifts
+Moles (Raider tenants)
+Payment for treatment?
+Quality of service demands -> more silver and happiness
+Colonists -> tenants
+New clothes -> new buff
+Invite tenants from Console
+Tenant clothing restriction instant
+Random pawn joins but is tenant?! ((Make a sub parameter so that tenants can be seen as under contract or not))
+With Psychology, tenants run for mayor.

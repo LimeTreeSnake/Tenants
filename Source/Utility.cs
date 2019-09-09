@@ -105,7 +105,7 @@ namespace Tenants {
 
                 string text = ProlongContractMessage(pawn);
                 DiaNode diaNode = new DiaNode(text);
-                DiaOption diaOption = new DiaOption("Agree".Translate()) {
+                DiaOption diaOption = new DiaOption("ContractAgree".Translate()) {
                     action = delegate {
                         //Accepted offer.
                         tenantComp.ContractDate = Find.TickManager.TicksGame;
@@ -122,7 +122,7 @@ namespace Tenants {
                     resolveTree = true
                 };
                 diaNode2.options.Add(diaOption2);
-                DiaOption diaOption3 = new DiaOption("Reject".Translate()) {
+                DiaOption diaOption3 = new DiaOption("ContractReject".Translate()) {
                     action = delegate {
                         TenantLeave(pawn);
                     },
@@ -143,7 +143,7 @@ namespace Tenants {
             }
             //Finds all generated tenants except those already spawned, creates and selects one for the event.
             List<Pawn> pawns = (from p in Find.WorldPawns.AllPawnsAlive
-                                where p.GetTenantComponent().IsTenant && !p.Dead && !p.Spawned && !p.Discarded
+                                where p.GetTenantComponent() != null && p.GetTenantComponent().IsTenant && !p.Dead && !p.Spawned && !p.Discarded
                                 select p).ToList();
             if (pawns.Count < 20) {
                 for (int i = 0; i < 3; i++) {
@@ -169,7 +169,7 @@ namespace Tenants {
             string text = NewContractMessage(pawn);
 
             DiaNode diaNode = new DiaNode(text);
-            DiaOption diaOption = new DiaOption("Agree".Translate()) {
+            DiaOption diaOption = new DiaOption("ContractAgree".Translate()) {
                 action = delegate {
                     //Accepted offer, generating tenant.
                     pawn.SetFaction(Faction.OfPlayer);
@@ -196,7 +196,7 @@ namespace Tenants {
                 resolveTree = true
             };
             diaNode2.options.Add(diaOption2);
-            DiaOption diaOption3 = new DiaOption("Reject".Translate()) {
+            DiaOption diaOption3 = new DiaOption("ContractReject".Translate()) {
                 action = delegate {
                     if (!Find.WorldPawns.Contains(pawn))
                         Find.WorldPawns.PassToWorld(pawn);
@@ -254,7 +254,7 @@ namespace Tenants {
                 string text = "RequestTenantWantToJoin".Translate(pawn.Named("PAWN"));
 
                 DiaNode diaNode = new DiaNode(text);
-                DiaOption diaOption = new DiaOption("Agree".Translate()) {
+                DiaOption diaOption = new DiaOption("ContractAgree".Translate()) {
                     action = delegate {
                         tenant.IsTenant = false;
                         Messages.Message("ContractDone".Translate(pawn.Name.ToStringFull, tenant.Payment * tenant.ContractLength / 60000, pawn.Named("PAWN")), MessageTypeDefOf.PositiveEvent);
@@ -271,7 +271,7 @@ namespace Tenants {
                     resolveTree = true
                 };
                 diaNode2.options.Add(diaOption2);
-                DiaOption diaOption3 = new DiaOption("Reject".Translate()) {
+                DiaOption diaOption3 = new DiaOption("ContractReject".Translate()) {
                     action = delegate {
 
                     },

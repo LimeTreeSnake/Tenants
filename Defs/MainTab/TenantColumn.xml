@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <PawnColumnDef>
+    <defName>ContractColumn</defName>
+    <workerClass>Tenants.PawnColumnWorker_Contract</workerClass>
+    <sortable>true</sortable>
+    <width>500</width>
+  </PawnColumnDef>
+  <PawnColumnDef>
+    <defName>CancelContract</defName>
+    <workerClass>Tenants.PawnColumnWorker_CancelContract</workerClass>
+    <sortable>true</sortable>
+  </PawnColumnDef>
+  <PawnColumnDef>
+    <defName>MayJoin</defName>
+    <workerClass>Tenants.PawnColumnWorker_MayJoin</workerClass>
+    <sortable>true</sortable>
+  </PawnColumnDef>
+  <PawnColumnDef>
+    <defName>AutoRenew</defName>
+    <workerClass>Tenants.PawnColumnWorker_AutoRenew</workerClass>
+    <sortable>true</sortable>
+  </PawnColumnDef>
+</Defs>
