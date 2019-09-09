@@ -18,7 +18,6 @@ namespace Tenants {
 
         protected override void SetValue(Pawn pawn, bool value) {
             pawn.GetTenantComponent().MayJoin = value;
-            
         }
     }
 }

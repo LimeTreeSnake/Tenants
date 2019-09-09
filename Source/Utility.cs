@@ -10,10 +10,7 @@ using Verse.AI.Group;
 namespace Tenants {
     public static class Utility {
         #region Fields
-        private static readonly List<PawnKindDef> pawnKindDefList = new List<PawnKindDef>() {
-                PawnKindDefOf.SpaceRefugee,
-                PawnKindDefOf.Colonist,
-                PawnKindDefOf.Villager };
+        private static List<PawnKindDef> pawnKindDefList => DefDatabase<PawnKindDef>.AllDefs.ToList();
         #endregion Fields
         #region PropertiesFinder
         public static List<PawnKindDef> GetPawnKindDefList() => pawnKindDefList;
@@ -148,11 +145,20 @@ namespace Tenants {
             if (pawns.Count < 20) {
                 for (int i = 0; i < 3; i++) {
                     //GENERATION CONTEXT
-                    PawnGenerationRequest request = new PawnGenerationRequest(GetPawnKindDefList()[Rand.Range(0, GetPawnKindDefList().Count)], null, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, newborn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: true, 10f);
-                    Pawn newTenant = PawnGenerator.GeneratePawn(request);
-                    newTenant.SetFaction(Faction.OfAncients);
-                    newTenant.GetTenantComponent().IsTenant = true;
-                    pawns.Add(newTenant);
+                    bool loop = true;
+                    while (loop) {
+                        PawnKindDef def = GetPawnKindDefList()[Rand.Range(0, GetPawnKindDefList().Count)];
+                        PawnGenerationRequest request = new PawnGenerationRequest(def, Faction.OfAncients);
+                        Pawn newTenant = PawnGenerator.GeneratePawn(request);
+                        if (!newTenant.AnimalOrWildMan() && newTenant.RaceProps.Humanlike && newTenant.RaceProps.EatsFood && newTenant.RaceProps.IsFlesh && newTenant.RaceProps.FleshType.defName != "Android") {
+                            {
+                                newTenant.GetTenantComponent().IsTenant = true;
+                                pawns.Add(newTenant);
+                                loop = false;
+
+                            }
+                        }
+                    }
                 }
             }
             pawns.Shuffle();
@@ -167,7 +173,6 @@ namespace Tenants {
 
             //Generates event
             string text = NewContractMessage(pawn);
-
             DiaNode diaNode = new DiaNode(text);
             DiaOption diaOption = new DiaOption("ContractAgree".Translate()) {
                 action = delegate {
@@ -209,7 +214,6 @@ namespace Tenants {
             string title = "RequestForTenancyTitle".Translate(map.Parent.Label);
             Find.WindowStack.Add(new Dialog_NodeTree(diaNode, delayInteractivity: true, radioMode: true, title));
             Find.Archive.Add(new ArchivedDialog(diaNode.text, title));
-
             return true;
         }
         public static void TenantLeave(Pawn pawn) {

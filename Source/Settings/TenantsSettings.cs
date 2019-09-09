@@ -1,5 +1,6 @@
 ﻿using Verse;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace Tenants {
     internal class TenantsSettings : ModSettings {
@@ -23,6 +24,8 @@ namespace Tenants {
         private static readonly bool patientBedRest = true, patientBedRestHappy = false;
         private static readonly bool firefighter = true, firefighterHappy = true;
         private static readonly bool workIsDirty = true;
+        //private static readonly bool mechanoids = false;
+        //private static readonly bool insectoids = false;
         #endregion Fields
         #region Properties
 
@@ -51,6 +54,8 @@ namespace Tenants {
         public bool PatientBedRestHappy = patientBedRestHappy;
         public bool Firefighter = firefighter;
         public bool FirefighterHappy = firefighterHappy;
+        //public bool Mechanoids = mechanoids;
+        //public bool Insectoids = insectoids;
 
         public bool WorkIsDirty = workIsDirty;
         #endregion Properties
@@ -81,6 +86,8 @@ namespace Tenants {
             Scribe_Values.Look(ref Firefighter, "Firefighter", firefighter);
             Scribe_Values.Look(ref FirefighterHappy, "FirefighterHappy", firefighterHappy);
             Scribe_Values.Look(ref Weapons, "Weapons", weapons);
+            //Scribe_Values.Look(ref Mechanoids, "Mechanoids", mechanoids);
+            //Scribe_Values.Look(ref Insectoids, "Insectoids", insectoids);
         }
         public void Reset() {
             MinDailyCost = minDailyCost;
@@ -104,7 +111,9 @@ namespace Tenants {
             PatientBedRestHappy = patientBedRestHappy;
             Firefighter = firefighter;
             FirefighterHappy = firefighterHappy;
-             Weapons = weapons;
+            Weapons = weapons;
+            //Mechanoids = mechanoids;
+            //Insectoids = insectoids;
         }
     }
     internal static class SettingsHelper {
@@ -136,7 +145,6 @@ namespace Tenants {
             if (list.ButtonText("Default Settings")) {
                 tenantsSettings.Reset();
             };
-            
             list.Label(string.Format("({0}) Min contract daily cost.", tenantsSettings.MinDailyCost));
             tenantsSettings.MinDailyCost = (int)Mathf.Round(list.Slider(tenantsSettings.MinDailyCost, 50, 100));
             list.Label(string.Format("({0}) Max contract daily cost.", tenantsSettings.MaxDailyCost));
@@ -154,6 +162,10 @@ namespace Tenants {
             list.Gap();
             list.CheckboxLabeled("Should tenants spawn without weapons?", ref tenantsSettings.Weapons, "Keep in mind that this removes any weapon when a tenant spawns. Have you given a weapon to a tenant once before, it'll be removed should they leave the map and spawn again somewhere.");
             list.Gap();
+            //list.CheckboxLabeled("Should mechanoids be tenants?", ref tenantsSettings.Mechanoids, "This only makes sure that intelligent mechanoids that are considered humanlike, can use tools and eat food are tenants.");
+            //list.Gap();
+            //list.CheckboxLabeled("Should insectoids be tenants?", ref tenantsSettings.Insectoids, "This only makes sure that intelligent insectoids that are considered humanlike, can use tools and eat food are tenants.");
+            //list.Gap();
             list.Label("RGB value for tenant name:");
             list.Label(string.Format("({0}) R.", tenantsSettings.R));
             tenantsSettings.R = (byte)Mathf.Round(list.Slider(tenantsSettings.R, 0f, 255f));
@@ -190,7 +202,11 @@ namespace Tenants {
             if (tenantsSettings.Firefighter)
                 list.CheckboxLabeled("Firefighter only when happy", ref tenantsSettings.FirefighterHappy);
             tenantsSettings.WorkIsDirty = true;
+                        
             list.End();
+
+
+
             Widgets.EndScrollView();
             tenantsSettings.Write();
         }

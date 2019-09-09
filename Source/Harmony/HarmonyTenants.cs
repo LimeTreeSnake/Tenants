@@ -48,7 +48,7 @@ namespace Tenants {
             //Removes option to set assignments
 
             foreach (ThingDef def in DefDatabase<ThingDef>.AllDefs) {
-                if (def.race != null && !def.race.Animal && def.race.Humanlike) {
+                if (def.race != null) {
                     def.comps.Add(new CompProps_Tenant());
                 }
             }

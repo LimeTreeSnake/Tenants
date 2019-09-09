@@ -8,14 +8,23 @@ namespace Tenants {
             if (!base.CanFireNowSub(parms)) {
                 return false;
             }
-            Map map = (Map)parms.target;
-            return Utility.TryFindSpawnSpot(map, out IntVec3 spawnSpot);
+            if (parms.target != null) {
+                Map map = (Map)parms.target;
+                if (map != null)
+                    return Utility.TryFindSpawnSpot(map, out IntVec3 spawnSpot);
+            }
+            return false;
         }
 
 
         protected override bool TryExecuteWorker(IncidentParms parms) {
             //Map and spot finder.
-            return Utility.ContractGenerateNew((Map)parms.target);
+            if (parms.target != null) {
+                Map map = (Map)parms.target;
+                if (map != null)
+                    return Utility.ContractGenerateNew((Map)parms.target);
+            }
+            return false;
         }
     }
 }
