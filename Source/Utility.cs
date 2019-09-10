@@ -150,12 +150,11 @@ namespace Tenants {
                         PawnKindDef def = GetPawnKindDefList()[Rand.Range(0, GetPawnKindDefList().Count)];
                         PawnGenerationRequest request = new PawnGenerationRequest(def, Faction.OfAncients);
                         Pawn newTenant = PawnGenerator.GeneratePawn(request);
-                        if (!newTenant.AnimalOrWildMan() && newTenant.RaceProps.Humanlike && newTenant.RaceProps.EatsFood && newTenant.RaceProps.IsFlesh && newTenant.RaceProps.FleshType.defName != "Android") {
+                        if (!newTenant.Dead && !newTenant.IsDessicated() && !newTenant.AnimalOrWildMan() && newTenant.RaceProps.Humanlike && newTenant.RaceProps.EatsFood && newTenant.RaceProps.IsFlesh && newTenant.RaceProps.FleshType.defName != "Android") {
                             {
                                 newTenant.GetTenantComponent().IsTenant = true;
                                 pawns.Add(newTenant);
                                 loop = false;
-
                             }
                         }
                     }
