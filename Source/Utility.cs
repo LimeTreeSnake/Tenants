@@ -46,10 +46,10 @@ namespace Tenants {
             else
                 return -1;
         }
-        public static void ContractConclusion(Pawn pawn, bool terminated) {
+        public static void ContractConclusion(Pawn pawn, bool terminated, float stealChance = 0.5f) {
             Tenant tenantComp = pawn.GetTenantComponent();
             if (terminated) {
-                if (Rand.Value < 0.6f) {
+                if (Rand.Value > stealChance) {
                     string letterLabel = "ContractEnd".Translate();
                     string letterText = "ContractDoneTerminated".Translate(tenantComp.Payment * tenantComp.ContractLength / 60000, pawn.Named("PAWN"));
                     Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.NeutralEvent);
@@ -57,7 +57,7 @@ namespace Tenants {
                     SpawnPayment(pawn);
                 }
                 else {
-                    string letterLabel = "ContractNew".Translate();
+                    string letterLabel = "ContractBreach".Translate();
                     string letterText = "ContractDoneTheft".Translate(pawn.Named("PAWN"));
                     Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.NegativeEvent);
                     TenantTheft(pawn);

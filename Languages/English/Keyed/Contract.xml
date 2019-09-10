@@ -14,6 +14,7 @@
 	
 	<ContractNew>New Contract</ContractNew>
 	<ContractEnd>Contract Ends</ContractEnd>
+	<ContractBreach>Contract Breach</ContractBreach>
 	<ContractRenewedMessage>{PAWN_nameDef} prolongs {PAWN_possessive} tenancy contract.</ContractRenewedMessage>
 	<ContractDoneHappy>The contract with {PAWN_nameDef} is concluded and full a payment of {0} recieved. {PAWN_nameDef} is very happy with {PAWN_possessive} stay.</ContractDoneHappy>
 	<ContractDoneSad>The contract with {PAWN_nameDef} is concluded and full a payment of {0} recieved. {PAWN_nameDef} is rather disatisfied...</ContractDoneSad>

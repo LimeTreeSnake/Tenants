@@ -97,6 +97,10 @@ namespace Tenants {
                     Utility.TenantCancelContract(pawn);
                     tenantComp.IsTerminated = false;
                 }
+                Pawn colonist = pawn.Map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false);
+                if(colonist == null){
+                    Utility.ContractConclusion(pawn, true, 1f);
+                }
                 long ageBiologicalTicksInt = Traverse.Create(__instance).Field("ageBiologicalTicksInt").GetValue<long>();
                 if (ageBiologicalTicksInt % 6000 == 0) {
                     if (pawn.needs.mood.CurInstantLevel > 0.8f) {
