@@ -1,10 +1,11 @@
 ﻿using Verse;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
+using RimWorld;
 
 namespace Tenants {
     internal class TenantsSettings : ModSettings {
-
         #region Fields
         private static readonly int minDailyCost = 50;
         private static readonly int maxDailyCost = 100;
@@ -28,7 +29,6 @@ namespace Tenants {
         //private static readonly bool insectoids = false;
         #endregion Fields
         #region Properties
-
         public int MinDailyCost = minDailyCost;
         public int MaxDailyCost = maxDailyCost;
         public int MinContractTime = minContractTime;
@@ -61,6 +61,11 @@ namespace Tenants {
         #endregion Properties
 
         public override void ExposeData() {
+            List<ThingDef> chunkDefs = DefDatabase<ThingDef>.AllDefs.Where(t => t.thingCategories.Contains(ThingCategoryDefOf.StoneChunks) || t.thingCategories.Contains(ThingCategoryDefOf.Chunks)).ToList();
+            foreach(ThingDef def in chunkDefs) {
+                def.stackLimit = 5;
+            }
+
             base.ExposeData();
             Scribe_Values.Look(ref MinDailyCost, "MinDailyCost", minDailyCost);
             Scribe_Values.Look(ref MaxDailyCost, "MaxDailyCost", maxDailyCost);

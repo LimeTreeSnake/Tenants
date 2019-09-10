@@ -219,18 +219,20 @@ namespace Tenants {
         public static void TenantLeave(Pawn pawn) {
             pawn.jobs.ClearQueuedJobs();
             pawn.SetFaction(Faction.OfAncients);
+            pawn.GetTenantComponent().ContractEndDate = 0;
             LordMaker.MakeNewLord(pawn.Faction, new LordJob_ExitMapBest(), pawn.Map, new List<Pawn> { pawn });
         }
         public static void TenantCancelContract(Pawn pawn) {
             Messages.Message("ContractDonePlayerTerminated".Translate(pawn.Named("PAWN")), MessageTypeDefOf.NeutralEvent);
             pawn.jobs.ClearQueuedJobs();
             pawn.SetFaction(Faction.OfAncients);
+            pawn.GetTenantComponent().ContractEndDate = 0;
             LordMaker.MakeNewLord(pawn.Faction, new LordJob_ExitMapBest(), pawn.Map, new List<Pawn> { pawn });
         }
         public static void TenantTheft(Pawn pawn) {
             pawn.jobs.ClearQueuedJobs();
             pawn.SetFaction(Faction.OfAncients);
-            pawn.GetTenantComponent().IsTenant = false;
+            pawn.GetTenantComponent().Reset();
             LordMaker.MakeNewLord(pawn.Faction, new LordJob_TenantTheft(), pawn.Map, new List<Pawn> { pawn });
         }
         public static void TenantDeath(Pawn pawn) {

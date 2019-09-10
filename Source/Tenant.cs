@@ -85,6 +85,18 @@ namespace Tenants {
             sadMoodCount = 0;
             neutralMoodCount = 0;
         }
+        public void Reset() {
+            isTenant = false;
+            isTerminated = false;
+            wasTenant = false;
+            mayJoin = false;
+            autoRenew = false;
+            contractLength = 0;
+            contractDate = 0;
+            contractEndDate = 0;
+            workCooldown = 0;
+            ResetMood();
+        }
         public override void PostExposeData() {
             Scribe_Values.Look(ref isTenant, "IsTenant");
             Scribe_Values.Look(ref isTerminated, "IsTerminated");

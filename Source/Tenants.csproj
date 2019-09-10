@@ -53,7 +53,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Harmony\HarmonyTenants.cs" />
+    <Compile Include="Settings\HarmonyTenants.cs" />
     <Compile Include="MapComponent_Tenants.cs" />
     <Compile Include="UI\PawnColumnWorker_MayJoin.cs" />
     <Compile Include="UI\PawnColumnWorker_AutoRenew.cs" />
@@ -70,6 +70,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Ideas.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Harmony\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
