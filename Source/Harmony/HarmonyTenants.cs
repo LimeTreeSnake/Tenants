@@ -35,7 +35,9 @@ namespace Tenants {
             //Removes tenants from from pawn table 
             harmonyInstance.Patch(AccessTools.Method(typeof(PawnTable_PlayerPawns), "RecachePawns"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("RecachePawns_PostFix")));
             //Removes tenants from from colonist bar 
-            harmonyInstance.Patch(AccessTools.Method(typeof(ColonistBarDrawLocsFinder), "CalculateColonistsInGroup"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("CalculateColonistsInGroup_PreFix")), null);
+            //harmonyInstance.Patch(AccessTools.Method(typeof(ColonistBarDrawLocsFinder), "CalculateColonistsInGroup"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("CalculateColonistsInGroup_PreFix")), null);
+            //Removes tenants from from colonist bar '
+            harmonyInstance.Patch(typeof(ColonistBarDrawLocsFinder).GetMethods().FirstOrDefault(x => x.Name == "CalculateDrawLocs" && x.GetParameters().Count() == 2), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("CalculateDrawLocs_PreFix")), null);
             //Removes check for idle tenants
             harmonyInstance.Patch(AccessTools.Method(typeof(Alert_ColonistsIdle), "GetReport"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("GetReport_PostFix")));
             //Removes check for idle tenants
@@ -179,9 +181,26 @@ namespace Tenants {
             if (pawns != null || pawns.Count > 0)
                 Utility.RemoveTenantsFromList(pawns);
         }
-        public static void CalculateColonistsInGroup_PreFix() {
+        //public static void CalculateColonistsInGroup_PreFix() {
+        //    List<Entry> entries = Traverse.Create(Find.ColonistBar).Field("cachedEntries").GetValue<List<Entry>>();
+        //    if (entries != null && entries.Count > 0) {
+        //        List<Entry> newentries = new List<Entry>();
+        //        foreach (Entry entry in entries) {
+        //            if (entry.pawn != null) {
+        //                Tenant tenantComp = entry.pawn.GetTenantComponent();
+        //                if (tenantComp != null && tenantComp.IsTenant)
+        //                    newentries.Add(entry);
+        //            }
+        //        }
+        //        foreach (Entry entry in newentries) {
+        //            entries.Remove(entry);
+        //        }
+        //    }
+        //}
+        public static void CalculateDrawLocs_PreFix(List<Vector2> outDrawLocs, out float scale) {
+            scale = 1f;
             List<Entry> entries = Traverse.Create(Find.ColonistBar).Field("cachedEntries").GetValue<List<Entry>>();
-            if (entries != null) {
+            if (entries != null && entries.Count > 0) {
                 List<Entry> newentries = new List<Entry>();
                 foreach (Entry entry in entries) {
                     if (entry.pawn != null) {
@@ -195,6 +214,8 @@ namespace Tenants {
                 }
             }
         }
+
+
         public static void GetReport_PostFix(ref AlertReport __result, Alert_ColonistsIdle __instance) {
             if (__result.culprits != null) {
                 Utility.RemoveTenantsFromList(ref __result.culprits);

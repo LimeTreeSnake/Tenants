@@ -10,8 +10,8 @@ namespace Tenants {
             }
             if (parms.target != null) {
                 Map map = (Map)parms.target;
-                if (map != null)
-                    return Utility.TryFindSpawnSpot(map, out IntVec3 spawnSpot);
+                    if (map != null)
+                        return Utility.TryFindSpawnSpot(map, out IntVec3 spawnSpot);
             }
             return false;
         }

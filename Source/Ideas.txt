@@ -8,4 +8,5 @@ New clothes -> new buff
 Invite tenants from Console
 Tenant clothing restriction instant
 Random pawn joins but is tenant?! ((Make a sub parameter so that tenants can be seen as under contract or not))
-With Psychology, tenants run for mayor.
+With Psychology, tenants run for mayor.E
+Event should never spawn when there is no colonists in home.
