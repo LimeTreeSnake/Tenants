@@ -93,7 +93,7 @@ namespace Tenants {
             Pawn pawn = Traverse.Create(__instance).Field("pawn").GetValue<Pawn>();
             Tenant tenantComp = pawn.GetTenantComponent();
             if (tenantComp != null && tenantComp.IsTenant && pawn.IsColonist) {
-                if(tenantComp.ContractEndDate == 0) {
+                if (tenantComp.ContractEndDate == 0) {
                     tenantComp.Reset();
                 }
                 if (tenantComp.IsTerminated) {
@@ -102,7 +102,7 @@ namespace Tenants {
                     tenantComp.ContractEndDate = 0;
                 }
                 Pawn colonist = pawn.Map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false);
-                if(colonist == null){
+                if (colonist == null) {
                     Utility.ContractConclusion(pawn, true, 1f);
                 }
                 long ageBiologicalTicksInt = Traverse.Create(__instance).Field("ageBiologicalTicksInt").GetValue<long>();

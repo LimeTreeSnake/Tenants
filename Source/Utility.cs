@@ -49,7 +49,7 @@ namespace Tenants {
         public static void ContractConclusion(Pawn pawn, bool terminated, float stealChance = 0.5f) {
             Tenant tenantComp = pawn.GetTenantComponent();
             if (terminated) {
-                if (Rand.Value > stealChance) {
+                if (Rand.Value < stealChance) {
                     string letterLabel = "ContractEnd".Translate();
                     string letterText = "ContractDoneTerminated".Translate(tenantComp.Payment * tenantComp.ContractLength / 60000, pawn.Named("PAWN"));
                     Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.NeutralEvent);
@@ -69,25 +69,25 @@ namespace Tenants {
                     string letterLabel = "ContractEnd".Translate();
                     string letterText = "ContractDoneHappy".Translate(tenantComp.Payment * tenantComp.ContractLength / 60000, pawn.Named("PAWN"));
                     Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.PositiveEvent);
-                    ContractProlong(pawn, SettingsHelper.LatestVersion.StayChanceHappy / 100);
+                    ContractProlong(pawn, SettingsHelper.LatestVersion.StayChanceHappy / 100f);
                 }
                 else if (mood == -1) {
                     string letterLabel = "ContractEnd".Translate();
                     string letterText = "ContractDoneSad".Translate(tenantComp.Payment * tenantComp.ContractLength / 60000, pawn.Named("PAWN"));
                     Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.NeutralEvent);
-                    ContractProlong(pawn, SettingsHelper.LatestVersion.StayChanceSad / 100);
+                    ContractProlong(pawn, SettingsHelper.LatestVersion.StayChanceSad / 100f);
                 }
                 else {
                     string letterLabel = "ContractEnd".Translate();
                     string letterText = "ContractDone".Translate(tenantComp.Payment * tenantComp.ContractLength / 60000, pawn.Named("PAWN"));
                     Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.NeutralEvent);
-                    ContractProlong(pawn, SettingsHelper.LatestVersion.StayChanceNeutral / 100);
+                    ContractProlong(pawn, SettingsHelper.LatestVersion.StayChanceNeutral / 100f);
                 }
                 SpawnPayment(pawn);
             }
         }
         public static void ContractProlong(Pawn pawn, float chance) {
-            if (Rand.Value < chance / 100f) {
+            if (Rand.Value < chance ) {
                 Tenant tenantComp = pawn.TryGetComp<Tenant>();
                 if (tenantComp.AutoRenew) {
                     tenantComp.ContractDate = Find.TickManager.TicksGame;
@@ -99,7 +99,6 @@ namespace Tenants {
                     Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.PositiveEvent);
                     return;
                 }
-
                 string text = ProlongContractMessage(pawn);
                 DiaNode diaNode = new DiaNode(text);
                 DiaOption diaOption = new DiaOption("ContractAgree".Translate()) {

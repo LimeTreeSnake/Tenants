@@ -12,7 +12,8 @@ namespace Tenants {
             }
             if (parms.target != null) {
                 Map map = (Map)parms.target;
-                if (map != null) {
+                List<Map> maps = Find.Maps.Where(x => x.IsPlayerHome).ToList();
+                if (map != null && maps.Contains(map)) {
                     Pawn pawn = map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false && !x.Dead);
                     if (pawn != null)
                         return Utility.TryFindSpawnSpot(map, out IntVec3 spawnSpot);

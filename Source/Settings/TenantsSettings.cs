@@ -25,8 +25,6 @@ namespace Tenants {
         private static readonly bool patientBedRest = true, patientBedRestHappy = false;
         private static readonly bool firefighter = true, firefighterHappy = true;
         private static readonly bool workIsDirty = true;
-        //private static readonly bool mechanoids = false;
-        //private static readonly bool insectoids = false;
         #endregion Fields
         #region Properties
         public int MinDailyCost = minDailyCost;
@@ -54,17 +52,11 @@ namespace Tenants {
         public bool PatientBedRestHappy = patientBedRestHappy;
         public bool Firefighter = firefighter;
         public bool FirefighterHappy = firefighterHappy;
-        //public bool Mechanoids = mechanoids;
-        //public bool Insectoids = insectoids;
 
         public bool WorkIsDirty = workIsDirty;
         #endregion Properties
 
         public override void ExposeData() {
-            List<ThingDef> chunkDefs = DefDatabase<ThingDef>.AllDefs.Where(t => t.thingCategories.Contains(ThingCategoryDefOf.StoneChunks) || t.thingCategories.Contains(ThingCategoryDefOf.Chunks)).ToList();
-            foreach(ThingDef def in chunkDefs) {
-                def.stackLimit = 5;
-            }
 
             base.ExposeData();
             Scribe_Values.Look(ref MinDailyCost, "MinDailyCost", minDailyCost);
@@ -74,6 +66,7 @@ namespace Tenants {
             Scribe_Values.Look(ref StayChanceHappy, "StayChanceHappy", stayChanceHappy);
             Scribe_Values.Look(ref StayChanceNeutral, "StayChanceNeutral", stayChanceNeutral);
             Scribe_Values.Look(ref StayChanceSad, "StayChanceSad", stayChanceSad);
+            Scribe_Values.Look(ref Weapons, "Weapons", weapons);
             Scribe_Values.Look(ref r, "R", r);
             Scribe_Values.Look(ref g, "G", g);
             Scribe_Values.Look(ref b, "B", b);
@@ -90,9 +83,6 @@ namespace Tenants {
             Scribe_Values.Look(ref PatientBedRestHappy, "PatientBedRestHappy", patientBedRestHappy);
             Scribe_Values.Look(ref Firefighter, "Firefighter", firefighter);
             Scribe_Values.Look(ref FirefighterHappy, "FirefighterHappy", firefighterHappy);
-            Scribe_Values.Look(ref Weapons, "Weapons", weapons);
-            //Scribe_Values.Look(ref Mechanoids, "Mechanoids", mechanoids);
-            //Scribe_Values.Look(ref Insectoids, "Insectoids", insectoids);
         }
         public void Reset() {
             MinDailyCost = minDailyCost;
@@ -117,8 +107,6 @@ namespace Tenants {
             Firefighter = firefighter;
             FirefighterHappy = firefighterHappy;
             Weapons = weapons;
-            //Mechanoids = mechanoids;
-            //Insectoids = insectoids;
         }
     }
     internal static class SettingsHelper {
@@ -167,10 +155,6 @@ namespace Tenants {
             list.Gap();
             list.CheckboxLabeled("Should tenants spawn without weapons?", ref tenantsSettings.Weapons, "Keep in mind that this removes any weapon when a tenant spawns. Have you given a weapon to a tenant once before, it'll be removed should they leave the map and spawn again somewhere.");
             list.Gap();
-            //list.CheckboxLabeled("Should mechanoids be tenants?", ref tenantsSettings.Mechanoids, "This only makes sure that intelligent mechanoids that are considered humanlike, can use tools and eat food are tenants.");
-            //list.Gap();
-            //list.CheckboxLabeled("Should insectoids be tenants?", ref tenantsSettings.Insectoids, "This only makes sure that intelligent insectoids that are considered humanlike, can use tools and eat food are tenants.");
-            //list.Gap();
             list.Label("RGB value for tenant name:");
             list.Label(string.Format("({0}) R.", tenantsSettings.R));
             tenantsSettings.R = (byte)Mathf.Round(list.Slider(tenantsSettings.R, 0f, 255f));
@@ -209,9 +193,6 @@ namespace Tenants {
             tenantsSettings.WorkIsDirty = true;
                         
             list.End();
-
-
-
             Widgets.EndScrollView();
             tenantsSettings.Write();
         }
