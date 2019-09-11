@@ -16,8 +16,6 @@ namespace Tenants {
     internal static class HarmonyTenants {
         static HarmonyTenants() {
             HarmonyInstance harmonyInstance = HarmonyInstance.Create("rimworld.limetreesnake.tenants");
-            //Debugging option
-            harmonyInstance.Patch(AccessTools.Method(typeof(Dialog_DebugActionsMenu), "DoListingItems_MapTools"), null, new HarmonyMethod(typeof(HarmonyPatch), "DoListingItems_MapTools"));
             //Removes ability to control tenant
             harmonyInstance.Patch(AccessTools.Method(typeof(FloatMenuMakerMap), "CanTakeOrder"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("CanTakeOrder_PreFix")), null);
             //Removes tenant gizmo
@@ -35,8 +33,6 @@ namespace Tenants {
             //Removes tenants from from pawn table 
             harmonyInstance.Patch(AccessTools.Method(typeof(PawnTable_PlayerPawns), "RecachePawns"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("RecachePawns_PostFix")));
             //Removes tenants from from colonist bar 
-            //harmonyInstance.Patch(AccessTools.Method(typeof(ColonistBarDrawLocsFinder), "CalculateColonistsInGroup"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("CalculateColonistsInGroup_PreFix")), null);
-            //Removes tenants from from colonist bar '
             harmonyInstance.Patch(typeof(ColonistBarDrawLocsFinder).GetMethods().FirstOrDefault(x => x.Name == "CalculateDrawLocs" && x.GetParameters().Count() == 2), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("CalculateDrawLocs_PreFix")), null);
             //Removes check for idle tenants
             harmonyInstance.Patch(AccessTools.Method(typeof(Alert_ColonistsIdle), "GetReport"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("GetReport_PostFix")));
@@ -54,20 +50,6 @@ namespace Tenants {
                     def.comps.Add(new CompProps_Tenant());
                 }
             }
-        }
-        static void DoListingItems_MapTools_PostFix(Dialog_DebugActionsMenu __instance) {
-            AccessTools.Method(typeof(Dialog_DebugActionsMenu), "DoLabel").Invoke(__instance, new object[] { "Tools - Tenants" });
-            AccessTools.Method(typeof(Dialog_DebugActionsMenu), "DebugToolMap").Invoke(__instance, new object[] {
-                "Spawn Contract Event", new Action(()=>
-                {
-                    IncidentParms parms = new IncidentParms
-                    {
-                        target = Find.CurrentMap,
-                    };
-                    IncidentWorker_TenantProposition incident = new IncidentWorker_TenantProposition();
-                    incident.TryExecute(parms);
-                })
-            });
         }
         public static bool CanTakeOrder_PreFix(Pawn pawn) {
             Tenant tenantComp = pawn.GetTenantComponent();
@@ -96,10 +78,14 @@ namespace Tenants {
                 if (tenantComp.ContractEndDate == 0) {
                     tenantComp.Reset();
                 }
-                if (tenantComp.IsTerminated) {
-                    Utility.TenantCancelContract(pawn);
+                if (tenantComp.IsTerminated ) {
+                    if (!pawn.health.Downed) {
+                        Messages.Message("ContractTerminateFail".Translate(), MessageTypeDefOf.NeutralEvent);
+                    }
+                    else {
+                        Utility.TenantCancelContract(pawn);
+                    }
                     tenantComp.IsTerminated = false;
-                    tenantComp.ContractEndDate = 0;
                 }
                 Pawn colonist = pawn.Map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false);
                 if (colonist == null) {
@@ -189,22 +175,6 @@ namespace Tenants {
             if (pawns != null || pawns.Count > 0)
                 Utility.RemoveTenantsFromList(pawns);
         }
-        //public static void CalculateColonistsInGroup_PreFix() {
-        //    List<Entry> entries = Traverse.Create(Find.ColonistBar).Field("cachedEntries").GetValue<List<Entry>>();
-        //    if (entries != null && entries.Count > 0) {
-        //        List<Entry> newentries = new List<Entry>();
-        //        foreach (Entry entry in entries) {
-        //            if (entry.pawn != null) {
-        //                Tenant tenantComp = entry.pawn.GetTenantComponent();
-        //                if (tenantComp != null && tenantComp.IsTenant)
-        //                    newentries.Add(entry);
-        //            }
-        //        }
-        //        foreach (Entry entry in newentries) {
-        //            entries.Remove(entry);
-        //        }
-        //    }
-        //}
         public static void CalculateDrawLocs_PreFix(List<Vector2> outDrawLocs, out float scale) {
             scale = 1f;
             List<Entry> entries = Traverse.Create(Find.ColonistBar).Field("cachedEntries").GetValue<List<Entry>>();
