@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Verse;
+using Verse.AI;
 using Verse.AI.Group;
 
 namespace Tenants {
@@ -87,7 +88,7 @@ namespace Tenants {
             }
         }
         public static void ContractProlong(Pawn pawn, float chance) {
-            if (Rand.Value < chance ) {
+            if (Rand.Value < chance) {
                 Tenant tenantComp = pawn.TryGetComp<Tenant>();
                 if (tenantComp.AutoRenew) {
                     tenantComp.ContractDate = Find.TickManager.TicksGame;
@@ -170,7 +171,10 @@ namespace Tenants {
             tenantComp.ResetMood();
 
             //Generates event
-            string text = NewContractMessage(pawn);
+            bool broadcasted = MapComponent_Tenants.GetComponent(map).Broadcast;
+            string text = NewContractMessage(pawn, MapComponent_Tenants.GetComponent(map).Broadcast);
+            if (broadcasted)
+                MapComponent_Tenants.GetComponent(map).Broadcast = false;
             DiaNode diaNode = new DiaNode(text);
             DiaOption diaOption = new DiaOption("ContractAgree".Translate()) {
                 action = delegate {
@@ -286,6 +290,21 @@ namespace Tenants {
                 Find.WindowStack.Add(new Dialog_NodeTree(diaNode, delayInteractivity: true, radioMode: true, title));
                 Find.Archive.Add(new ArchivedDialog(diaNode.text, title));
             }
+        }
+        public static void InviteTenant(Building_CommsConsole comms, Pawn pawn) {
+            Messages.Message("InviteTenantMessage".Translate(), MessageTypeDefOf.NeutralEvent);
+            MapComponent_Tenants.GetComponent(pawn.Map).Broadcast = true;
+            if(Rand.Value < 0.75f) {
+                IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, pawn.Map);
+                parms.raidStrategy = RaidStrategyDefOf.Retribution;
+                parms.forced = true;
+                Find.Storyteller.incidentQueue.Add(IncidentDefOf.Opportunists, Find.TickManager.TicksGame + Rand.Range(25000, 150000), parms, 240000);
+            }
+            else {
+                IncidentParms parms = new IncidentParms() { target = pawn.Map, forced = true };
+                Find.Storyteller.incidentQueue.Add(IncidentDefOf.RequestForTenancy, Find.TickManager.TicksGame + Rand.Range(15000, 120000), parms, 240000);
+            }
+
         }
         public static List<Pawn> RemoveTenantsFromList(List<Pawn> pawns) {
             List<Pawn> tenants = new List<Pawn>();
@@ -431,9 +450,13 @@ namespace Tenants {
             PawnRelationUtility.TryAppendRelationsWithColonistsInfo(ref text, pawn);
             return text;
         }
-        public static string NewContractMessage(Pawn pawn) {
+        public static string NewContractMessage(Pawn pawn, bool isRandomEvent) {
             StringBuilder stringBuilder = new StringBuilder("");
-            stringBuilder.Append("RequestForTenancyInitial".Translate(pawn.Named("PAWN")));
+            if (isRandomEvent)
+                stringBuilder.Append("RequestForTenancyOpportunity".Translate(pawn.Named("PAWN")));
+            else {
+                stringBuilder.Append("RequestForTenancyInitial".Translate(pawn.Named("PAWN")));
+            }
             return AppendContractDetails(stringBuilder.ToString(), pawn);
 
         }

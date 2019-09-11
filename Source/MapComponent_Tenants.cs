@@ -6,6 +6,7 @@ namespace Tenants {
     public class MapComponent_Tenants : MapComponent {
         #region Fields
         private float karma;
+        private bool broadcast = true;
         private List<Pawn> deadTenantsToAvenge = new List<Pawn>();
         private List<Pawn> capturedTenantsToAvenge = new List<Pawn>();
         #endregion Fields
@@ -23,6 +24,7 @@ namespace Tenants {
             }
         }
         public float Karma { get { return karma; } set { karma = value; } }
+        public bool Broadcast { get { return broadcast; } set { broadcast = value; } }
         #endregion Properties
         #region Constructors
         public MapComponent_Tenants(Map map)
@@ -43,6 +45,7 @@ namespace Tenants {
             Scribe_Collections.Look(ref deadTenantsToAvenge, "DeadTenants", LookMode.Value);
             Scribe_Collections.Look(ref capturedTenantsToAvenge, "CapturedTenants", LookMode.Value);
             Scribe_Values.Look(ref karma, "Karma");
+            Scribe_Values.Look(ref broadcast, "Broadcast");
         }
         #endregion Methods
     }

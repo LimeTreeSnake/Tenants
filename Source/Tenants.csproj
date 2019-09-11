@@ -53,13 +53,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Settings\HarmonyTenants.cs" />
+    <Compile Include="Harmony\HarmonyTenants.cs" />
     <Compile Include="MapComponent_Tenants.cs" />
     <Compile Include="UI\PawnColumnWorker_MayJoin.cs" />
     <Compile Include="UI\PawnColumnWorker_AutoRenew.cs" />
     <Compile Include="UI\PawnColumnWorker_CancelContract.cs" />
-    <Compile Include="Workers\IncidentWorker_Retribution.cs" />
+    <Compile Include="Workers\DefOfTenants.cs" />
+    <Compile Include="Workers\IncidentWorker_Raid.cs" />
     <Compile Include="Workers\IncidentWorker_TenantProposition.cs" />
+    <Compile Include="Workers\JobDriver_Tenants.cs" />
     <Compile Include="Workers\LordJob_TenantTheft.cs" />
     <Compile Include="UI\MainTabWindow_Tenant.cs" />
     <Compile Include="UI\PawnColumnWorker_Contract.cs" />
@@ -71,8 +73,6 @@
   <ItemGroup>
     <Content Include="Ideas.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Harmony\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

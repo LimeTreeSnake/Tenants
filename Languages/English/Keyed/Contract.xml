@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
 
+
 	<RequestForTenancyTitle>Request for Tenancy in {0}</RequestForTenancyTitle>
 	<RequestForTenancyInitial>{PAWN_nameDef} is looking for a place to take shelter in for a while and {PAWN_pronoun} is willing to pay you for it. Would you kindly consider this proposition?</RequestForTenancyInitial>
+	<RequestForTenancyOpportunity>{PAWN_nameDef} heard your broadcast and asks if {PAWN_pronoun} may live with you for a while.</RequestForTenancyOpportunity>
 	<RequestForTenancyContinued>{PAWN_nameDef} asks to renew the contract. Would you like to extend the contract?</RequestForTenancyContinued>
 	<RequestForTenancyContract>{PAWN_nameDef} lives with you for a total of {0} days and pays {1} silver per day. You shall see to all of {PAWN_possessive} needs including safety. Failure to do so may incur future consequenses.\n\n{PAWN_pronoun} may terminate the contract at any time. Full payment will be recieved at the end of a contract period or whenever if {PAWN_pronoun} terminates it. You may terminate the contract but any payment due would be void.</RequestForTenancyContract>
 	<RequestForTenancyRejected>{1_labelShort} mutters something along the line 'who'd want to live with you anyways...'</RequestForTenancyRejected>
@@ -22,6 +24,7 @@
 	<ContractDoneTerminated>The contract with {PAWN_nameDef} is terminated and full a payment of {0} recieved. {PAWN_nameDef} leaves seemingly bitter...</ContractDoneTerminated>
 	<ContractDonePlayerTerminated>The contract with {PAWN_nameDef} is terminated and {PAWN_pronoun} is forced to leave.</ContractDonePlayerTerminated>
 	<ContractDoneTheft>{PAWN_nameDef} decided to sneak away early without paying. {PAWN_pronoun} also has the audacity to try and steal from you! Criminal scum like {PAWN_nameDef} deserves punishment and you are in the right to do with {PAWN_objective} as you please.</ContractDoneTheft>
+	<ContractTerminateFail>You cannot cancel the contract at this time.</ContractTerminateFail>
 	
 	<ContractEndDate>Ends at: {0}</ContractEndDate>
 	<ContractPayment>Payment: {0}</ContractPayment>
@@ -34,5 +37,8 @@
 	<MayJoin>May join</MayJoin>
 	<Terminate>Terminate</Terminate>
 	<AutoRenew>Auto renew</AutoRenew>
+	<InviteTenant>Broadcast tenancy invitation</InviteTenant>
+	
+	<InviteTenantMessage>A broadcast is sent over the rim with your location. The message claims that there is food and comfortable beds for those with silver to spend.</InviteTenantMessage>
 		
 </LanguageData>

@@ -43,7 +43,10 @@ namespace Tenants {
             //Pawn name color patch
             harmonyInstance.Patch(AccessTools.Method(typeof(PawnNameColorUtility), "PawnNameColorOf"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("PawnNameColorOf_PreFix")), null);
 
-            //Removes option to set assignments
+
+            //Comms Console Float Menu Option
+            harmonyInstance.Patch(AccessTools.Method(typeof(Building_CommsConsole), "GetFloatMenuOptions"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("GetFloatMenuOptions_PostFix")));
+
 
             foreach (ThingDef def in DefDatabase<ThingDef>.AllDefs) {
                 if (def.race != null) {
@@ -234,6 +237,21 @@ namespace Tenants {
                 }
             }
             return true;
+        }
+        public static void GetFloatMenuOptions_PostFix(Building_CommsConsole __instance,ref IEnumerable<FloatMenuOption> __result, Pawn myPawn ) {
+
+            if (!MapComponent_Tenants.GetComponent(myPawn.Map).Broadcast) {
+
+                void inviteTenant() {
+                    Job job = new Job(JobDefOf.JobUseCommsConsoleTenants, __instance);
+                    myPawn.jobs.TryTakeOrderedJob(job);
+                    PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.OpeningComms, KnowledgeAmount.Total);
+                }
+                FloatMenuOption option = new FloatMenuOption("InviteTenant".Translate(), inviteTenant, MenuOptionPriority.InitiateSocial);
+                List<FloatMenuOption> list = __result.ToList();
+                list.Add(option);
+                __result = list.AsEnumerable();
+            }
         }
 
     }

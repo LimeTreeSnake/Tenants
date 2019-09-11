@@ -31,10 +31,10 @@ namespace Tenants {
                     Pawn pawn = map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false && !x.Dead);
                     if (pawn != null)
                         return Utility.ContractGenerateNew((Map)parms.target);
-
                 }
             }
             return false;
         }
     }
+
 }

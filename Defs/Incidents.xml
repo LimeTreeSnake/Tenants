@@ -12,7 +12,7 @@
     <baseChance>5</baseChance>
     <pointsScaleable>true</pointsScaleable>
     <minRefireDays>2</minRefireDays>
-  </IncidentDef>  
+  </IncidentDef>
   
   
   <IncidentDef>
@@ -36,6 +36,19 @@
       <li>Map_PlayerHome</li>
     </targetTags>
     <workerClass>Tenants.IncidentWorker_RetributionForCaptured</workerClass>
+    <category>ThreatBig</category>
+    <baseChance>0</baseChance>
+    <pointsScaleable>true</pointsScaleable>
+    <tale>Raid</tale>
+  </IncidentDef>  
+   <IncidentDef>
+	<!--Opportunists-->
+    <defName>Opportunists</defName>
+    <label>Opportunists</label>
+    <targetTags>
+      <li>Map_PlayerHome</li>
+    </targetTags>
+    <workerClass>Tenants.IncidentWorker_Opportunists</workerClass>
     <category>ThreatBig</category>
     <baseChance>0</baseChance>
     <pointsScaleable>true</pointsScaleable>

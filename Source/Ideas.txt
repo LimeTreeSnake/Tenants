@@ -5,9 +5,14 @@ Payment for treatment?
 Quality of service demands -> more silver and happiness
 Colonists -> tenants
 New clothes -> new buff
-Invite tenants from Console
 With Psychology, tenants run for mayor.E
 
 
 Tenant clothing restriction instant
-Tenants missing weapon message!
+
+
+
+
+
+Downed tenants can't have their contracts terminated
+Invite tenants from Console with possible bad outcome

@@ -83,22 +83,22 @@ namespace Tenants {
             }
         }
     }
+    public class IncidentWorker_Opportunists : IncidentWorker_RaidEnemy {
 
-
-    [DefOf]
-    public static class IncidentDefOf {
-        public static IncidentDef RetributionForCaptured;
-        public static IncidentDef RetributionForDead;
-        static IncidentDefOf() {
-            DefOfHelper.EnsureInitializedInCtor(typeof(IncidentDefOf));
+        protected override string GetLetterLabel(IncidentParms parms) {
+            return "Opportunists".Translate();
         }
-    }
-    [DefOf]
-    public static class RaidStrategyDefOf {
-        public static RaidStrategyDef Retribution;
-
-        static RaidStrategyDefOf() {
-            DefOfHelper.EnsureInitializedInCtor(typeof(RaidStrategyDefOf));
+        protected override string GetLetterText(IncidentParms parms, List<Pawn> pawns) {
+            MapComponent_Tenants.GetComponent((Map)parms.target).Broadcast = false;
+            string basic = string.Format(parms.raidArrivalMode.textEnemy, parms.faction.def.pawnsPlural, parms.faction.Name);
+            basic += "\n\n";
+            basic += "TenantOpportunists".Translate();
+            Pawn leader = pawns.Find((Pawn x) => x.Faction.leader == x);
+            if (leader != null) {
+                basic += "\n\n";
+                basic += "EnemyRaidLeaderPresent".Translate(leader.Faction.def.pawnsPlural, leader.LabelShort, leader.Named("LEADER"));
+            }
+            return basic;
         }
     }
 }
