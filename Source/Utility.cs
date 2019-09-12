@@ -94,6 +94,7 @@ namespace Tenants {
                     tenantComp.ContractDate = Find.TickManager.TicksGame;
                     tenantComp.ContractEndDate = Find.TickManager.TicksAbs + tenantComp.ContractLength + 60000;
                     tenantComp.ResetMood();
+                    tenantComp.Paid = false;
 
                     string letterLabel = "ContractNew".Translate();
                     string letterText = "ContractRenewedMessage".Translate(pawn.Named("PAWN"));
@@ -108,6 +109,7 @@ namespace Tenants {
                         tenantComp.ContractDate = Find.TickManager.TicksGame;
                         tenantComp.ContractEndDate = Find.TickManager.TicksAbs + tenantComp.ContractLength + 60000;
                         tenantComp.ResetMood();
+                        tenantComp.Paid = false;
                     },
                     resolveTree = true,
                 };
@@ -176,6 +178,7 @@ namespace Tenants {
             tenantComp.ContractDate = Find.TickManager.TicksGame;
             tenantComp.ContractEndDate = Find.TickManager.TicksAbs + tenantComp.ContractLength + 60000;
             tenantComp.ResetMood();
+            tenantComp.Paid = false;
 
             //Generates event
             bool broadcasted = MapComponent_Tenants.GetComponent(map).Broadcast;
@@ -421,7 +424,10 @@ namespace Tenants {
         }
         public static void SpawnPayment(Pawn pawn) {
             Tenant tenantComp = pawn.GetTenantComponent();
-            DebugThingPlaceHelper.DebugSpawn(ThingDefOf.Silver, pawn.Position, tenantComp.ContractLength / 60000 * tenantComp.Payment);
+            if(tenantComp.Paid == false) {
+                DebugThingPlaceHelper.DebugSpawn(ThingDefOf.Silver, pawn.Position, tenantComp.ContractLength / 60000 * tenantComp.Payment);
+                tenantComp.Paid = true;
+            }
         }
         public static string AppendPawnDescription(string text, Pawn pawn) {
             StringBuilder stringBuilder = new StringBuilder(text);
