@@ -1,18 +1,14 @@
-﻿Tweak colonists count for raiding option and colony limit.
-Gifts
-Moles (Raider tenants)
-Payment for treatment?
-Quality of service demands -> more silver and happiness
-Colonists -> tenants
-New clothes -> new buff
-With Psychology, tenants run for mayor.E
+﻿High Priority:
 
-
+Med priority:
 Tenant clothing restriction instant
+New clothes -> new buff
+Quality of service demands -> more silver and happiness
+Moles (Raider tenants)Gifts
 
 
+Low priority:
+With Psychology, tenants run for mayor.
+Payment for treatment?
+Tweak colonists count for raiding option and colony limit.
 
-
-
-Downed tenants can't have their contracts terminated
-Invite tenants from Console with possible bad outcome

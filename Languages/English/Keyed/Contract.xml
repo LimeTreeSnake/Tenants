@@ -35,8 +35,11 @@
 	<ContractAgree>Agree</ContractAgree>
 	<ContractReject>Reject</ContractReject>
 	<MayJoin>May join</MayJoin>
+	<MayJoinTip>Whether a tenant may request to join your colony permanently.</MayJoinTip>
 	<Terminate>Terminate</Terminate>
+	<TerminateTip>Terminate the contract early without pay.</TerminateTip>
 	<AutoRenew>Auto renew</AutoRenew>
+	<AutoRenewTip>Whether a tenant can automagically renew the contract at the expiry date.</AutoRenewTip>
 	<InviteTenant>Broadcast tenancy invitation</InviteTenant>
 	
 	<InviteTenantMessage>A broadcast is sent over the rim with your location. The message claims that there is food and comfortable beds for those with silver to spend.</InviteTenantMessage>

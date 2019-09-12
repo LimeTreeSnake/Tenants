@@ -12,6 +12,9 @@ namespace Tenants {
                 }
             }
         }
+        protected override string GetTip(Pawn pawn) {
+            return "AutoRenewTip".Translate();
+        }
         protected override bool GetValue(Pawn pawn) {
             return pawn.GetTenantComponent().AutoRenew;
         }

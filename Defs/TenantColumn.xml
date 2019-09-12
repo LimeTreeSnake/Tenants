@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
   <PawnColumnDef>
-    <defName>ContractColumn</defName>
-    <workerClass>Tenants.PawnColumnWorker_Contract</workerClass>
+    <defName>ContractIcon</defName>
+    <workerClass>Tenants.PawnColumnWorker_ContractIcon</workerClass>
     <sortable>true</sortable>
-    <width>500</width>
+  </PawnColumnDef>
+  <PawnColumnDef>
+    <defName>TenantLabel</defName>
+    <workerClass>Tenants.PawnColumnWorker_TenantLabel</workerClass>
+    <sortable>true</sortable>
+    <width>200</width>
   </PawnColumnDef>
   <PawnColumnDef>
     <defName>CancelContract</defName>

@@ -15,6 +15,9 @@ namespace Tenants {
         private static readonly float stayChanceNeutral = 50F;
         private static readonly float stayChanceSad = 5f;
         private static readonly bool weapons = false;
+        private static readonly bool simpleClothing = true;
+        private static readonly int simpleClothingMin = 200;
+        private static readonly int simpleClothingMax = 600;
         private static float r = 127f, g = 63f, b = 191f;
         private static Color color = new Color(r / 255f, g / 255f, b / 255f);
         private static readonly float levelOfHappinessToWork = 70f;
@@ -35,6 +38,9 @@ namespace Tenants {
         public float StayChanceNeutral = stayChanceNeutral;
         public float StayChanceSad = stayChanceSad;
         public bool Weapons = weapons;
+        public bool SimpleClothing = simpleClothing;
+        public float SimpleClothingMin = simpleClothingMin;
+        public float SimpleClothingMax = simpleClothingMax;
         public float R { get { return r; } set { r = value; color = new Color(r / 255, g / 255, b / 255); } }
         public float G { get { return g; } set { g = value; color = new Color(r / 255, g / 255, b / 255); } }
         public float B { get { return b; } set { b = value; color = new Color(r / 255, g / 255, b / 255); } }
@@ -67,6 +73,9 @@ namespace Tenants {
             Scribe_Values.Look(ref StayChanceNeutral, "StayChanceNeutral", stayChanceNeutral);
             Scribe_Values.Look(ref StayChanceSad, "StayChanceSad", stayChanceSad);
             Scribe_Values.Look(ref Weapons, "Weapons", weapons);
+            Scribe_Values.Look(ref SimpleClothing, "SimpleClothing", simpleClothing);
+            Scribe_Values.Look(ref SimpleClothingMin, "SimpleClothingMin", simpleClothingMin);
+            Scribe_Values.Look(ref SimpleClothingMax, "SimpleClothingMax", simpleClothingMax);
             Scribe_Values.Look(ref r, "R", r);
             Scribe_Values.Look(ref g, "G", g);
             Scribe_Values.Look(ref b, "B", b);
@@ -154,6 +163,15 @@ namespace Tenants {
             tenantsSettings.StayChanceSad = (int)Mathf.Round(list.Slider(tenantsSettings.StayChanceSad, 0f, 100f));
             list.Gap();
             list.CheckboxLabeled("Should tenants spawn without weapons?", ref tenantsSettings.Weapons, "Keep in mind that this removes any weapon when a tenant spawns. Have you given a weapon to a tenant once before, it'll be removed should they leave the map and spawn again somewhere.");
+            list.Gap();
+            list.CheckboxLabeled("Should tenants spawn simple clothing?", ref tenantsSettings.SimpleClothing, "Upon tenant creation, tenants will spawn with simple clothing within the selected money range.");
+            if (tenantsSettings.SimpleClothing) {
+                list.Label(string.Format("({0}) Min money.", tenantsSettings.SimpleClothingMin));
+                tenantsSettings.SimpleClothingMin = Mathf.Round(list.Slider(tenantsSettings.SimpleClothingMin, 0f, 500f));
+                list.Label(string.Format("({0}) Max Money.", tenantsSettings.SimpleClothingMax));
+                tenantsSettings.SimpleClothingMax = Mathf.Round(list.Slider(tenantsSettings.SimpleClothingMax, 0f, 1000f));
+
+            }
             list.Gap();
             list.Label("RGB value for tenant name:");
             list.Label(string.Format("({0}) R.", tenantsSettings.R));

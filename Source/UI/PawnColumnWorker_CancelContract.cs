@@ -10,6 +10,9 @@ namespace Tenants {
                 }
             }
         }
+        protected override string GetTip(Pawn pawn) {
+            return "TerminateTip".Translate();
+        }
         protected override bool GetValue(Pawn pawn) {
             return !pawn.GetTenantComponent().IsTenant;
         }

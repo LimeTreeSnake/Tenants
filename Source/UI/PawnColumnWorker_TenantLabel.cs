@@ -3,21 +3,15 @@ using UnityEngine;
 using Verse;
 
 namespace Tenants {
-    public class PawnColumnWorker_Contract : PawnColumnWorker_Text {
+    public class PawnColumnWorker_TenantLabel : PawnColumnWorker_Text {
         
         protected override string GetTextFor(Pawn pawn) {
             Tenant tenantComp = pawn.GetTenantComponent();
             if (tenantComp != null && !tenantComp.IsTenant) {
                 return string.Empty;
             }
-            string value = "FullDate".Translate(Find.ActiveLanguageWorker.OrdinalNumber(GenDate.DayOfSeason(tenantComp.ContractEndDate, 0f)), QuadrumUtility.Label(GenDate.Quadrum(tenantComp.ContractEndDate, 0f)), GenDate.Year(tenantComp.ContractEndDate, 0f));
-            string a = "ContractEndDate".Translate(value);
-            string b = "ContractPayment".Translate(tenantComp.Payment * tenantComp.ContractLength / 60000);
-            string c = "ContractLength".Translate(tenantComp.ContractLength / 60000);
-            string d = "ContractDaily".Translate(tenantComp.Payment);
-            return a + " | " + b + " | " + c + " | " + d ;
+            return pawn.Name.ToStringFull;
         }
-
         public override void DoCell(Rect rect, Pawn pawn, PawnTable table) {
             base.DoCell(rect, pawn, table);
             Rect rect2 = new Rect(rect.x, rect.y, rect.width, Mathf.Min(rect.height, 30f));

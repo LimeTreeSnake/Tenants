@@ -55,6 +55,8 @@
   <ItemGroup>
     <Compile Include="Harmony\HarmonyTenants.cs" />
     <Compile Include="MapComponent_Tenants.cs" />
+    <Compile Include="Textures.cs" />
+    <Compile Include="UI\PawnColumnWorker_TenantLabel.cs" />
     <Compile Include="UI\PawnColumnWorker_MayJoin.cs" />
     <Compile Include="UI\PawnColumnWorker_AutoRenew.cs" />
     <Compile Include="UI\PawnColumnWorker_CancelContract.cs" />
@@ -64,7 +66,7 @@
     <Compile Include="Workers\JobDriver_Tenants.cs" />
     <Compile Include="Workers\LordJob_TenantTheft.cs" />
     <Compile Include="UI\MainTabWindow_Tenant.cs" />
-    <Compile Include="UI\PawnColumnWorker_Contract.cs" />
+    <Compile Include="UI\PawnColumnWorker_ContractIcon.cs" />
     <Compile Include="Tenant.cs" />
     <Compile Include="Settings\TenantsSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

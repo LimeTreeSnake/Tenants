@@ -8,7 +8,6 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.AI;
-using Verse.AI.Group;
 using static RimWorld.ColonistBar;
 
 namespace Tenants {
@@ -62,15 +61,17 @@ namespace Tenants {
             return true;
         }
         public static void TenantGetGizmos_PostFix(ref IEnumerable<Gizmo> __result, ref Pawn __instance) {
-            Tenant tenantComp = __instance.GetTenantComponent();
-            if (tenantComp != null && tenantComp.IsTenant) {
-                List<Gizmo> gizmos = __result.ToList();
-                if (gizmos != null) {
-                    foreach (Gizmo giz in gizmos.ToList()) {
-                        if ((giz as Command).defaultLabel == "Draft")
-                            gizmos.Remove(giz);
+            if (__instance != null) {
+                Tenant tenantComp = __instance.GetTenantComponent();
+                if (tenantComp != null && tenantComp.IsTenant && __result != null) {
+                    List<Gizmo> gizmos = __result.ToList();
+                    if (gizmos != null) {
+                        foreach (Gizmo giz in gizmos.ToList()) {
+                            if ((giz as Command).defaultLabel == "Draft")
+                                gizmos.Remove(giz);
+                        }
+                        __result = gizmos.AsEnumerable();
                     }
-                    __result = gizmos.AsEnumerable();
                 }
             }
         }
@@ -78,10 +79,19 @@ namespace Tenants {
             Pawn pawn = Traverse.Create(__instance).Field("pawn").GetValue<Pawn>();
             Tenant tenantComp = pawn.GetTenantComponent();
             if (tenantComp != null && tenantComp.IsTenant && pawn.IsColonist) {
+
+                Outfit outfit = Current.Game.outfitDatabase.AllOutfits.FirstOrDefault(x => x.label == "Tenants".Translate());
+                if (outfit == null) {
+                    int uniqueId = (!Current.Game.outfitDatabase.AllOutfits.Any()) ? 1 : (Current.Game.outfitDatabase.AllOutfits.Max((Outfit o) => o.uniqueId) + 1);
+                    outfit = new Outfit(uniqueId, "Tenants".Translate());
+                    outfit.filter.SetAllow(ThingCategoryDefOf.Apparel, allow: true);
+                    Current.Game.outfitDatabase.AllOutfits.Add(outfit);
+                }
+                pawn.outfits.CurrentOutfit = outfit;
                 if (tenantComp.ContractEndDate == 0) {
                     tenantComp.Reset();
                 }
-                if (tenantComp.IsTerminated ) {
+                if (tenantComp.IsTerminated) {
                     if (!pawn.health.Downed) {
                         Messages.Message("ContractTerminateFail".Translate(), MessageTypeDefOf.NeutralEvent);
                     }
@@ -195,8 +205,6 @@ namespace Tenants {
                 }
             }
         }
-
-
         public static void GetReport_PostFix(ref AlertReport __result, Alert_ColonistsIdle __instance) {
             if (__result.culprits != null) {
                 Utility.RemoveTenantsFromList(ref __result.culprits);
@@ -238,7 +246,7 @@ namespace Tenants {
             }
             return true;
         }
-        public static void GetFloatMenuOptions_PostFix(Building_CommsConsole __instance,ref IEnumerable<FloatMenuOption> __result, Pawn myPawn ) {
+        public static void GetFloatMenuOptions_PostFix(Building_CommsConsole __instance, ref IEnumerable<FloatMenuOption> __result, Pawn myPawn) {
 
             if (!MapComponent_Tenants.GetComponent(myPawn.Map).Broadcast) {
 

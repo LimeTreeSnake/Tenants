@@ -152,6 +152,13 @@ namespace Tenants {
                         Pawn newTenant = PawnGenerator.GeneratePawn(request);
                         if (!newTenant.Dead && !newTenant.IsDessicated() && !newTenant.AnimalOrWildMan() && newTenant.RaceProps.Humanlike && newTenant.RaceProps.EatsFood && newTenant.RaceProps.IsFlesh && newTenant.RaceProps.FleshType.defName != "Android") {
                             {
+                                if (SettingsHelper.LatestVersion.SimpleClothing) {
+                                    FloatRange range = newTenant.kindDef.apparelMoney;
+                                    newTenant.kindDef.apparelMoney = new FloatRange(SettingsHelper.LatestVersion.SimpleClothingMin, SettingsHelper.LatestVersion.SimpleClothingMax);
+                                    PawnApparelGenerator.GenerateStartingApparelFor(newTenant, request);
+                                    newTenant.kindDef.apparelMoney = range;
+                                }
+
                                 newTenant.GetTenantComponent().IsTenant = true;
                                 pawns.Add(newTenant);
                                 loop = false;
@@ -294,7 +301,7 @@ namespace Tenants {
         public static void InviteTenant(Building_CommsConsole comms, Pawn pawn) {
             Messages.Message("InviteTenantMessage".Translate(), MessageTypeDefOf.NeutralEvent);
             MapComponent_Tenants.GetComponent(pawn.Map).Broadcast = true;
-            if(Rand.Value < 0.75f) {
+            if (Rand.Value < 0.75f) {
                 IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, pawn.Map);
                 parms.raidStrategy = RaidStrategyDefOf.Retribution;
                 parms.forced = true;
