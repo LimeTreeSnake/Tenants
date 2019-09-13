@@ -49,6 +49,8 @@ namespace Tenants {
         }
         public static void ContractConclusion(Pawn pawn, bool terminated, float stealChance = 0.5f) {
             Tenant tenantComp = pawn.GetTenantComponent();
+            if (!tenantComp.IsTenant && !pawn.IsColonist)
+                return;
             if (terminated) {
                 if (Rand.Value < stealChance) {
                     string letterLabel = "ContractEnd".Translate();
@@ -424,7 +426,7 @@ namespace Tenants {
         }
         public static void SpawnPayment(Pawn pawn) {
             Tenant tenantComp = pawn.GetTenantComponent();
-            if(tenantComp.Paid == false) {
+            if (tenantComp.Paid == false) {
                 DebugThingPlaceHelper.DebugSpawn(ThingDefOf.Silver, pawn.Position, tenantComp.ContractLength / 60000 * tenantComp.Payment);
                 tenantComp.Paid = true;
             }
