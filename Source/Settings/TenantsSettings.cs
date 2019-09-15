@@ -21,13 +21,6 @@ namespace Tenants {
         private static float r = 127f, g = 63f, b = 191f;
         private static Color color = new Color(r / 255f, g / 255f, b / 255f);
         private static readonly float levelOfHappinessToWork = 70f;
-        private static readonly bool cleaning = true, cleaningHappy = true;
-        private static readonly bool hauling = true, haulingHappy = true;
-        private static readonly bool basicWorker = true, basicWorkerHappy = true;
-        private static readonly bool patient = true, patientHappy = false;
-        private static readonly bool patientBedRest = true, patientBedRestHappy = false;
-        private static readonly bool firefighter = true, firefighterHappy = true;
-        private static readonly bool workIsDirty = true;
         #endregion Fields
         #region Properties
         public int MinDailyCost = minDailyCost;
@@ -46,20 +39,7 @@ namespace Tenants {
         public float B { get { return b; } set { b = value; color = new Color(r / 255, g / 255, b / 255); } }
         public Color Color => color;
         public float LevelOfHappinessToWork = levelOfHappinessToWork;
-        public bool Cleaning = cleaning;
-        public bool CleaningHappy = cleaningHappy;
-        public bool Hauling = hauling;
-        public bool HaulingHappy = haulingHappy;
-        public bool BasicWorker = basicWorker;
-        public bool BasicWorkerHappy = basicWorkerHappy;
-        public bool Patient = patient;
-        public bool PatientHappy = patientHappy;
-        public bool PatientBedRest = patientBedRest;
-        public bool PatientBedRestHappy = patientBedRestHappy;
-        public bool Firefighter = firefighter;
-        public bool FirefighterHappy = firefighterHappy;
-
-        public bool WorkIsDirty = workIsDirty;
+        
         #endregion Properties
 
         public override void ExposeData() {
@@ -80,18 +60,6 @@ namespace Tenants {
             Scribe_Values.Look(ref g, "G", g);
             Scribe_Values.Look(ref b, "B", b);
             Scribe_Values.Look(ref LevelOfHappinessToWork, "LevelOfHappinessToWork", levelOfHappinessToWork);
-            Scribe_Values.Look(ref Cleaning, "Cleaning", cleaning);
-            Scribe_Values.Look(ref CleaningHappy, "CleaningHappy", cleaningHappy);
-            Scribe_Values.Look(ref Hauling, "Hauling", hauling);
-            Scribe_Values.Look(ref HaulingHappy, "HaulingHappy", haulingHappy);
-            Scribe_Values.Look(ref BasicWorker, "BasicWorker", basicWorker);
-            Scribe_Values.Look(ref BasicWorkerHappy, "BasicWorkerHappy", basicWorkerHappy);
-            Scribe_Values.Look(ref Patient, "Patient", patient);
-            Scribe_Values.Look(ref PatientHappy, "PatientHappy", patientHappy);
-            Scribe_Values.Look(ref PatientBedRest, "PatientBedRest", patientBedRest);
-            Scribe_Values.Look(ref PatientBedRestHappy, "PatientBedRestHappy", patientBedRestHappy);
-            Scribe_Values.Look(ref Firefighter, "Firefighter", firefighter);
-            Scribe_Values.Look(ref FirefighterHappy, "FirefighterHappy", firefighterHappy);
         }
         public void Reset() {
             MinDailyCost = minDailyCost;
@@ -103,18 +71,6 @@ namespace Tenants {
             StayChanceSad = stayChanceSad;
             r = 127f; g = 63f; b = 191f;
             LevelOfHappinessToWork = levelOfHappinessToWork;
-            Cleaning = cleaning;
-            CleaningHappy = cleaningHappy;
-            Hauling = hauling;
-            HaulingHappy = haulingHappy;
-            BasicWorker = basicWorker;
-            BasicWorkerHappy = basicWorkerHappy;
-            Patient = patient;
-            PatientHappy = patientHappy;
-            PatientBedRest = patientBedRest;
-            PatientBedRestHappy = patientBedRestHappy;
-            Firefighter = firefighter;
-            FirefighterHappy = firefighterHappy;
             Weapons = weapons;
         }
     }
@@ -148,9 +104,9 @@ namespace Tenants {
                 tenantsSettings.Reset();
             };
             list.Label(string.Format("({0}) Min contract daily cost.", tenantsSettings.MinDailyCost));
-            tenantsSettings.MinDailyCost = (int)Mathf.Round(list.Slider(tenantsSettings.MinDailyCost, 50, 100));
+            tenantsSettings.MinDailyCost = (int)Mathf.Round(list.Slider(tenantsSettings.MinDailyCost, 0, 100));
             list.Label(string.Format("({0}) Max contract daily cost.", tenantsSettings.MaxDailyCost));
-            tenantsSettings.MaxDailyCost = (int)Mathf.Round(list.Slider(tenantsSettings.MaxDailyCost, tenantsSettings.MinDailyCost, 10 * tenantsSettings.MinDailyCost));
+            tenantsSettings.MaxDailyCost = (int)Mathf.Round(list.Slider(tenantsSettings.MaxDailyCost, tenantsSettings.MinDailyCost, 1000));
             list.Label(string.Format("({0}) Min contract time.", tenantsSettings.MinContractTime));
             tenantsSettings.MinContractTime = (int)Mathf.Round(list.Slider(tenantsSettings.MinContractTime, 1, 100));
             list.Label(string.Format("({0}) Max contract time.", tenantsSettings.MaxContractTime));
@@ -185,31 +141,7 @@ namespace Tenants {
             list.Gap();
             list.Label(string.Format("({0}) Needed level of happiness to work.", tenantsSettings.LevelOfHappinessToWork));
             tenantsSettings.LevelOfHappinessToWork = (byte)Mathf.Round(list.Slider(tenantsSettings.LevelOfHappinessToWork, 0f, 100f));
-            list.CheckboxLabeled("Cleaning", ref tenantsSettings.Cleaning, "Should a tenant clean?");
-            if (tenantsSettings.Cleaning)
-                list.CheckboxLabeled("Clean only when happy", ref tenantsSettings.CleaningHappy);
-            list.Gap();
-            list.CheckboxLabeled("Hauling", ref tenantsSettings.Hauling, "Should a tenant haul?");
-            if (tenantsSettings.Hauling)
-                list.CheckboxLabeled("Hauling only when happy", ref tenantsSettings.HaulingHappy);
-            list.Gap();
-            list.CheckboxLabeled("Basic working", ref tenantsSettings.BasicWorker, "Should a tenant do basic work like flicking?");
-            if (tenantsSettings.BasicWorker)
-                list.CheckboxLabeled("Basic working only when happy", ref tenantsSettings.BasicWorkerHappy);
-            list.Gap();
-            list.CheckboxLabeled("Patient", ref tenantsSettings.Patient, "Should a tenant wait to be treated in bed?");
-            if (tenantsSettings.Patient)
-                list.CheckboxLabeled("Patient only when happy", ref tenantsSettings.PatientHappy);
-            list.Gap();
-            list.CheckboxLabeled("PatientBedRest", ref tenantsSettings.PatientBedRest, "Should a tenant rest when hurt or sick?");
-            if (tenantsSettings.PatientBedRest)
-                list.CheckboxLabeled("PatientBedRest only when happy", ref tenantsSettings.PatientBedRestHappy);
-            list.Gap();
-            list.CheckboxLabeled("Firefighter", ref tenantsSettings.Firefighter, "Should a tenant help beating down fires?");
-            if (tenantsSettings.Firefighter)
-                list.CheckboxLabeled("Firefighter only when happy", ref tenantsSettings.FirefighterHappy);
-            tenantsSettings.WorkIsDirty = true;
-                        
+
             list.End();
             Widgets.EndScrollView();
             tenantsSettings.Write();

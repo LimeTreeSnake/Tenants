@@ -3,7 +3,6 @@
   <PawnColumnDef>
     <defName>ContractIcon</defName>
     <workerClass>Tenants.PawnColumnWorker_ContractIcon</workerClass>
-    <sortable>true</sortable>
   </PawnColumnDef>
   <PawnColumnDef>
     <defName>TenantLabel</defName>
@@ -14,16 +13,31 @@
   <PawnColumnDef>
     <defName>CancelContract</defName>
     <workerClass>Tenants.PawnColumnWorker_CancelContract</workerClass>
-    <sortable>true</sortable>
   </PawnColumnDef>
   <PawnColumnDef>
     <defName>MayJoin</defName>
     <workerClass>Tenants.PawnColumnWorker_MayJoin</workerClass>
-    <sortable>true</sortable>
   </PawnColumnDef>
   <PawnColumnDef>
     <defName>AutoRenew</defName>
     <workerClass>Tenants.PawnColumnWorker_AutoRenew</workerClass>
-    <sortable>true</sortable>
+  </PawnColumnDef>
+  
+  
+  <PawnColumnDef>
+    <defName>TenantWorkFireFighting</defName>
+    <workerClass>Tenants.PawnColumnWorker_FireFight</workerClass>
+  </PawnColumnDef>
+  <PawnColumnDef>
+    <defName>TenantWorkBasic</defName>
+    <workerClass>Tenants.PawnColumnWorker_Basic</workerClass>
+  </PawnColumnDef>
+  <PawnColumnDef>
+    <defName>TenantWorkHauling</defName>
+    <workerClass>Tenants.PawnColumnWorker_Hauling</workerClass>
+  </PawnColumnDef>
+  <PawnColumnDef>
+    <defName>TenantWorkCleaning</defName>
+    <workerClass>Tenants.PawnColumnWorker_Cleaning</workerClass>
   </PawnColumnDef>
 </Defs>

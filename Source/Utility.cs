@@ -105,9 +105,9 @@ namespace Tenants {
                 }
                 string text = ProlongContractMessage(pawn);
                 DiaNode diaNode = new DiaNode(text);
+                //Accepted offer.
                 DiaOption diaOption = new DiaOption("ContractAgree".Translate()) {
                     action = delegate {
-                        //Accepted offer.
                         tenantComp.ContractDate = Find.TickManager.TicksGame;
                         tenantComp.ContractEndDate = Find.TickManager.TicksAbs + tenantComp.ContractLength + 60000;
                         tenantComp.ResetMood();
@@ -149,8 +149,8 @@ namespace Tenants {
             if (pawns.Count < 20) {
                 for (int i = 0; i < 3; i++) {
                     //GENERATION CONTEXT
-                    bool loop = true;
-                    while (loop) {
+                    bool generation = true;
+                    while (generation) {
                         PawnKindDef def = GetPawnKindDefList()[Rand.Range(0, GetPawnKindDefList().Count)];
                         PawnGenerationRequest request = new PawnGenerationRequest(def, Faction.OfAncients);
                         Pawn newTenant = PawnGenerator.GeneratePawn(request);
@@ -162,10 +162,9 @@ namespace Tenants {
                                     PawnApparelGenerator.GenerateStartingApparelFor(newTenant, request);
                                     newTenant.kindDef.apparelMoney = range;
                                 }
-
                                 newTenant.GetTenantComponent().IsTenant = true;
                                 pawns.Add(newTenant);
-                                loop = false;
+                                generation = false;
                             }
                         }
                     }
@@ -188,13 +187,15 @@ namespace Tenants {
             if (broadcasted)
                 MapComponent_Tenants.GetComponent(map).Broadcast = false;
             DiaNode diaNode = new DiaNode(text);
+            //Accepted offer, generating tenant.
             DiaOption diaOption = new DiaOption("ContractAgree".Translate()) {
                 action = delegate {
-                    //Accepted offer, generating tenant.
                     pawn.SetFaction(Faction.OfPlayer);
+                    pawn.GetTenantComponent().Contracted = true;
                     GenSpawn.Spawn(pawn, spawnSpot, map);
                     pawn.needs.SetInitialLevels();
                     pawn.playerSettings.AreaRestriction = map.areaManager.Home;
+                    UpdateOutfitManagement(pawn);
                     UpdateTenantWork(pawn);
                     TraitDef nightOwl = DefDatabase<TraitDef>.GetNamedSilentFail("NightOwl");
                     if (nightOwl != null && pawn.story.traits.HasTrait(nightOwl)) {
@@ -208,6 +209,7 @@ namespace Tenants {
                 resolveTree = true
             };
             diaNode.options.Add(diaOption);
+
             //Denied tenant offer
             string text2 = "RequestForTenancyRejected".Translate(pawn.LabelShort, pawn, pawn.Named("PAWN"));
             DiaNode diaNode2 = new DiaNode(text2);
@@ -233,20 +235,20 @@ namespace Tenants {
         public static void TenantLeave(Pawn pawn) {
             pawn.jobs.ClearQueuedJobs();
             pawn.SetFaction(Faction.OfAncients);
-            pawn.GetTenantComponent().ContractEndDate = 0;
-            LordMaker.MakeNewLord(pawn.Faction, new LordJob_ExitMapBest(), pawn.Map, new List<Pawn> { pawn });
+            pawn.GetTenantComponent().CleanTenancy();
+            Lord lord = LordMaker.MakeNewLord(pawn.Faction, new LordJob_ExitMapBest(), pawn.Map, new List<Pawn> { pawn });
         }
         public static void TenantCancelContract(Pawn pawn) {
             Messages.Message("ContractDonePlayerTerminated".Translate(pawn.Named("PAWN")), MessageTypeDefOf.NeutralEvent);
             pawn.jobs.ClearQueuedJobs();
             pawn.SetFaction(Faction.OfAncients);
-            pawn.GetTenantComponent().ContractEndDate = 0;
+            pawn.GetTenantComponent().CleanTenancy();
             LordMaker.MakeNewLord(pawn.Faction, new LordJob_ExitMapBest(), pawn.Map, new List<Pawn> { pawn });
         }
         public static void TenantTheft(Pawn pawn) {
             pawn.jobs.ClearQueuedJobs();
             pawn.SetFaction(Faction.OfAncients);
-            pawn.GetTenantComponent().Reset();
+            pawn.GetTenantComponent().ResetTenancy();
             LordMaker.MakeNewLord(pawn.Faction, new LordJob_TenantTheft(), pawn.Map, new List<Pawn> { pawn });
         }
         public static void TenantDeath(Pawn pawn) {
@@ -269,7 +271,7 @@ namespace Tenants {
         }
         public static void TenantWantToJoin(Pawn pawn) {
             Tenant tenant = pawn.GetTenantComponent();
-            if (tenant.MayJoin && Rand.Value < 0.05f && tenant.HappyMoodCount > 7) {
+            if (tenant.MayJoin && Rand.Value < 0.02f && tenant.HappyMoodCount > 7) {
 
                 string text = "RequestTenantWantToJoin".Translate(pawn.Named("PAWN"));
 
@@ -306,7 +308,7 @@ namespace Tenants {
         public static void InviteTenant(Building_CommsConsole comms, Pawn pawn) {
             Messages.Message("InviteTenantMessage".Translate(), MessageTypeDefOf.NeutralEvent);
             MapComponent_Tenants.GetComponent(pawn.Map).Broadcast = true;
-            if (Rand.Value < 0.75f) {
+            if (Rand.Value < 0.33f) {
                 IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, pawn.Map);
                 parms.raidStrategy = RaidStrategyDefOf.Retribution;
                 parms.forced = true;
@@ -346,76 +348,54 @@ namespace Tenants {
         }
 
         public static bool EmergencyWork(WorkGiver giver) {
-            if (giver is WorkGiver_PatientGoToBedEmergencyTreatment || giver is WorkGiver_PatientGoToBedTreatment) {
-                if (SettingsHelper.LatestVersion.Patient && !SettingsHelper.LatestVersion.PatientHappy)
-                    return true;
-            }
-            else if (giver is WorkGiver_PatientGoToBedRecuperate) {
-                if (SettingsHelper.LatestVersion.PatientBedRest && !SettingsHelper.LatestVersion.PatientBedRestHappy)
-                    return true;
-            }
-            else if (giver.def.workTags == WorkTags.Firefighting) {
-                if (SettingsHelper.LatestVersion.Firefighter && !SettingsHelper.LatestVersion.FirefighterHappy)
-                    return true;
-            }
-            else if (giver.def.workTags == WorkTags.Hauling) {
-                if (SettingsHelper.LatestVersion.Hauling && !SettingsHelper.LatestVersion.HaulingHappy)
-                    return true;
-            }
-            else if (giver.def.workTags == WorkTags.Cleaning) {
-                if (SettingsHelper.LatestVersion.Cleaning && !SettingsHelper.LatestVersion.CleaningHappy)
-                    return true;
-            }
-            else if (giver.def.workTags == WorkTags.ManualDumb) {
-                if (SettingsHelper.LatestVersion.BasicWorker && !SettingsHelper.LatestVersion.BasicWorkerHappy)
-                    return true;
+            if (giver is WorkGiver_PatientGoToBedEmergencyTreatment
+                || giver is WorkGiver_PatientGoToBedTreatment
+                || giver is WorkGiver_PatientGoToBedRecuperate
+                || giver.def.workTags == WorkTags.Firefighting) {
+                return true;
             }
             return false;
         }
-        public static void UpdateTenantsWork() {
-            foreach (Map map in Find.Maps) {
-                foreach (Pawn pawn in map.mapPawns.FreeColonistsAndPrisoners) {
-                    Tenant tenantComp = pawn.GetTenantComponent();
-                    if (tenantComp != null && tenantComp.IsTenant) {
-                        UpdateTenantWork(pawn);
-                    }
-                }
-            }
-            SettingsHelper.LatestVersion.WorkIsDirty = false;
-        }
         public static void UpdateTenantWork(Pawn pawn) {
+            Tenant tenantComp = pawn.GetTenantComponent();
             foreach (WorkTypeDef def in DefDatabase<WorkTypeDef>.AllDefs) {
-                if (def.defName == "Firefighter" && SettingsHelper.LatestVersion.Firefighter) {
-                    if (!pawn.story.WorkTagIsDisabled(WorkTags.Firefighting)) {
-                        pawn.workSettings.SetPriority(def, 3);
-                    }
-                }
-                else if (def.defName == "Patient" && SettingsHelper.LatestVersion.Patient) {
+
+                if (def.defName == "Patient") {
                     pawn.workSettings.SetPriority(def, 3);
                 }
-                else if (def.defName == "PatientBedRest" && SettingsHelper.LatestVersion.PatientBedRest) {
+                else if (def.defName == "PatientBedRest") {
                     pawn.workSettings.SetPriority(def, 3);
                 }
-                else if (def.defName == "BasicWorker" && SettingsHelper.LatestVersion.BasicWorker) {
-                    if (!pawn.story.WorkTagIsDisabled(WorkTags.ManualDumb)) {
-                        pawn.workSettings.SetPriority(def, 3);
-                    }
+                else if (!pawn.story.WorkTagIsDisabled(WorkTags.Firefighting) && def.defName == "Firefighter") {
+                    pawn.workSettings.SetPriority(DefDatabase<WorkTypeDef>.AllDefs.FirstOrFallback(x => x.defName == "Firefighter"), 3);
+                    tenantComp.MayFirefight = true;
                 }
-                else if (def.defName == "Hauling" && SettingsHelper.LatestVersion.Hauling) {
-                    if (!pawn.story.WorkTagIsDisabled(WorkTags.ManualDumb)) {
-                        if (!pawn.story.WorkTagIsDisabled(WorkTags.Hauling))
-                            pawn.workSettings.SetPriority(def, 3);
-                    }
+                else if (!pawn.story.WorkTagIsDisabled(WorkTags.ManualDumb) && def.defName == "BasicWorker") {
+                    pawn.workSettings.SetPriority(DefDatabase<WorkTypeDef>.AllDefs.FirstOrFallback(x => x.defName == "BasicWorker"), 3);
+                    tenantComp.MayBasic = true;
                 }
-                else if (def.defName == "Cleaning" && SettingsHelper.LatestVersion.Cleaning) {
-                    if (!pawn.story.WorkTagIsDisabled(WorkTags.ManualDumb)) {
-                        if (!pawn.story.WorkTagIsDisabled(WorkTags.Cleaning))
-                            pawn.workSettings.SetPriority(def, 3);
-                    }
+                else if (!(pawn.story.WorkTagIsDisabled(WorkTags.ManualDumb) || pawn.story.WorkTagIsDisabled(WorkTags.Hauling)) && def.defName == "Hauling") {
+                    pawn.workSettings.SetPriority(DefDatabase<WorkTypeDef>.AllDefs.FirstOrFallback(x => x.defName == "Hauling"), 3);
+                    tenantComp.MayHaul = true;
+                }
+                else if (!(pawn.story.WorkTagIsDisabled(WorkTags.ManualDumb) || pawn.story.WorkTagIsDisabled(WorkTags.Cleaning)) && def.defName == "Cleaning") {
+                    pawn.workSettings.SetPriority(DefDatabase<WorkTypeDef>.AllDefs.FirstOrFallback(x => x.defName == "Cleaning"), 3);
+                    tenantComp.MayClean = true;
                 }
                 else
                     pawn.workSettings.Disable(def);
             }
+        }
+        public static void UpdateOutfitManagement(Pawn pawn) {
+            Outfit outfit = Current.Game.outfitDatabase.AllOutfits.FirstOrDefault(x => x.label == "Tenants".Translate());
+            if (outfit == null) {
+                int uniqueId = (!Current.Game.outfitDatabase.AllOutfits.Any()) ? 1 : (Current.Game.outfitDatabase.AllOutfits.Max((Outfit o) => o.uniqueId) + 1);
+                outfit = new Outfit(uniqueId, "Tenants".Translate());
+                //List<ThingDef> forbidden = DefDatabase<ThingDef>.AllDefs.Where(x=> !x.defName.Contains("Armor") && x.thingCategories.Contains(ThingCategoryDefOf.Apparel)).ToList();
+                outfit.filter.SetAllow(ThingCategoryDefOf.Apparel, allow: true);
+                Current.Game.outfitDatabase.AllOutfits.Add(outfit);
+            }
+            pawn.outfits.CurrentOutfit = outfit;
         }
         public static void UpdateTenantNightOwl(Pawn pawn) {
             pawn.timetable.times = new List<TimeAssignmentDef>(24);
@@ -431,6 +411,7 @@ namespace Tenants {
                 tenantComp.Paid = true;
             }
         }
+
         public static string AppendPawnDescription(string text, Pawn pawn) {
             StringBuilder stringBuilder = new StringBuilder(text);
             stringBuilder.AppendLine();
@@ -479,6 +460,18 @@ namespace Tenants {
             StringBuilder stringBuilder = new StringBuilder("");
             stringBuilder.Append("RequestForTenancyContinued".Translate(pawn.Named("PAWN")));
             return AppendContractDetails(stringBuilder.ToString(), pawn);
+        }
+        public static string NewBasicRaidMessage(IncidentParms parms, List<Pawn> pawns) {
+            Log.Message("Couldn't spawn correct letter for retribution.");
+            string basic = string.Format(parms.raidArrivalMode.textEnemy, parms.faction.def.pawnsPlural, parms.faction.Name);
+            basic += "\n\n";
+            basic += parms.raidStrategy.arrivalTextEnemy;
+            Pawn leader = pawns.Find((Pawn x) => x.Faction.leader == x);
+            if (leader != null) {
+                basic += "\n\n";
+                basic += "EnemyRaidLeaderPresent".Translate(leader.Faction.def.pawnsPlural, leader.LabelShort, leader.Named("LEADER"));
+            }
+            return basic;
         }
 
         #endregion Methods

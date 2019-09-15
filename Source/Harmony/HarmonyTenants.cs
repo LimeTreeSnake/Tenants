@@ -15,17 +15,28 @@ namespace Tenants {
     internal static class HarmonyTenants {
         static HarmonyTenants() {
             HarmonyInstance harmonyInstance = HarmonyInstance.Create("rimworld.limetreesnake.tenants");
+
+
+            #region Ticks
+            //Tenant Tick
+            //harmonyInstance.Patch(AccessTools.Method(typeof(Pawn), "Tick"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("Tick_PostFix")));
+            //Tenant TickRare
+            harmonyInstance.Patch(AccessTools.Method(typeof(Pawn), "TickRare"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("TickRare_PostFix")));
+            #endregion Ticks
+            #region Functionality
             //Removes ability to control tenant
             harmonyInstance.Patch(AccessTools.Method(typeof(FloatMenuMakerMap), "CanTakeOrder"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("CanTakeOrder_PreFix")), null);
-            //Removes tenant gizmo
-            harmonyInstance.Patch(AccessTools.Method(typeof(Pawn), "GetGizmos"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("TenantGetGizmos_PostFix")));
-            //Calculates mood and checks contract time.
-            harmonyInstance.Patch(AccessTools.Method(typeof(Pawn_AgeTracker), "AgeTick"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("AgeTick_PostFix")));
             //What happens when you capture a tenant 
             harmonyInstance.Patch(AccessTools.Method(typeof(Pawn_GuestTracker), "CapturedBy"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("CapturedBy_PreFix")), null);
             //Tenant dies
             harmonyInstance.Patch(AccessTools.Method(typeof(Pawn), "Kill"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("Kill_PreFix")), null);
-            //Tenant works
+            //Tenant Inspiration
+            harmonyInstance.Patch(AccessTools.Method(typeof(InspirationWorker), "InspirationCanOccur"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("InspirationCanOccur_PreFix")), null);
+            #endregion Functionality
+            #region GUI
+            //Removes tenant gizmo
+            harmonyInstance.Patch(AccessTools.Method(typeof(Pawn), "GetGizmos"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("TenantGetGizmos_PostFix")));
+            //Tenant can work
             harmonyInstance.Patch(AccessTools.Method(typeof(JobGiver_Work), "PawnCanUseWorkGiver"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("PawnCanUseWorkGiver_PreFix")), null);
             //Remove tenants from caravan list.
             harmonyInstance.Patch(AccessTools.Method(typeof(Dialog_FormCaravan), "AllSendablePawns"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("AllSendablePawns_PostFix")));
@@ -41,11 +52,10 @@ namespace Tenants {
             harmonyInstance.Patch(AccessTools.Method(typeof(Alert_ColonistsIdle), "GetLabel"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("GetLabel_PreFix")), null);
             //Pawn name color patch
             harmonyInstance.Patch(AccessTools.Method(typeof(PawnNameColorUtility), "PawnNameColorOf"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("PawnNameColorOf_PreFix")), null);
-
-
             //Comms Console Float Menu Option
             harmonyInstance.Patch(AccessTools.Method(typeof(Building_CommsConsole), "GetFloatMenuOptions"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("GetFloatMenuOptions_PostFix")));
 
+            #endregion GUI
 
             foreach (ThingDef def in DefDatabase<ThingDef>.AllDefs) {
                 if (def.race != null) {
@@ -53,82 +63,81 @@ namespace Tenants {
                 }
             }
         }
+
+        #region Ticks
+        //public static void Tick_PostFix(Pawn __instance) {
+        //    Tenant tenantComp = __instance.GetTenantComponent();
+        //    if (tenantComp != null && tenantComp.IsTenant && __instance.IsColonist) {
+
+        //    }
+        //}
+        public static void TickRare_PostFix(Pawn __instance) {
+            Tenant tenantComp = __instance.GetTenantComponent();
+            if (tenantComp != null && tenantComp.IsTenant && __instance.IsColonist) {
+                if (__instance.BillStack.Count > 0) {
+                    __instance.BillStack.Clear();
+                    tenantComp.SurgeryQueue++;
+                    if (tenantComp.SurgeryQueue < 2) {
+                        Messages.Message("TenantSurgeryWarning".Translate(__instance.Named("PAWN")),MessageTypeDefOf.NeutralEvent);
+                    }
+                    else {
+                        Messages.Message("TenantSurgeryLeave".Translate(__instance.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
+                        Utility.TenantLeave(__instance);
+                    }
+                }
+                if (tenantComp.IsTerminated) {
+                    if (__instance.health.Downed) {
+                        Messages.Message("ContractTerminateFail".Translate(), MessageTypeDefOf.NeutralEvent);
+                    }
+                    else {
+                        Utility.TenantCancelContract(__instance);
+                    }
+                    tenantComp.IsTerminated = false;
+                }
+
+                if (!tenantComp.Contracted) {
+                    tenantComp.ResetTenancy();
+                }
+                else {
+                    Pawn colonist = __instance.Map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false);
+                    if (colonist == null) {
+                        Utility.ContractConclusion(__instance, true, 1f);
+                    }
+                    long ageBiologicalTicksInt = Traverse.Create(__instance).Field("ageBiologicalTicksInt").GetValue<long>();
+                    if (ageBiologicalTicksInt % 6000 == 0) {
+                        if (__instance.needs.mood.CurInstantLevel > 0.8f) {
+                            Utility.TenantWantToJoin(__instance);
+                        }
+                        if (__instance.needs.mood.CurInstantLevel > 0.66f) {
+                            tenantComp.HappyMoodCount++;
+                            tenantComp.RecentBadMoodsCount = 0;
+                        }
+                        else if (__instance.needs.mood.CurInstantLevel < __instance.mindState.mentalBreaker.BreakThresholdMinor) {
+                            tenantComp.SadMoodCount++;
+                            tenantComp.RecentBadMoodsCount++;
+                            if (tenantComp.RecentBadMoodsCount > 5) {
+                                Utility.ContractConclusion(__instance, true);
+                            }
+                        }
+                        else {
+                            tenantComp.NeutralMoodCount++;
+                            tenantComp.RecentBadMoodsCount = 0;
+                        }
+                    }
+                    if (Find.TickManager.TicksGame >= tenantComp.ContractEndTick) {
+                        Utility.ContractConclusion(__instance, false);
+                    }
+                }
+            }
+        }
+        #endregion Ticks
+        #region Functionality
         public static bool CanTakeOrder_PreFix(Pawn pawn) {
             Tenant tenantComp = pawn.GetTenantComponent();
             if (tenantComp != null && tenantComp.IsTenant) {
                 return false;
             }
             return true;
-        }
-        public static void TenantGetGizmos_PostFix(ref IEnumerable<Gizmo> __result, ref Pawn __instance) {
-            if (__instance != null) {
-                Tenant tenantComp = __instance.GetTenantComponent();
-                if (tenantComp != null && tenantComp.IsTenant && __result != null) {
-                    List<Gizmo> gizmos = __result.ToList();
-                    if (gizmos != null) {
-                        foreach (Gizmo giz in gizmos.ToList()) {
-                            if ((giz as Command).defaultLabel == "Draft")
-                                gizmos.Remove(giz);
-                        }
-                        __result = gizmos.AsEnumerable();
-                    }
-                }
-            }
-        }
-        public static void AgeTick_PostFix(Pawn_AgeTracker __instance) {
-            Pawn pawn = Traverse.Create(__instance).Field("pawn").GetValue<Pawn>();
-            Tenant tenantComp = pawn.GetTenantComponent();
-            if (tenantComp != null && tenantComp.IsTenant && pawn.IsColonist) {
-
-                Outfit outfit = Current.Game.outfitDatabase.AllOutfits.FirstOrDefault(x => x.label == "Tenants".Translate());
-                if (outfit == null) {
-                    int uniqueId = (!Current.Game.outfitDatabase.AllOutfits.Any()) ? 1 : (Current.Game.outfitDatabase.AllOutfits.Max((Outfit o) => o.uniqueId) + 1);
-                    outfit = new Outfit(uniqueId, "Tenants".Translate());
-                    outfit.filter.SetAllow(ThingCategoryDefOf.Apparel, allow: true);
-                    Current.Game.outfitDatabase.AllOutfits.Add(outfit);
-                }
-                pawn.outfits.CurrentOutfit = outfit;
-                if (tenantComp.ContractEndDate == 0) {
-                    tenantComp.Reset();
-                }
-                if (tenantComp.IsTerminated) {
-                    if (!pawn.health.Downed) {
-                        Messages.Message("ContractTerminateFail".Translate(), MessageTypeDefOf.NeutralEvent);
-                    }
-                    else {
-                        Utility.TenantCancelContract(pawn);
-                    }
-                    tenantComp.IsTerminated = false;
-                }
-                Pawn colonist = pawn.Map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false);
-                if (colonist == null) {
-                    Utility.ContractConclusion(pawn, true, 1f);
-                }
-                long ageBiologicalTicksInt = Traverse.Create(__instance).Field("ageBiologicalTicksInt").GetValue<long>();
-                if (ageBiologicalTicksInt % 6000 == 0) {
-                    if (pawn.needs.mood.CurInstantLevel > 0.8f) {
-                        Utility.TenantWantToJoin(pawn);
-                    }
-                    if (pawn.needs.mood.CurInstantLevel > 0.66f) {
-                        tenantComp.HappyMoodCount++;
-                        tenantComp.RecentBadMoodsCount = 0;
-                    }
-                    else if (pawn.needs.mood.CurInstantLevel < pawn.mindState.mentalBreaker.BreakThresholdMinor) {
-                        tenantComp.SadMoodCount++;
-                        tenantComp.RecentBadMoodsCount++;
-                        if (tenantComp.RecentBadMoodsCount > 5) {
-                            Utility.ContractConclusion(pawn, true);
-                        }
-                    }
-                    else {
-                        tenantComp.NeutralMoodCount++;
-                        tenantComp.RecentBadMoodsCount = 0;
-                    }
-                }
-                if (Find.TickManager.TicksGame >= tenantComp.ContractEndTick) {
-                    Utility.ContractConclusion(pawn, false);
-                }
-            }
         }
         public static void CapturedBy_PreFix(Pawn_GuestTracker __instance, Faction by, Pawn byPawn) {
             Pawn pawn = Traverse.Create(__instance).Field("pawn").GetValue<Pawn>();
@@ -149,7 +158,7 @@ namespace Tenants {
         public static void Kill_PreFix(Pawn __instance, DamageInfo? dinfo) {
             Tenant tenantComp = __instance.GetTenantComponent();
             if (tenantComp != null)
-                if ((tenantComp.IsTenant && __instance.IsColonist) || tenantComp.WasTenant) {
+                if ((tenantComp.IsTenant) || tenantComp.WasTenant) {
                     tenantComp.IsTenant = false;
                     tenantComp.WasTenant = false;
                     __instance.SetFaction(Faction.OfAncients);
@@ -162,12 +171,34 @@ namespace Tenants {
                     Utility.TenantDeath(__instance);
                 }
         }
+        public static void InspirationCanOccur_PostFix(Pawn pawn, bool __result) {
+            Tenant tenantComp = pawn.GetTenantComponent();
+            if (tenantComp != null)
+                if (tenantComp.IsTenant) {
+                    __result = false;
+                }
+        }
+        #endregion Functionality
+        #region GUI
+        [HarmonyPriority(Priority.Low)]
+        public static void TenantGetGizmos_PostFix(ref IEnumerable<Gizmo> __result, ref Pawn __instance) {
+            if (__instance != null) {
+                Tenant tenantComp = __instance.GetTenantComponent();
+                if (tenantComp != null && tenantComp.IsTenant && __result != null) {
+                    List<Gizmo> gizmos = __result.ToList();
+                    if (gizmos != null) {
+                        foreach (Gizmo giz in gizmos.ToList()) {
+                            if ((giz as Command).defaultLabel == "Draft")
+                                gizmos.Remove(giz);
+                        }
+                        __result = gizmos.AsEnumerable();
+                    }
+                }
+            }
+        }
         public static bool PawnCanUseWorkGiver_PreFix(Pawn pawn, WorkGiver giver) {
             Tenant tenantComp = pawn.GetTenantComponent();
             if (tenantComp != null && tenantComp.IsTenant && pawn.IsColonist) {
-                if (SettingsHelper.LatestVersion.WorkIsDirty) {
-                    Utility.UpdateTenantsWork();
-                }
                 if (pawn.needs.mood.CurLevel > SettingsHelper.LatestVersion.LevelOfHappinessToWork / 100f || Utility.EmergencyWork(giver)) {
                     return true;
                 }
@@ -261,6 +292,6 @@ namespace Tenants {
                 __result = list.AsEnumerable();
             }
         }
-
+        #endregion GUI
     }
 }

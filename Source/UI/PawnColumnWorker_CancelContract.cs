@@ -14,11 +14,11 @@ namespace Tenants {
             return "TerminateTip".Translate();
         }
         protected override bool GetValue(Pawn pawn) {
-            return !pawn.GetTenantComponent().IsTenant;
+            return pawn.GetTenantComponent().IsTerminated;
         }
 
         protected override void SetValue(Pawn pawn, bool value) {
-            pawn.GetTenantComponent().IsTerminated = true;
+            pawn.GetTenantComponent().IsTerminated = value;
         }
     }
 }

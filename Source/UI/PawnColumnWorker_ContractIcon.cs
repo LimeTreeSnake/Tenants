@@ -22,7 +22,7 @@ namespace Tenants {
             string b = "ContractPayment".Translate(tenantComp.Payment * tenantComp.ContractLength / 60000);
             string c = "ContractLength".Translate(tenantComp.ContractLength / 60000);
             string d = "ContractDaily".Translate(tenantComp.Payment);
-            return a + " | " + b + " | " + c + " | " + d;
+            return a + " \n " + b + " \n " + c + " \n " + d;
 
         }
     }

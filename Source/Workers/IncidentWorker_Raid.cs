@@ -10,37 +10,47 @@ namespace Tenants {
             return "Retribution".Translate();
         }
         protected override string GetLetterText(IncidentParms parms, List<Pawn> pawns) {
-            Pawn related = pawns[pawns.Count - 1];
-            if (MapComponent_Tenants.GetComponent(related.Map).CapturedTenantsToAvenge.Count > 0) {
-                Pawn dead = MapComponent_Tenants.GetComponent(related.Map).DeadTenantsToAvenge[0];
-                if (dead.ageTracker.AgeBiologicalYears > 25) {
-                    related.relations.AddDirectRelation(PawnRelationDefOf.Parent, dead);
+            try {
+                Pawn related = pawns[pawns.Count - 1];
+                if (MapComponent_Tenants.GetComponent(related.Map).DeadTenantsToAvenge.Count > 0) {
+                    Pawn dead = MapComponent_Tenants.GetComponent(related.Map).DeadTenantsToAvenge[0];
+                    Log.Message("2");
+                    if (dead.ageTracker.AgeBiologicalYears > 25) {
+                        related.relations.AddDirectRelation(PawnRelationDefOf.Parent, dead);
+                    }
+                    else {
+                        dead.relations.AddDirectRelation(PawnRelationDefOf.Parent, related);
+                    }
+                    Log.Message("3");
+                    string str = string.Format(parms.raidArrivalMode.textEnemy, parms.faction.def.pawnsPlural, parms.faction.Name);
+                    str += "\n\n";
+                    str += "TenantDeathRetribution".Translate(related.GetRelations(dead).FirstOrDefault().GetGenderSpecificLabel(dead), related.Named("PAWN"));
+                    Pawn pawn = pawns.Find((Pawn x) => x.Faction.leader == x);
+                    if (pawn != null) {
+                        str += "\n\n";
+                        str += "EnemyRaidLeaderPresent".Translate(pawn.Faction.def.pawnsPlural, pawn.LabelShort, pawn.Named("LEADER"));
+                    }
+                    Log.Message("4");
+                    MapComponent_Tenants.GetComponent(pawns[0].Map).DeadTenantsToAvenge.Remove(dead);
+                    Log.Message("5");
+                    return str;
                 }
                 else {
-                    dead.relations.AddDirectRelation(PawnRelationDefOf.Parent, related);
-                }
-                string str = string.Format(parms.raidArrivalMode.textEnemy, parms.faction.def.pawnsPlural, parms.faction.Name);
-                str += "\n\n";
-                str += "TenantDeathRetribution".Translate(related.GetRelations(dead).FirstOrDefault().GetGenderSpecificLabel(dead), related.Named("PAWN"));
-                Pawn pawn = pawns.Find((Pawn x) => x.Faction.leader == x);
-                if (pawn != null) {
-                    str += "\n\n";
-                    str += "EnemyRaidLeaderPresent".Translate(pawn.Faction.def.pawnsPlural, pawn.LabelShort, pawn.Named("LEADER"));
-                }
-                MapComponent_Tenants.GetComponent(pawns[0].Map).DeadTenantsToAvenge.Remove(dead);
-                return str;
-            }
-            else {
-                string basic = string.Format(parms.raidArrivalMode.textEnemy, parms.faction.def.pawnsPlural, parms.faction.Name);
-                basic += "\n\n";
-                basic += parms.raidStrategy.arrivalTextEnemy;
-                Pawn leader = pawns.Find((Pawn x) => x.Faction.leader == x);
-                if (leader != null) {
+                    string basic = string.Format(parms.raidArrivalMode.textEnemy, parms.faction.def.pawnsPlural, parms.faction.Name);
                     basic += "\n\n";
-                    basic += "EnemyRaidLeaderPresent".Translate(leader.Faction.def.pawnsPlural, leader.LabelShort, leader.Named("LEADER"));
+                    basic += parms.raidStrategy.arrivalTextEnemy;
+                    Pawn leader = pawns.Find((Pawn x) => x.Faction.leader == x);
+                    if (leader != null) {
+                        basic += "\n\n";
+                        basic += "EnemyRaidLeaderPresent".Translate(leader.Faction.def.pawnsPlural, leader.LabelShort, leader.Named("LEADER"));
+                    }
+                    return basic;
                 }
-                return basic;
             }
+            catch (System.Exception) {
+                return Utility.NewBasicRaidMessage(parms, pawns);
+            }
+
         }
     }
     public class IncidentWorker_RetributionForCaptured : IncidentWorker_RaidEnemy {
@@ -49,8 +59,8 @@ namespace Tenants {
             return "Retribution".Translate();
         }
         protected override string GetLetterText(IncidentParms parms, List<Pawn> pawns) {
-            Pawn related = pawns[pawns.Count - 1];
-            if (MapComponent_Tenants.GetComponent(related.Map).CapturedTenantsToAvenge.Count > 0) {
+            try {
+                Pawn related = pawns[pawns.Count - 1];
                 Pawn captured = MapComponent_Tenants.GetComponent(related.Map).CapturedTenantsToAvenge[0];
 
                 if (captured.ageTracker.AgeBiologicalYears > 25) {
@@ -70,16 +80,8 @@ namespace Tenants {
                 MapComponent_Tenants.GetComponent(pawns[0].Map).CapturedTenantsToAvenge.Remove(captured);
                 return str;
             }
-            else {
-                string basic = string.Format(parms.raidArrivalMode.textEnemy, parms.faction.def.pawnsPlural, parms.faction.Name);
-                basic += "\n\n";
-                basic += parms.raidStrategy.arrivalTextEnemy;
-                Pawn leader = pawns.Find((Pawn x) => x.Faction.leader == x);
-                if (leader != null) {
-                    basic += "\n\n";
-                    basic += "EnemyRaidLeaderPresent".Translate(leader.Faction.def.pawnsPlural, leader.LabelShort, leader.Named("LEADER"));
-                }
-                return basic;
+            catch (System.Exception) {
+                return Utility.NewBasicRaidMessage(parms, pawns);
             }
         }
     }

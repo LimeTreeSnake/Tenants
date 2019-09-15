@@ -9,22 +9,24 @@ namespace Tenants {
         private bool mayJoin = false;
         private bool autoRenew = false;
         private bool paid = false;
+        private bool contracted = false;
+        private bool mayFirefight = false;
+        private bool mayBasic = false;
+        private bool mayHaul = false;
+        private bool mayClean = false;
+
         private int contractLength;
         private int contractDate;
         private int contractEndDate;
         private int workCooldown;
         private int recentBadMoodCount, happyMoodCount, sadMoodCount, neutralMoodCount;
-
         private int payment;
+        private int surgeryQueue;
         #endregion Fields
         #region Properties
         public bool IsTenant {
             get { return isTenant; }
             set { isTenant = value; }
-        }
-        public bool Paid {
-            get { return paid; }
-            set { paid = value; }
         }
         public bool IsTerminated {
             get { return isTerminated; }
@@ -42,6 +44,31 @@ namespace Tenants {
             get { return autoRenew; }
             set { autoRenew = value; }
         }
+        public bool Paid {
+            get { return paid; }
+            set { paid = value; }
+        }
+        public bool Contracted {
+            get { return contracted; }
+            set { contracted = value; }
+        }
+        public bool MayFirefight {
+            get { return mayFirefight; }
+            set { mayFirefight = value; }
+        }
+        public bool MayBasic {
+            get { return mayBasic; }
+            set { mayBasic = value; }
+        }
+        public bool MayHaul {
+            get { return mayHaul; }
+            set { mayHaul = value; }
+        }
+        public bool MayClean {
+            get { return mayClean; }
+            set { mayClean = value; }
+        }
+
         public int ContractLength {
             get { return contractLength; }
             set { contractLength = value; }
@@ -81,26 +108,56 @@ namespace Tenants {
             get { return payment; }
             set { payment = value; }
         }
+        public int SurgeryQueue {
+            get { return surgeryQueue; }
+            set { surgeryQueue = value; }
+        }
         #endregion Properties
 
         #region Methods
+        /// <summary>
+        /// Used to reset tenant mood.
+        /// </summary>
         public void ResetMood() {
             recentBadMoodCount = 0;
             happyMoodCount = 0;
             sadMoodCount = 0;
             neutralMoodCount = 0;
         }
-        public void Reset() {
+        /// <summary>
+        /// Used when a Tenant should no longer be a tenant.
+        /// </summary>
+        public void ResetTenancy() {
             isTenant = false;
             isTerminated = false;
             wasTenant = false;
             mayJoin = false;
             autoRenew = false;
             paid = false;
+            contracted = false;
+            mayFirefight = false;
+            mayBasic = false;
+            mayHaul = false;
+            mayClean = false;
             contractLength = 0;
             contractDate = 0;
             contractEndDate = 0;
             workCooldown = 0;
+            payment = 0;
+            surgeryQueue = 0;
+            ResetMood();
+        }
+        /// <summary>
+        /// Used when a Tenant should leave.
+        /// </summary>
+        public void CleanTenancy() {
+            contracted = false;
+            contractLength = 0;
+            contractDate = 0;
+            contractEndDate = 0;
+            workCooldown = 0;
+            payment = 0;
+            surgeryQueue = 0;
             ResetMood();
         }
         public override void PostExposeData() {
@@ -110,6 +167,11 @@ namespace Tenants {
             Scribe_Values.Look(ref mayJoin, "MayJoin");
             Scribe_Values.Look(ref autoRenew, "AutoRenew");
             Scribe_Values.Look(ref paid, "Paid");
+            Scribe_Values.Look(ref contracted, "Contracted");
+            Scribe_Values.Look(ref mayFirefight, "MayFirefight");
+            Scribe_Values.Look(ref mayBasic, "MayBasic");
+            Scribe_Values.Look(ref mayHaul, "MayHaul");
+            Scribe_Values.Look(ref mayClean, "MayClean");
             Scribe_Values.Look(ref contractLength, "ContractLength");
             Scribe_Values.Look(ref contractDate, "ContractDate");
             Scribe_Values.Look(ref contractEndDate, "ContractEndDate");
@@ -119,6 +181,7 @@ namespace Tenants {
             Scribe_Values.Look(ref sadMoodCount, "SadMoodCount");
             Scribe_Values.Look(ref neutralMoodCount, "NeutralMoodCount");
             Scribe_Values.Look(ref payment, "Payment");
+            Scribe_Values.Look(ref surgeryQueue, "SurgeryQueue");
         }
         #endregion Methods
     }
