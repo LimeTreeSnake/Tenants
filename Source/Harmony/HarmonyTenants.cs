@@ -99,12 +99,14 @@ namespace Tenants {
                     tenantComp.ResetTenancy();
                 }
                 else {
-                    Pawn colonist = __instance.Map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false);
+                    Pawn colonist = __instance.Map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false);                    
                     if (colonist == null) {
                         Utility.ContractConclusion(__instance, true, 1f);
                     }
-                    long ageBiologicalTicksInt = Traverse.Create(__instance).Field("ageBiologicalTicksInt").GetValue<long>();
-                    if (ageBiologicalTicksInt % 6000 == 0) {
+                    else if (Find.TickManager.TicksGame >= tenantComp.ContractEndTick) {
+                        Utility.ContractConclusion(__instance, false);
+                    }
+                    else if (Find.TickManager.TicksGame % 6000 == 0) {
                         if (__instance.needs.mood.CurInstantLevel > 0.8f) {
                             Utility.TenantWantToJoin(__instance);
                         }
@@ -123,9 +125,6 @@ namespace Tenants {
                             tenantComp.NeutralMoodCount++;
                             tenantComp.RecentBadMoodsCount = 0;
                         }
-                    }
-                    if (Find.TickManager.TicksGame >= tenantComp.ContractEndTick) {
-                        Utility.ContractConclusion(__instance, false);
                     }
                 }
             }
