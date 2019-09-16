@@ -161,6 +161,7 @@ namespace Tenants {
                                     newTenant.kindDef.apparelMoney = new FloatRange(SettingsHelper.LatestVersion.SimpleClothingMin, SettingsHelper.LatestVersion.SimpleClothingMax);
                                     PawnApparelGenerator.GenerateStartingApparelFor(newTenant, request);
                                     newTenant.kindDef.apparelMoney = range;
+                                    newTenant.kindDef.label = "Tenant".Translate();
                                 }
                                 newTenant.GetTenantComponent().IsTenant = true;
                                 pawns.Add(newTenant);
@@ -236,7 +237,8 @@ namespace Tenants {
             pawn.jobs.ClearQueuedJobs();
             pawn.SetFaction(Faction.OfAncients);
             pawn.GetTenantComponent().CleanTenancy();
-            Lord lord = LordMaker.MakeNewLord(pawn.Faction, new LordJob_ExitMapBest(), pawn.Map, new List<Pawn> { pawn });
+            LordMaker.MakeNewLord(pawn.Faction, new LordJob_ExitMapBest(), pawn.Map, new List<Pawn> { pawn });
+            
         }
         public static void TenantCancelContract(Pawn pawn) {
             Messages.Message("ContractDonePlayerTerminated".Translate(pawn.Named("PAWN")), MessageTypeDefOf.NeutralEvent);
@@ -407,7 +409,7 @@ namespace Tenants {
         public static void SpawnPayment(Pawn pawn) {
             Tenant tenantComp = pawn.GetTenantComponent();
             if (tenantComp.Paid == false) {
-                DebugThingPlaceHelper.DebugSpawn(ThingDefOf.Silver, pawn.Position, tenantComp.ContractLength / 60000 * tenantComp.Payment);
+                DebugThingPlaceHelper.DebugSpawn(ThingDefOf.Silver, pawn.Position, (tenantComp.ContractLength / 60000) * tenantComp.Payment);
                 tenantComp.Paid = true;
             }
         }

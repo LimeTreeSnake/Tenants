@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
+	<TenantTurnedColonist>Colonist</TenantTurnedColonist>
+	<Tenant>Tenant</Tenant>
 	<Tenants>Tenants</Tenants>
 	<FireFighting>FireFight</FireFighting>
 	<FireFightingTip>Whether a tenant should help with fighting fires.</FireFightingTip>
@@ -13,4 +15,8 @@
 	<Cleaning>Clean</Cleaning>
 	<CleaningTip>Whether a tenant should help with cleaning.</CleaningTip>
 	<CleaningError>{PAWN_nameDef} won't clean!</CleaningError>
+	
+	
+	<TenantSad>{0} tenants sad.</TenantSad>
+	<TenantSadDesc>These tenants are sad:\n\n{0}\nYou should probably look into this matter.</TenantSadDesc>
 </LanguageData>

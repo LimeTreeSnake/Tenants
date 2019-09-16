@@ -97,6 +97,7 @@ namespace Tenants {
 
                 if (!tenantComp.Contracted) {
                     tenantComp.ResetTenancy();
+                    __instance.kindDef.label = "TenantTurnedColonist".Translate();
                 }
                 else {
                     Pawn colonist = __instance.Map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false);                    
