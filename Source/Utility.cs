@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using Harmony;
+using RimWorld;
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
@@ -57,7 +58,6 @@ namespace Tenants {
                     string letterText = "ContractDoneTerminated".Translate(tenantComp.Payment * tenantComp.ContractLength / 60000, pawn.Named("PAWN"));
                     Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.NeutralEvent);
                     TenantLeave(pawn);
-                    SpawnPayment(pawn);
                 }
                 else {
                     string letterLabel = "ContractBreach".Translate();
@@ -86,7 +86,6 @@ namespace Tenants {
                     Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.NeutralEvent);
                     ContractProlong(pawn, SettingsHelper.LatestVersion.StayChanceNeutral / 100f);
                 }
-                SpawnPayment(pawn);
             }
         }
         public static void ContractProlong(Pawn pawn, float chance) {
@@ -96,7 +95,6 @@ namespace Tenants {
                     tenantComp.ContractDate = Find.TickManager.TicksGame;
                     tenantComp.ContractEndDate = Find.TickManager.TicksAbs + tenantComp.ContractLength + 60000;
                     tenantComp.ResetMood();
-                    tenantComp.Paid = false;
 
                     string letterLabel = "ContractNew".Translate();
                     string letterText = "ContractRenewedMessage".Translate(pawn.Named("PAWN"));
@@ -108,10 +106,10 @@ namespace Tenants {
                 //Accepted offer.
                 DiaOption diaOption = new DiaOption("ContractAgree".Translate()) {
                     action = delegate {
+                        SpawnPayment(pawn);
                         tenantComp.ContractDate = Find.TickManager.TicksGame;
                         tenantComp.ContractEndDate = Find.TickManager.TicksAbs + tenantComp.ContractLength + 60000;
                         tenantComp.ResetMood();
-                        tenantComp.Paid = false;
                     },
                     resolveTree = true,
                 };
@@ -161,7 +159,9 @@ namespace Tenants {
                                     newTenant.kindDef.apparelMoney = new FloatRange(SettingsHelper.LatestVersion.SimpleClothingMin, SettingsHelper.LatestVersion.SimpleClothingMax);
                                     PawnApparelGenerator.GenerateStartingApparelFor(newTenant, request);
                                     newTenant.kindDef.apparelMoney = range;
-                                    newTenant.kindDef.label = "Tenant".Translate();
+                                    if (newTenant.kindDef.label == "Tenant") {
+                                        newTenant.kindDef.label = "Colonist";
+                                    }
                                 }
                                 newTenant.GetTenantComponent().IsTenant = true;
                                 pawns.Add(newTenant);
@@ -176,11 +176,11 @@ namespace Tenants {
             pawn.relations.everSeenByPlayer = true;
             Tenant tenantComp = pawn.TryGetComp<Tenant>();
 
-            tenantComp.Payment = Rand.Range(SettingsHelper.LatestVersion.MinDailyCost, SettingsHelper.LatestVersion.MaxDailyCost); tenantComp.ContractLength = Rand.Range(SettingsHelper.LatestVersion.MinContractTime, SettingsHelper.LatestVersion.MaxContractTime) * 60000;
+            tenantComp.Payment = Rand.Range(SettingsHelper.LatestVersion.MinDailyCost, SettingsHelper.LatestVersion.MaxDailyCost);
+            tenantComp.ContractLength = Rand.Range(SettingsHelper.LatestVersion.MinContractTime, SettingsHelper.LatestVersion.MaxContractTime) * 60000;
             tenantComp.ContractDate = Find.TickManager.TicksGame;
             tenantComp.ContractEndDate = Find.TickManager.TicksAbs + tenantComp.ContractLength + 60000;
             tenantComp.ResetMood();
-            tenantComp.Paid = false;
 
             //Generates event
             bool broadcasted = MapComponent_Tenants.GetComponent(map).Broadcast;
@@ -196,8 +196,7 @@ namespace Tenants {
                     GenSpawn.Spawn(pawn, spawnSpot, map);
                     pawn.needs.SetInitialLevels();
                     pawn.playerSettings.AreaRestriction = map.areaManager.Home;
-                    UpdateOutfitManagement(pawn);
-                    UpdateTenantWork(pawn);
+                    UpdateAllRestrictions(pawn);
                     TraitDef nightOwl = DefDatabase<TraitDef>.GetNamedSilentFail("NightOwl");
                     if (nightOwl != null && pawn.story.traits.HasTrait(nightOwl)) {
                         UpdateTenantNightOwl(pawn);
@@ -222,8 +221,7 @@ namespace Tenants {
                 action = delegate {
                     if (!Find.WorldPawns.Contains(pawn))
                         Find.WorldPawns.PassToWorld(pawn);
-                    tenantComp.Payment = 0;
-                    tenantComp.ContractLength = 0;
+                    tenantComp.CleanTenancy();
                 },
                 link = diaNode2
             };
@@ -234,11 +232,12 @@ namespace Tenants {
             return true;
         }
         public static void TenantLeave(Pawn pawn) {
+            SpawnPayment(pawn);
             pawn.jobs.ClearQueuedJobs();
             pawn.SetFaction(Faction.OfAncients);
             pawn.GetTenantComponent().CleanTenancy();
             LordMaker.MakeNewLord(pawn.Faction, new LordJob_ExitMapBest(), pawn.Map, new List<Pawn> { pawn });
-            
+
         }
         public static void TenantCancelContract(Pawn pawn) {
             Messages.Message("ContractDonePlayerTerminated".Translate(pawn.Named("PAWN")), MessageTypeDefOf.NeutralEvent);
@@ -280,9 +279,9 @@ namespace Tenants {
                 DiaNode diaNode = new DiaNode(text);
                 DiaOption diaOption = new DiaOption("ContractAgree".Translate()) {
                     action = delegate {
+                        SpawnPayment(pawn);
                         tenant.IsTenant = false;
                         Messages.Message("ContractDone".Translate(pawn.Name.ToStringFull, tenant.Payment * tenant.ContractLength / 60000, pawn.Named("PAWN")), MessageTypeDefOf.PositiveEvent);
-                        SpawnPayment(pawn);
                         Find.ColonistBar.MarkColonistsDirty();
                     },
                     resolveTree = true,
@@ -297,7 +296,6 @@ namespace Tenants {
                 diaNode2.options.Add(diaOption2);
                 DiaOption diaOption3 = new DiaOption("ContractReject".Translate()) {
                     action = delegate {
-
                     },
                     link = diaNode2
                 };
@@ -358,6 +356,13 @@ namespace Tenants {
             }
             return false;
         }
+        public static void UpdateAllRestrictions(Pawn pawn) {
+            UpdateTenantWork(pawn);
+            UpdateOutfitManagement(pawn);
+            UpdateAreaManagement(pawn);
+            UpdateFoodManagement(pawn);
+            UpdateDrugManagement(pawn);
+        }
         public static void UpdateTenantWork(Pawn pawn) {
             Tenant tenantComp = pawn.GetTenantComponent();
             foreach (WorkTypeDef def in DefDatabase<WorkTypeDef>.AllDefs) {
@@ -389,15 +394,44 @@ namespace Tenants {
             }
         }
         public static void UpdateOutfitManagement(Pawn pawn) {
-            Outfit outfit = Current.Game.outfitDatabase.AllOutfits.FirstOrDefault(x => x.label == "Tenants".Translate());
-            if (outfit == null) {
+            Outfit restriction = Current.Game.outfitDatabase.AllOutfits.FirstOrDefault(x => x.label == "Tenants".Translate());
+            if (restriction == null) {
                 int uniqueId = (!Current.Game.outfitDatabase.AllOutfits.Any()) ? 1 : (Current.Game.outfitDatabase.AllOutfits.Max((Outfit o) => o.uniqueId) + 1);
-                outfit = new Outfit(uniqueId, "Tenants".Translate());
+                restriction = new Outfit(uniqueId, "Tenants".Translate());
                 //List<ThingDef> forbidden = DefDatabase<ThingDef>.AllDefs.Where(x=> !x.defName.Contains("Armor") && x.thingCategories.Contains(ThingCategoryDefOf.Apparel)).ToList();
-                outfit.filter.SetAllow(ThingCategoryDefOf.Apparel, allow: true);
-                Current.Game.outfitDatabase.AllOutfits.Add(outfit);
+                restriction.filter.SetAllow(ThingCategoryDefOf.Apparel, allow: true);
+                Current.Game.outfitDatabase.AllOutfits.Add(restriction);
             }
-            pawn.outfits.CurrentOutfit = outfit;
+            pawn.outfits.CurrentOutfit = restriction;
+        }
+        public static void UpdateAreaManagement(Pawn pawn) {
+            Area restriction = pawn.Map.areaManager.AllAreas.FirstOrDefault(x => x.Label == "Tenants".Translate());
+            if (restriction == null) {
+                restriction = new Area_Allowed(pawn.Map.areaManager, "Tenants");
+                Traverse.Create(restriction).Field("colorInt").SetValue(SettingsHelper.LatestVersion.Color);
+                pawn.Map.areaManager.AllAreas.Add(restriction);
+            }
+            pawn.MapHeld.uniqueID = restriction.ID;
+        }
+        public static void UpdateFoodManagement(Pawn pawn) {
+            FoodRestriction restriction = Current.Game.foodRestrictionDatabase.AllFoodRestrictions.FirstOrDefault(x => x.label == "Tenants".Translate());
+            if (restriction == null) {
+                int uniqueId = (!Current.Game.foodRestrictionDatabase.AllFoodRestrictions.Any()) ? 1 : (Current.Game.foodRestrictionDatabase.AllFoodRestrictions.Max((FoodRestriction o) => o.id) + 1);
+                restriction = new FoodRestriction(uniqueId, "Tenants".Translate());
+                restriction.filter.SetAllow(ThingCategoryDefOf.FoodMeals, allow: true);
+                restriction.filter.SetAllow(ThingCategoryDefOf.Foods, allow: true);
+                Current.Game.foodRestrictionDatabase.AllFoodRestrictions.Add(restriction);
+            }
+            pawn.foodRestriction.CurrentFoodRestriction = restriction;
+        }
+        public static void UpdateDrugManagement(Pawn pawn) {
+            DrugPolicy restriction = Current.Game.drugPolicyDatabase.AllPolicies.FirstOrDefault(x => x.label == "Tenants".Translate());
+            if (restriction == null) {
+                int uniqueId = (!Current.Game.drugPolicyDatabase.AllPolicies.Any()) ? 1 : (Current.Game.drugPolicyDatabase.AllPolicies.Max((DrugPolicy o) => o.uniqueId) + 1);
+                restriction = new DrugPolicy(uniqueId, "Tenants".Translate());
+                Current.Game.drugPolicyDatabase.AllPolicies.Add(restriction);
+            }
+            pawn.drugs.CurrentPolicy = restriction;
         }
         public static void UpdateTenantNightOwl(Pawn pawn) {
             pawn.timetable.times = new List<TimeAssignmentDef>(24);
@@ -408,11 +442,14 @@ namespace Tenants {
         }
         public static void SpawnPayment(Pawn pawn) {
             Tenant tenantComp = pawn.GetTenantComponent();
-            if (tenantComp.Paid == false) {
-                DebugThingPlaceHelper.DebugSpawn(ThingDefOf.Silver, pawn.Position, (tenantComp.ContractLength / 60000) * tenantComp.Payment);
-                tenantComp.Paid = true;
+            Thing thing = ThingMaker.MakeThing(ThingDefOf.Silver);
+            thing.stackCount = tenantComp.Payment * (tenantComp.ContractLength / 60000);
+            pawn.inventory.innerContainer.TryAdd(thing);
+            while (pawn.inventory.Contains(thing)) {
+                pawn.inventory.innerContainer.TryDrop(thing, ThingPlaceMode.Near, out Thing silver);
             }
         }
+
 
         public static string AppendPawnDescription(string text, Pawn pawn) {
             StringBuilder stringBuilder = new StringBuilder(text);

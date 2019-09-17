@@ -8,7 +8,6 @@ namespace Tenants {
         private bool wasTenant = false;
         private bool mayJoin = false;
         private bool autoRenew = false;
-        private bool paid = false;
         private bool contracted = false;
         private bool mayFirefight = false;
         private bool mayBasic = false;
@@ -44,10 +43,7 @@ namespace Tenants {
             get { return autoRenew; }
             set { autoRenew = value; }
         }
-        public bool Paid {
-            get { return paid; }
-            set { paid = value; }
-        }
+
         public bool Contracted {
             get { return contracted; }
             set { contracted = value; }
@@ -133,7 +129,6 @@ namespace Tenants {
             wasTenant = false;
             mayJoin = false;
             autoRenew = false;
-            paid = false;
             contracted = false;
             mayFirefight = false;
             mayBasic = false;
@@ -166,7 +161,6 @@ namespace Tenants {
             Scribe_Values.Look(ref wasTenant, "WasTenant");
             Scribe_Values.Look(ref mayJoin, "MayJoin");
             Scribe_Values.Look(ref autoRenew, "AutoRenew");
-            Scribe_Values.Look(ref paid, "Paid");
             Scribe_Values.Look(ref contracted, "Contracted");
             Scribe_Values.Look(ref mayFirefight, "MayFirefight");
             Scribe_Values.Look(ref mayBasic, "MayBasic");
