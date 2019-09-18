@@ -455,7 +455,7 @@ namespace Tenants {
             StringBuilder stringBuilder = new StringBuilder(text);
             stringBuilder.AppendLine();
             stringBuilder.AppendLine();
-            stringBuilder.Append("TenantDescription".Translate(pawn.ageTracker.AgeBiologicalYears, pawn.def.defName, pawn.Named("PAWN")));
+            stringBuilder.Append("TenantDescription".Translate(pawn.ageTracker.AgeBiologicalYears, pawn.def.label, pawn.Named("PAWN")));
             stringBuilder.AppendLine();
             stringBuilder.Append("Traits".Translate() + ": ");
             if (pawn.story.traits.allTraits.Count == 0) {
