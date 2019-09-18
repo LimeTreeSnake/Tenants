@@ -407,11 +407,11 @@ namespace Tenants {
         public static void UpdateAreaManagement(Pawn pawn) {
             Area restriction = pawn.Map.areaManager.AllAreas.FirstOrDefault(x => x.Label == "Tenants".Translate());
             if (restriction == null) {
-                restriction = new Area_Allowed(pawn.Map.areaManager, "Tenants");
-                Traverse.Create(restriction).Field("colorInt").SetValue(SettingsHelper.LatestVersion.Color);
-                pawn.Map.areaManager.AllAreas.Add(restriction);
+                //restriction = new Area_Allowed(pawn.Map.areaManager, "Tenants");
+                //Traverse.Create(restriction).Field("colorInt").SetValue(SettingsHelper.LatestVersion.Color);
+                //pawn.Map.areaManager.AllAreas.Add(restriction);
+                pawn.MapHeld.uniqueID = restriction.ID;
             }
-            pawn.MapHeld.uniqueID = restriction.ID;
         }
         public static void UpdateFoodManagement(Pawn pawn) {
             FoodRestriction restriction = Current.Game.foodRestrictionDatabase.AllFoodRestrictions.FirstOrDefault(x => x.label == "Tenants".Translate());
