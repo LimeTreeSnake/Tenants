@@ -1,14 +1,3 @@
-﻿High Priority:
+﻿Turn tenant into factions for future events.
 
-Med priority:
-Tenant clothing restriction instant
-New clothes -> new buff
-Quality of service demands -> more silver and happiness
-Moles (Raider tenants)Gifts
-
-
-Low priority:
-With Psychology, tenants run for mayor.
-Payment for treatment?
-Tweak colonists count for raiding option and colony limit.
-
+TEnant bring pets, avenge should dead

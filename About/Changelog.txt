@@ -1,0 +1,3 @@
+2019-09-19
+-Added check to see if tenant is spawned before deciding to do a retribution.
+-Removed a faulty label upon tenant not having a contract.

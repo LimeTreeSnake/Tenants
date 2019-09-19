@@ -97,7 +97,6 @@ namespace Tenants {
 
                 if (!tenantComp.Contracted) {
                     tenantComp.ResetTenancy();
-                    __instance.kindDef.label = "TenantTurnedColonist".Translate();
                 }
                 else {
                     Pawn colonist = __instance.Map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false);                    
@@ -158,7 +157,7 @@ namespace Tenants {
         public static void Kill_PreFix(Pawn __instance, DamageInfo? dinfo) {
             Tenant tenantComp = __instance.GetTenantComponent();
             if (tenantComp != null)
-                if ((tenantComp.IsTenant) || tenantComp.WasTenant) {
+                if (((tenantComp.IsTenant) || tenantComp.WasTenant)&& __instance.Spawned) {
                     tenantComp.IsTenant = false;
                     tenantComp.WasTenant = false;
                     __instance.SetFaction(Faction.OfAncients);
