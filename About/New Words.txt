@@ -1,0 +1,7 @@
+GUI.xml
+<TenantMood></TenantMood> 
+
+Incidents.xml
+<Mole></Mole>
+<TenantMoles></TenantMoles>
+<TenantMoleMessage></TenantMoleMessage>

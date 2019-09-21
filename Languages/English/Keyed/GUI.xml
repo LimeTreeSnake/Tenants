@@ -17,6 +17,7 @@
 	<CleaningError>{PAWN_nameDef} won't clean!</CleaningError>
 	
 	
+	<TenantMood>Mood</TenantMood>
 	<TenantSad>{0} tenants sad.</TenantSad>
 	<TenantSadDesc>These tenants are sad:\n\n{0}\nYou should probably look into this matter.</TenantSadDesc>
 </LanguageData>

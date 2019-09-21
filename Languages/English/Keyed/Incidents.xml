@@ -2,14 +2,14 @@
 <LanguageData>
 
 	<Captured>Captured</Captured>
-	<TenantCaptured>You've captured {PAWN_nameDef}!\n\n Watch out as you might earn the ire of {PAWN_nameDef}'s friends and relatives.</TenantCaptured>
-	
-	<TenantCapturedRetribution>Hello, My name is {PAWN_nameDef}, you disrespected my {0}. Prepare to die.</TenantCapturedRetribution>
 	<Retribution>Retribution</Retribution>
-	
+	<Opportunists>Opportunists</Opportunists>
+	<Mole>Mole</Mole>
+	<TenantCaptured>You've captured {PAWN_nameDef}!\n\n Watch out as you might earn the ire of {PAWN_nameDef}'s friends and relatives.</TenantCaptured>
+	<TenantCapturedRetribution>Hello, My name is {PAWN_nameDef}, you disrespected my {0}. Prepare to die.</TenantCapturedRetribution>
 	<TenantDeath>{PAWN_nameDef} died!\n\nYou've failed your duties as a host. Watch out as you might earn the ire of {PAWN_nameDef}'s friends and relatives.</TenantDeath>
 	<TenantDeathRetribution>Hello, My name is {PAWN_nameDef}, you killed my {0}. Prepare to die.</TenantDeathRetribution>
-	
-	<Opportunists>Opportunists</Opportunists>
 	<TenantOpportunists>A group of raiders intervened and killed the possible tenant and is now on their way here!</TenantOpportunists>
+	<TenantMoles>Raiders have arrived as per detailed instruction of a mole within your colony. Prepare your defenses!</TenantMoles>
+	<TenantMoleMessage>Someone has sent out a secret message from your colony!</TenantMoleMessage>
 </LanguageData>

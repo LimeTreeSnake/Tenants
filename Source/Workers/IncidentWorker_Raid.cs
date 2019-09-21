@@ -14,14 +14,12 @@ namespace Tenants {
                 Pawn related = pawns[pawns.Count - 1];
                 if (MapComponent_Tenants.GetComponent(related.Map).DeadTenantsToAvenge.Count > 0) {
                     Pawn dead = MapComponent_Tenants.GetComponent(related.Map).DeadTenantsToAvenge[0];
-                    Log.Message("2");
                     if (dead.ageTracker.AgeBiologicalYears > 25) {
                         related.relations.AddDirectRelation(PawnRelationDefOf.Parent, dead);
                     }
                     else {
                         dead.relations.AddDirectRelation(PawnRelationDefOf.Parent, related);
                     }
-                    Log.Message("3");
                     string str = string.Format(parms.raidArrivalMode.textEnemy, parms.faction.def.pawnsPlural, parms.faction.Name);
                     str += "\n\n";
                     str += "TenantDeathRetribution".Translate(related.GetRelations(dead).FirstOrDefault().GetGenderSpecificLabel(dead), related.Named("PAWN"));
@@ -30,9 +28,7 @@ namespace Tenants {
                         str += "\n\n";
                         str += "EnemyRaidLeaderPresent".Translate(pawn.Faction.def.pawnsPlural, pawn.LabelShort, pawn.Named("LEADER"));
                     }
-                    Log.Message("4");
                     MapComponent_Tenants.GetComponent(pawns[0].Map).DeadTenantsToAvenge.Remove(dead);
-                    Log.Message("5");
                     return str;
                 }
                 else {
@@ -83,6 +79,56 @@ namespace Tenants {
             catch (System.Exception) {
                 return Utility.NewBasicRaidMessage(parms, pawns);
             }
+        }
+    }
+
+    public class IncidentWorker_MoleRaid : IncidentWorker_RaidEnemy {
+
+        protected override string GetLetterLabel(IncidentParms parms) {
+            return "Mole".Translate();
+        }
+        protected override string GetLetterText(IncidentParms parms, List<Pawn> pawns) {
+            try {
+                Pawn related = pawns[pawns.Count - 1];
+                Pawn mole = MapComponent_Tenants.GetComponent((Map)parms.target).Moles[0];
+
+                if(Rand.Value < 0.66f) {
+                    mole.SetFaction(mole.GetTenantComponent().HiddenFaction);
+                    mole.GetTenantComponent().ResetTenancy();
+                }
+
+                string str = string.Format(parms.raidArrivalMode.textEnemy, parms.faction.def.pawnsPlural, parms.faction.Name);
+                str += "\n\n";
+                str += "TenantMoles".Translate();
+                Pawn pawn = pawns.Find((Pawn x) => x.Faction.leader == x);
+                if (pawn != null) {
+                    str += "\n\n";
+                    str += "EnemyRaidLeaderPresent".Translate(pawn.Faction.def.pawnsPlural, pawn.LabelShort, pawn.Named("LEADER"));
+                }
+                MapComponent_Tenants.GetComponent((Map)parms.target).CapturedTenantsToAvenge.Remove(mole);
+                return str;
+            }
+            catch (System.Exception) {
+                return Utility.NewBasicRaidMessage(parms, pawns);
+            }
+        }
+
+        protected override void ResolveRaidStrategy(IncidentParms parms, PawnGroupKindDef groupKind) {
+            base.ResolveRaidStrategy(parms, groupKind);
+            Pawn mole = MapComponent_Tenants.GetComponent((Map)parms.target).Moles[0];
+            if (mole.GetTenantComponent().HiddenFaction.def.techLevel >= TechLevel.Spacer && Rand.Value < 0.5f) {
+                parms.raidArrivalMode = PawnsArrivalModeDefOf.CenterDrop;
+            }
+
+        }
+        protected override bool TryResolveRaidFaction(IncidentParms parms) {
+            parms.faction = MapComponent_Tenants.GetComponent((Map)parms.target).Moles[0].GetTenantComponent().HiddenFaction;
+
+            if (FactionCanBeGroupSource(parms.faction, (Map)parms.target)) {
+                return true;
+            }
+            else
+                return false;
         }
     }
     public class IncidentWorker_Opportunists : IncidentWorker_RaidEnemy {

@@ -54,4 +54,17 @@
     <pointsScaleable>true</pointsScaleable>
     <tale>Raid</tale>
   </IncidentDef>  
+   <IncidentDef>
+	<!--Moles-->
+    <defName>MoleRaid</defName>
+    <label>Mole Raid</label>
+    <targetTags>
+      <li>Map_PlayerHome</li>
+    </targetTags>
+    <workerClass>Tenants.IncidentWorker_MoleRaid</workerClass>
+    <category>ThreatBig</category>
+    <baseChance>0</baseChance>
+    <pointsScaleable>true</pointsScaleable>
+    <tale>Raid</tale>
+  </IncidentDef>  
 </Defs>

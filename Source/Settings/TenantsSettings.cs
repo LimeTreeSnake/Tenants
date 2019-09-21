@@ -14,10 +14,10 @@ namespace Tenants {
         private static readonly float stayChanceHappy = 95F;
         private static readonly float stayChanceNeutral = 50F;
         private static readonly float stayChanceSad = 5f;
-        private static readonly bool weapons = false;
+        private static readonly bool weapons = true;
         private static readonly bool simpleClothing = true;
-        private static readonly int simpleClothingMin = 200;
-        private static readonly int simpleClothingMax = 600;
+        private static readonly int simpleClothingMin = 100;
+        private static readonly int simpleClothingMax = 300;
         private static float r = 127f, g = 63f, b = 191f;
         private static Color color = new Color(r / 255f, g / 255f, b / 255f);
         private static readonly float levelOfHappinessToWork = 70f;

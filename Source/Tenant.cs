@@ -1,4 +1,5 @@
-﻿using Verse;
+﻿using RimWorld;
+using Verse;
 
 namespace Tenants {
     public class Tenant : ThingComp {
@@ -9,6 +10,9 @@ namespace Tenants {
         private bool mayJoin = false;
         private bool autoRenew = false;
         private bool contracted = false;
+        private bool wanted = false;
+        private bool mole = false;
+        private Faction hiddenFaction;
         private bool mayFirefight = false;
         private bool mayBasic = false;
         private bool mayHaul = false;
@@ -43,10 +47,21 @@ namespace Tenants {
             get { return autoRenew; }
             set { autoRenew = value; }
         }
-
         public bool Contracted {
             get { return contracted; }
             set { contracted = value; }
+        }
+        public bool Wanted {
+            get { return wanted; }
+            set { wanted = value; }
+        }
+        public bool Mole {
+            get { return mole; }
+            set { mole = value; }
+        }
+        public Faction HiddenFaction {
+            get { return hiddenFaction; }
+            set { hiddenFaction = value; }
         }
         public bool MayFirefight {
             get { return mayFirefight; }
@@ -130,6 +145,8 @@ namespace Tenants {
             mayJoin = false;
             autoRenew = false;
             contracted = false;
+            wanted = false;
+            mole = false;
             mayFirefight = false;
             mayBasic = false;
             mayHaul = false;
@@ -147,6 +164,8 @@ namespace Tenants {
         /// </summary>
         public void CleanTenancy() {
             contracted = false;
+            wanted = false;
+            mole = false;
             contractLength = 0;
             contractDate = 0;
             contractEndDate = 0;
@@ -162,6 +181,9 @@ namespace Tenants {
             Scribe_Values.Look(ref mayJoin, "MayJoin");
             Scribe_Values.Look(ref autoRenew, "AutoRenew");
             Scribe_Values.Look(ref contracted, "Contracted");
+            Scribe_Values.Look(ref wanted, "Wanted");
+            Scribe_Values.Look(ref mole, "Mole");
+            Scribe_Values.Look(ref hiddenFaction, "HiddenFaction");
             Scribe_Values.Look(ref mayFirefight, "MayFirefight");
             Scribe_Values.Look(ref mayBasic, "MayBasic");
             Scribe_Values.Look(ref mayHaul, "MayHaul");

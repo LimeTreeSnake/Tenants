@@ -7,8 +7,8 @@
     <minPawns>2</minPawns>
     <selectionWeightPerPointsCurve>
       <points>
-        <li>(300,0)</li>
-        <li>(700,1)</li>
+        <li>(200,0)</li>
+        <li>(500,1)</li>
       </points>
     </selectionWeightPerPointsCurve>
     <pointsFactorCurve>
@@ -22,6 +22,26 @@
       <li>CenterDrop</li>
       <li>RandomDrop</li>
       <li>EdgeDropGroups</li>
+      <li>EdgeWalkInGroups</li>
+    </arriveModes>
+  </RaidStrategyDef>
+  <RaidStrategyDef>
+    <defName>MoleRaid</defName>
+    <workerClass>RaidStrategyWorker_ImmediateAttackSmart</workerClass>
+    <minPawns>2</minPawns>
+    <selectionWeightPerPointsCurve>
+      <points>
+        <li>(300,0)</li>
+        <li>(600,1)</li>
+      </points>
+    </selectionWeightPerPointsCurve>
+    <pointsFactorCurve>
+      <points>
+        <li>0, 1</li>
+      </points>
+    </pointsFactorCurve>
+    <arriveModes>
+      <li>EdgeWalkIn</li>
       <li>EdgeWalkInGroups</li>
     </arriveModes>
   </RaidStrategyDef>

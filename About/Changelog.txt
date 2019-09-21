@@ -1,3 +1,13 @@
 2019-09-19
 -Added check to see if tenant is spawned before deciding to do a retribution.
 -Removed a faulty label upon tenant not having a contract.
+
+2019-09-21
+-Lowered Raid strategy points for redemption raid.
+-Reverted code for silver spawning to debug spawning again. Stacking mods are still an issue for generation.
+-Checks for tenant retribution now make sure tenants are contracted.
+-Faulty check for inspirations made correctly.
+-Remade check for tenant table so that broken tenants are listed as well.
+-Lowered opportunist chance of spawning from 33% to 20%.
+-Remade tenant generation code to include hidden faction belonging.
+-Added new event Moles. Prevent them indefinitely by keeping tenants happy.
