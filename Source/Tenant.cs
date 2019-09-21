@@ -183,7 +183,7 @@ namespace Tenants {
             Scribe_Values.Look(ref contracted, "Contracted");
             Scribe_Values.Look(ref wanted, "Wanted");
             Scribe_Values.Look(ref mole, "Mole");
-            Scribe_Values.Look(ref hiddenFaction, "HiddenFaction");
+            Scribe_References.Look(ref hiddenFaction, "HiddenFaction");
             Scribe_Values.Look(ref mayFirefight, "MayFirefight");
             Scribe_Values.Look(ref mayBasic, "MayBasic");
             Scribe_Values.Look(ref mayHaul, "MayHaul");
