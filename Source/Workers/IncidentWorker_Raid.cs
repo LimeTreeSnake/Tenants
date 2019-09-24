@@ -91,11 +91,13 @@ namespace Tenants {
             try {
                 Pawn related = pawns[pawns.Count - 1];
                 Pawn mole = MapComponent_Tenants.GetComponent((Map)parms.target).Moles[0];
-
-                if(Rand.Value < 0.66f) {
+                Tenant tenantComp = mole.GetTenantComponent();
+                if (Rand.Value < 0.66f) {
                     mole.SetFaction(mole.GetTenantComponent().HiddenFaction);
-                    mole.GetTenantComponent().ResetTenancy();
+                    tenantComp.ResetTenancy();
                 }
+                tenantComp.MoleMessage = false;
+                tenantComp.MoleActivated = false;
 
                 string str = string.Format(parms.raidArrivalMode.textEnemy, parms.faction.def.pawnsPlural, parms.faction.Name);
                 str += "\n\n";
@@ -114,21 +116,31 @@ namespace Tenants {
         }
 
         protected override void ResolveRaidStrategy(IncidentParms parms, PawnGroupKindDef groupKind) {
-            base.ResolveRaidStrategy(parms, groupKind);
-            Pawn mole = MapComponent_Tenants.GetComponent((Map)parms.target).Moles[0];
-            if (mole.GetTenantComponent().HiddenFaction.def.techLevel >= TechLevel.Spacer && Rand.Value < 0.5f) {
-                parms.raidArrivalMode = PawnsArrivalModeDefOf.CenterDrop;
+            try {
+                base.ResolveRaidStrategy(parms, groupKind);
+                Pawn mole = MapComponent_Tenants.GetComponent((Map)parms.target).Moles[0];
+                if (mole.GetTenantComponent().HiddenFaction.def.techLevel >= TechLevel.Spacer && Rand.Value < 0.5f) {
+                    parms.raidArrivalMode = PawnsArrivalModeDefOf.CenterDrop;
+                }
+            }
+            catch (System.Exception) {
+                base.ResolveRaidStrategy(parms, groupKind);
             }
 
         }
         protected override bool TryResolveRaidFaction(IncidentParms parms) {
-            parms.faction = MapComponent_Tenants.GetComponent((Map)parms.target).Moles[0].GetTenantComponent().HiddenFaction;
+            try {
+                parms.faction = MapComponent_Tenants.GetComponent((Map)parms.target).Moles[0].GetTenantComponent().HiddenFaction;
 
-            if (FactionCanBeGroupSource(parms.faction, (Map)parms.target)) {
-                return true;
+                if (FactionCanBeGroupSource(parms.faction, (Map)parms.target)) {
+                    return true;
+                }
+                else
+                    return false;
             }
-            else
-                return false;
+            catch (System.Exception) {
+                return base.TryResolveRaidFaction(parms);
+            }
         }
     }
     public class IncidentWorker_Opportunists : IncidentWorker_RaidEnemy {
@@ -137,6 +149,7 @@ namespace Tenants {
             return "Opportunists".Translate();
         }
         protected override string GetLetterText(IncidentParms parms, List<Pawn> pawns) {
+            try {
             MapComponent_Tenants.GetComponent((Map)parms.target).Broadcast = false;
             string basic = string.Format(parms.raidArrivalMode.textEnemy, parms.faction.def.pawnsPlural, parms.faction.Name);
             basic += "\n\n";
@@ -147,6 +160,10 @@ namespace Tenants {
                 basic += "EnemyRaidLeaderPresent".Translate(leader.Faction.def.pawnsPlural, leader.LabelShort, leader.Named("LEADER"));
             }
             return basic;
+            }
+            catch (System.Exception) {
+                return base.GetLetterText(parms, pawns);
+            }
         }
     }
 }

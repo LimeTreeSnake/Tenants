@@ -150,24 +150,17 @@ namespace Tenants {
                     //GENERATION CONTEXT
                     bool generation = true;
                     while (generation) {
-                        Log.Message("1");
                         PawnKindDef random = DefDatabase<PawnKindDef>.GetRandom();
-                        Log.Message("2");
                         Faction faction = FactionUtility.DefaultFactionFrom(random.defaultFactionType);
-                        Log.Message("3");
                         Pawn newTenant = PawnGenerator.GeneratePawn(random, faction);
-                        Log.Message("4");
                         if (newTenant != null && !newTenant.Dead && !newTenant.IsDessicated() && !newTenant.AnimalOrWildMan() && newTenant.RaceProps.Humanlike && newTenant.RaceProps.IsFlesh && newTenant.RaceProps.ResolvedDietCategory != DietCategory.NeverEats) {
                             {
-                                Log.Message(newTenant.Faction.def.defName);
-                                Log.Message("5");
                                 if (SettingsHelper.LatestVersion.SimpleClothing) {
                                     FloatRange range = newTenant.kindDef.apparelMoney;
                                     newTenant.kindDef.apparelMoney = new FloatRange(SettingsHelper.LatestVersion.SimpleClothingMin, SettingsHelper.LatestVersion.SimpleClothingMax);
                                     PawnApparelGenerator.GenerateStartingApparelFor(newTenant, new PawnGenerationRequest(random));
                                     newTenant.kindDef.apparelMoney = range;
                                 }
-                                Log.Message("6");
                                 newTenant.GetTenantComponent().IsTenant = true;
                                 newTenant.GetTenantComponent().HiddenFaction = faction;
                                 newTenant.SetFaction(Faction.OfAncients);
@@ -321,6 +314,9 @@ namespace Tenants {
         public static void TenantMole(Pawn pawn) {
             Tenant tenantComp = pawn.GetTenantComponent();
             tenantComp.Mole = true;
+            tenantComp.MoleActivated = true;
+            tenantComp.MoleMessage = true;
+
 
             MapComponent_Tenants.GetComponent(pawn.Map).Moles.Add(pawn);
             IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, pawn.Map);

@@ -107,6 +107,10 @@ namespace Tenants {
                             Utility.ContractConclusion(__instance, false);
                         }
                         else if (Find.TickManager.TicksGame % 6000 == 0) {
+                            if (tenantComp.MoleMessage) {
+                                tenantComp.MoleMessage = false;
+                                Messages.Message("TenantMoleMessage".Translate(), MessageTypeDefOf.NegativeEvent);
+                            }
                             if (__instance.needs.mood.CurInstantLevel > 0.8f) {
                                 Utility.TenantWantToJoin(__instance);
                             }
@@ -120,7 +124,7 @@ namespace Tenants {
                                 if (Utility.CalculateMood(tenantComp) < 1 && tenantComp.NeutralMoodCount > 2) {
                                     if (tenantComp.HiddenFaction != null && tenantComp.HiddenFaction.HostileTo(Find.FactionManager.OfPlayer)) {
                                         Building building = __instance.Map.listerBuildings.allBuildingsColonist.FirstOrDefault(x => x.def.defName.Contains("commsconsole") || x.def.defName.Contains("CommsConsole"));
-                                        if (building != null) {
+                                        if (building != null && !tenantComp.MoleActivated) {
                                             Job job = new Job(JobDefOf.JobUseCommsConsoleMole, building);
                                             __instance.jobs.TryTakeOrderedJob(job);
                                         }

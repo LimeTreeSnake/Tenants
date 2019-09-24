@@ -12,6 +12,8 @@ namespace Tenants {
         private bool contracted = false;
         private bool wanted = false;
         private bool mole = false;
+        private bool moleActivated = false;
+        private bool moleMessage = false;
         private Faction hiddenFaction;
         private bool mayFirefight = false;
         private bool mayBasic = false;
@@ -58,6 +60,14 @@ namespace Tenants {
         public bool Mole {
             get { return mole; }
             set { mole = value; }
+        }
+        public bool MoleActivated {
+            get { return moleActivated; }
+            set { moleActivated = value; }
+        }
+        public bool MoleMessage {
+            get { return moleMessage; }
+            set { moleMessage = value; }
         }
         public Faction HiddenFaction {
             get { return hiddenFaction; }
@@ -147,6 +157,8 @@ namespace Tenants {
             contracted = false;
             wanted = false;
             mole = false;
+            moleActivated = false;
+            moleMessage = false;
             mayFirefight = false;
             mayBasic = false;
             mayHaul = false;
@@ -166,6 +178,8 @@ namespace Tenants {
             contracted = false;
             wanted = false;
             mole = false;
+            moleActivated = false;
+            moleMessage = false;
             contractLength = 0;
             contractDate = 0;
             contractEndDate = 0;
@@ -183,6 +197,8 @@ namespace Tenants {
             Scribe_Values.Look(ref contracted, "Contracted");
             Scribe_Values.Look(ref wanted, "Wanted");
             Scribe_Values.Look(ref mole, "Mole");
+            Scribe_Values.Look(ref moleActivated, "MoleActivated");
+            Scribe_Values.Look(ref moleMessage, "MoleMessage");
             Scribe_References.Look(ref hiddenFaction, "HiddenFaction");
             Scribe_Values.Look(ref mayFirefight, "MayFirefight");
             Scribe_Values.Look(ref mayBasic, "MayBasic");

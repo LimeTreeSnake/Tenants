@@ -11,3 +11,10 @@
 -Lowered opportunist chance of spawning from 33% to 20%.
 -Remade tenant generation code to include hidden faction belonging.
 -Added new event Moles. Prevent them indefinitely by keeping tenants happy.
+
+
+
+2019-09-24
+-Mole event message when used.
+-No stacking mole events
+-Try/Catch on spawning mole events.

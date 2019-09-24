@@ -53,6 +53,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefOfTenants.cs" />
     <Compile Include="Harmony\HarmonyTenants.cs" />
     <Compile Include="MapComponent_Tenants.cs" />
     <Compile Include="Textures.cs" />
@@ -62,7 +63,6 @@
     <Compile Include="GUI\PawnColumnWorker_MayJoin.cs" />
     <Compile Include="GUI\PawnColumnWorker_AutoRenew.cs" />
     <Compile Include="GUI\PawnColumnWorker_CancelContract.cs" />
-    <Compile Include="Workers\DefOfTenants.cs" />
     <Compile Include="Workers\IncidentWorker_Raid.cs" />
     <Compile Include="Workers\IncidentWorker_TenantProposition.cs" />
     <Compile Include="Workers\JobDriver_Tenants.cs" />

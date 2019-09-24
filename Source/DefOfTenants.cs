@@ -27,7 +27,7 @@ namespace Tenants {
         public static JobDef JobUseCommsConsoleTenants;
         public static JobDef JobUseCommsConsoleMole;
         static JobDefOf() {
-            DefOfHelper.EnsureInitializedInCtor(typeof(RaidStrategyDefOf));
+            DefOfHelper.EnsureInitializedInCtor(typeof(JobDef));
         }
     }
 
