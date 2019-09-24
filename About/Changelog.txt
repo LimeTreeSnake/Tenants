@@ -18,3 +18,7 @@
 -Mole event message when used.
 -No stacking mole events
 -Try/Catch on spawning mole events.
+-Fixed issue with moles not doing mole job.
+
+2019-09-25
+-Lookmode deep when storing listed data in mapcomponent.
