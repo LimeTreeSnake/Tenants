@@ -49,9 +49,9 @@ namespace Tenants {
             return map.GetComponent<MapComponent_Tenants>() ?? new MapComponent_Tenants(generateComponent: true, map);
         }
         public override void ExposeData() {
-            Scribe_Collections.Look(ref deadTenantsToAvenge, "DeadTenants", LookMode.Deep);
-            Scribe_Collections.Look(ref capturedTenantsToAvenge, "CapturedTenants", LookMode.Deep);
-            Scribe_Collections.Look(ref moles, "Moles", LookMode.Deep);
+            Scribe_Collections.Look(ref deadTenantsToAvenge, "DeadTenants", LookMode.Reference);
+            Scribe_Collections.Look(ref capturedTenantsToAvenge, "CapturedTenants", LookMode.Reference);
+            Scribe_Collections.Look(ref moles, "Moles", LookMode.Reference);
             Scribe_Values.Look(ref karma, "Karma");
             Scribe_Values.Look(ref broadcast, "Broadcast");
         }
