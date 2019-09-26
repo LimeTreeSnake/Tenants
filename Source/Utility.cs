@@ -97,6 +97,7 @@ namespace Tenants {
                     tenantComp.ContractDate = Find.TickManager.TicksGame;
                     tenantComp.ContractEndDate = Find.TickManager.TicksAbs + tenantComp.ContractLength + 60000;
                     tenantComp.ResetMood();
+                    SpawnPayment(pawn);
 
                     string letterLabel = "ContractNew".Translate();
                     string letterText = "ContractRenewedMessage".Translate(pawn.Named("PAWN"));

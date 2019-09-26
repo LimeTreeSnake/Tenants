@@ -22,3 +22,6 @@
 
 2019-09-25
 -Lookmode reference when storing listed data in mapcomponent.
+
+2019-09-26
+-Auto renew should now spawn payment whoops.
