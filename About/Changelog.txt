@@ -40,7 +40,6 @@
 	Neutral/Allied factions take a relations penalty.
 -Tenants joining raids should no longer be considered tenants.
 -Added a try/catch to GetGizmos_PostFix to display error message due to vehicles mod. (Might help somewhat in discerning wtf is going on.)
-
-2019-10-07
 -Wanted tenants that leave should no longer spawn bounty hunters.
 -If a tenant is downed, you may do non violation surgery on it.
+-Toned down chance for Bounty event a tad :).

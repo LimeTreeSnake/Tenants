@@ -326,12 +326,12 @@ namespace Tenants {
         }
         public static void TenantWanted(Pawn pawn) {
             Tenant tenantComp = pawn.GetTenantComponent();
-            if (tenantComp.WantedBy.HostileTo(Find.FactionManager.OfPlayer) && !MapComponent_Tenants.GetComponent(pawn.Map).WantedTenants.Contains(pawn)) {
+            if (Rand.Value < 0.66 && tenantComp.WantedBy.HostileTo(Find.FactionManager.OfPlayer) && !MapComponent_Tenants.GetComponent(pawn.Map).WantedTenants.Contains(pawn)) {
                 MapComponent_Tenants.GetComponent(pawn.Map).WantedTenants.Add(pawn);
                 IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, pawn.Map);
                 parms.raidStrategy = RaidStrategyDefOf.WantedRaid;
                 parms.forced = true;
-                Find.Storyteller.incidentQueue.Add(IncidentDefOf.WantedRaid, Find.TickManager.TicksGame + Rand.Range(30000, 150000), parms, 60000);
+                Find.Storyteller.incidentQueue.Add(IncidentDefOf.WantedRaid, Find.TickManager.TicksGame + Rand.Range(30000, 250000), parms, 60000);
             }
             else if (Rand.Value < 0.5) {
                 FactionRelation relation = tenantComp.WantedBy.RelationWith(Find.FactionManager.OfPlayer);
