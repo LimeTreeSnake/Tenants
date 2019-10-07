@@ -14,6 +14,9 @@ namespace Tenants {
         private static readonly float stayChanceHappy = 95F;
         private static readonly float stayChanceNeutral = 50F;
         private static readonly float stayChanceSad = 5f;
+        private static readonly int harborPenalty = 5;
+        private static readonly int outragePenalty = 8;
+        private static readonly bool acceptTenancy = true;
         private static readonly bool weapons = true;
         private static readonly bool simpleClothing = true;
         private static readonly int simpleClothingMin = 100;
@@ -30,6 +33,9 @@ namespace Tenants {
         public float StayChanceHappy = stayChanceHappy;
         public float StayChanceNeutral = stayChanceNeutral;
         public float StayChanceSad = stayChanceSad;
+        public int HarborPenalty = harborPenalty;
+        public int OutragePenalty = outragePenalty;
+        public bool AcceptTenancy = acceptTenancy;
         public bool Weapons = weapons;
         public bool SimpleClothing = simpleClothing;
         public float SimpleClothingMin = simpleClothingMin;
@@ -39,7 +45,7 @@ namespace Tenants {
         public float B { get { return b; } set { b = value; color = new Color(r / 255, g / 255, b / 255); } }
         public Color Color => color;
         public float LevelOfHappinessToWork = levelOfHappinessToWork;
-        
+
         #endregion Properties
 
         public override void ExposeData() {
@@ -52,6 +58,9 @@ namespace Tenants {
             Scribe_Values.Look(ref StayChanceHappy, "StayChanceHappy", stayChanceHappy);
             Scribe_Values.Look(ref StayChanceNeutral, "StayChanceNeutral", stayChanceNeutral);
             Scribe_Values.Look(ref StayChanceSad, "StayChanceSad", stayChanceSad);
+            Scribe_Values.Look(ref HarborPenalty, "HarborPenalty", harborPenalty);
+            Scribe_Values.Look(ref OutragePenalty, "OutragePenalty", outragePenalty);
+            Scribe_Values.Look(ref AcceptTenancy, "AcceptTenancy", acceptTenancy);
             Scribe_Values.Look(ref Weapons, "Weapons", weapons);
             Scribe_Values.Look(ref SimpleClothing, "SimpleClothing", simpleClothing);
             Scribe_Values.Look(ref SimpleClothingMin, "SimpleClothingMin", simpleClothingMin);
@@ -71,7 +80,11 @@ namespace Tenants {
             StayChanceSad = stayChanceSad;
             r = 127f; g = 63f; b = 191f;
             LevelOfHappinessToWork = levelOfHappinessToWork;
+            AcceptTenancy = acceptTenancy;
             Weapons = weapons;
+            SimpleClothing = simpleClothing;
+            SimpleClothingMin = simpleClothingMin;
+            SimpleClothingMax = simpleClothingMax;
         }
     }
     internal static class SettingsHelper {
@@ -117,6 +130,12 @@ namespace Tenants {
             tenantsSettings.StayChanceNeutral = (int)Mathf.Round(list.Slider(tenantsSettings.StayChanceNeutral, tenantsSettings.StayChanceSad, 100f));
             list.Label(string.Format("({0}) Extend Contract Chance when Sad.", tenantsSettings.StayChanceSad));
             tenantsSettings.StayChanceSad = (int)Mathf.Round(list.Slider(tenantsSettings.StayChanceSad, 0f, 100f));
+            list.Label(string.Format("({0}) Penalty to relations for harboring fugitives.", tenantsSettings.HarborPenalty));
+            tenantsSettings.HarborPenalty = (int)Mathf.Round(list.Slider(tenantsSettings.HarborPenalty, 1f, 100f));
+            list.Label(string.Format("({0}) Penalty to faction relations for tenant mishaps.", tenantsSettings.OutragePenalty));
+            tenantsSettings.OutragePenalty = (int)Mathf.Round(list.Slider(tenantsSettings.OutragePenalty, 5f, 100f));
+            list.Gap();
+            list.CheckboxLabeled("Accept tenancy random event?", ref tenantsSettings.AcceptTenancy, "Should request for tenancy event spawn?");
             list.Gap();
             list.CheckboxLabeled("Should tenants spawn without weapons?", ref tenantsSettings.Weapons, "Keep in mind that this removes any weapon when a tenant spawns. Have you given a weapon to a tenant once before, it'll be removed should they leave the map and spawn again somewhere.");
             list.Gap();

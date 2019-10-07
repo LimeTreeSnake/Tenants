@@ -2,4 +2,6 @@
 <LanguageData>
 	<TenantSurgeryWarning>{PAWN_nameDef} finds your suggestion of surgery offensive! {PAWN_pronoun} will take no part in such things!</TenantSurgeryWarning>
 	<TenantSurgeryLeave>{PAWN_nameDef} is tired of your antics and decides to leave. You clearly are not serious about upholding the contract so why should {PAWN_pronoun}.</TenantSurgeryLeave>
+	<TenantFactionOutrage>{0} is outraged at the mistreatment of {PAWN_nameDef} thus you recieve a {1} penalty to relations with them.</TenantFactionOutrage>
+	<HarboringWantedTenant>{0} is frustrated that you willingly harbor a wanted fugitive thus you recieve a {1} penalty to relations with them.</HarboringWantedTenant>
 </LanguageData>

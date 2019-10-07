@@ -10,7 +10,7 @@ namespace Tenants {
             if (!base.CanFireNowSub(parms)) {
                 return false;
             }
-            if (parms.target != null) {
+            if (parms.target != null && SettingsHelper.LatestVersion.AcceptTenancy) {
                 Map map = (Map)parms.target;
                 List<Map> maps = Find.Maps.Where(x => x.IsPlayerHome).ToList();
                 if (map != null && maps.Contains(map)) {
@@ -25,16 +25,16 @@ namespace Tenants {
 
         protected override bool TryExecuteWorker(IncidentParms parms) {
             //Map and spot finder.
-            if (parms.target != null) {
+            if (parms.target != null && SettingsHelper.LatestVersion.AcceptTenancy) {
                 Map map = (Map)parms.target;
                 if (map != null) {
                     Pawn pawn = map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false && !x.Dead);
                     if (pawn != null)
-                        return Utility.ContractGenerateNew((Map)parms.target);
+                        return Utility.ContractTenancy((Map)parms.target);
                 }
             }
             return false;
         }
     }
-
+    
 }

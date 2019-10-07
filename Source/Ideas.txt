@@ -1,5 +1,6 @@
-﻿Turn tenant into factions for future events.
+﻿TEnant bring pets, avenge should dead
 
-TEnant bring pets, avenge should dead
+Jump through mountains
 
-CE Loudout
+
+Remove silver on tenants when spawning.

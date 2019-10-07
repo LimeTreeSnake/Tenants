@@ -25,3 +25,18 @@
 
 2019-09-26
 -Auto renew should now spawn payment whoops.
+
+2019-10-07
+-Removed tenant drop-pod events.
+-Mod settings option to disable/enable random tenancy request.
+-Comms setting to accept/reject random tenancy request. Affects the same boolean value as the one in mod settings.
+-Upped base chance for random tenancy request.
+-New type of tenant, wanted tenants seeking shelter from their enemies.
+-Reworked tenancy generation code to accomodate changes to tenancy.
+-Reworked Mole event to be 'slightly' more rare (About 70%).
+-Hostile raider tenants should no longer spawn retribution events. (Needs confirmation)
+-Tenants always belong to a hidden faction thus relations are affected should you mistreat them.
+	Only hostile factions can raid
+	Neutral/Allied factions take a relations penalty.
+-Tenants joining raids should no longer be considered tenants.
+-Added a try/catch to GetGizmos_PostFix to display error message due to vehicles mod. (Might help somewhat in discerning wtf is going on.)

@@ -27,16 +27,6 @@ namespace Tenants {
             bool validator(IntVec3 c) => map.reachability.CanReachColony(c) && !c.Fogged(map);
             return CellFinder.TryFindRandomEdgeCellWith(validator, map, CellFinder.EdgeRoadChance_Neutral, out spawnSpot);
         }
-        public static bool TryFindReachableSpot(Map map, Area area, IntVec3 startPos, out IntVec3 spot) {
-            List<IntVec3> list = new List<IntVec3>();
-            list.AddRange(area.ActiveCells);
-            if (list.Any()) {
-                spot = list.FirstOrDefault(x => x.IsValid && map.reachability.CanReach(startPos, x, Verse.AI.PathEndMode.OnCell, TraverseMode.PassDoors));
-                return true;
-            }
-            spot = IntVec3.Invalid;
-            return false;
-        }
         public static int CalculateMood(Tenant tenant) {
             float count = tenant.HappyMoodCount + tenant.NeutralMoodCount + tenant.SadMoodCount;
             if (tenant.NeutralMoodCount / count >= 0.5f)
@@ -139,96 +129,53 @@ namespace Tenants {
                 TenantLeave(pawn);
             }
         }
-        public static bool ContractGenerateNew(Map map) {
-            if (!TryFindSpawnSpot(map, out IntVec3 spawnSpot)) {
-                return false;
-            }
-            List<Pawn> pawns = (from p in Find.WorldPawns.AllPawnsAlive
-                                where p.GetTenantComponent() != null && p.GetTenantComponent().IsTenant && !p.Dead && !p.Spawned && !p.Discarded
-                                select p).ToList();
-            if (pawns.Count < 20) {
-                for (int i = 0; i < 3; i++) {
-                    //GENERATION CONTEXT
-                    bool generation = true;
-                    while (generation) {
-                        PawnKindDef random = DefDatabase<PawnKindDef>.GetRandom();
-                        Faction faction = FactionUtility.DefaultFactionFrom(random.defaultFactionType);
-                        Pawn newTenant = PawnGenerator.GeneratePawn(random, faction);
-                        if (newTenant != null && !newTenant.Dead && !newTenant.IsDessicated() && !newTenant.AnimalOrWildMan() && newTenant.RaceProps.Humanlike && newTenant.RaceProps.IsFlesh && newTenant.RaceProps.ResolvedDietCategory != DietCategory.NeverEats) {
-                            {
-                                if (SettingsHelper.LatestVersion.SimpleClothing) {
-                                    FloatRange range = newTenant.kindDef.apparelMoney;
-                                    newTenant.kindDef.apparelMoney = new FloatRange(SettingsHelper.LatestVersion.SimpleClothingMin, SettingsHelper.LatestVersion.SimpleClothingMax);
-                                    PawnApparelGenerator.GenerateStartingApparelFor(newTenant, new PawnGenerationRequest(random));
-                                    newTenant.kindDef.apparelMoney = range;
-                                }
-                                newTenant.GetTenantComponent().IsTenant = true;
-                                newTenant.GetTenantComponent().HiddenFaction = faction;
-                                newTenant.SetFaction(Faction.OfAncients);
-                                pawns.Add(newTenant);
-                                generation = false;
-                            }
-                        }
+        public static bool ContractTenancy(Map map) {
+            string title = "";
+            Pawn pawn = FindRandomTenant();
+            pawn.relations.everSeenByPlayer = true;
+            Tenant tenantComp = pawn.TryGetComp<Tenant>();
+            GenerateBasicTenancyContract(tenantComp);
+            bool special = false;
+            StringBuilder stringBuilder = new StringBuilder("");
+            //Check if pawn is special
+            //Wanted
+            if (Rand.Value < 0.2f) {
+                special = GenerateWanted(pawn);
+                if (special) {
+                    stringBuilder.Append("RequestForTenancyHiding".Translate(tenantComp.WantedBy, pawn.Named("PAWN")));
+                    title = "RequestForTenancyHidingTitle".Translate(map.Parent.Label);
+                    tenantComp.Payment = tenantComp.Payment * 2;
+                    string text = AppendContractDetails(stringBuilder.ToString(), pawn);
+                    if (GenerateContractDialogue(title, text, pawn, map)) {
+
                     }
                 }
             }
-            pawns.Shuffle();
-            Pawn pawn = pawns[0];
-            pawn.relations.everSeenByPlayer = true;
-            Tenant tenantComp = pawn.TryGetComp<Tenant>();
+            //Mole
+            else if (Rand.Value < 0.33f && tenantComp.HiddenFaction.HostileTo(Find.FactionManager.OfPlayer)) {
+                tenantComp.Mole = true;
+            }
+            if (!special) {
+                //Broadcasted
+                if (MapComponent_Tenants.GetComponent(map).Broadcast) {
+                    stringBuilder.Append("RequestForTenancyOpportunity".Translate(pawn.Named("PAWN")));
+                    title = "RequestForTenancyTitle".Translate(map.Parent.Label);
+                    MapComponent_Tenants.GetComponent(map).Broadcast = false;
+                    string text = AppendContractDetails(stringBuilder.ToString(), pawn);
+                    if (GenerateContractDialogue(title, text, pawn, map)) {
 
-            tenantComp.Payment = Rand.Range(SettingsHelper.LatestVersion.MinDailyCost, SettingsHelper.LatestVersion.MaxDailyCost);
-            tenantComp.ContractLength = Rand.Range(SettingsHelper.LatestVersion.MinContractTime, SettingsHelper.LatestVersion.MaxContractTime) * 60000;
-            tenantComp.ContractDate = Find.TickManager.TicksGame;
-            tenantComp.ContractEndDate = Find.TickManager.TicksAbs + tenantComp.ContractLength + 60000;
-            tenantComp.ResetMood();
-
-            bool broadcasted = MapComponent_Tenants.GetComponent(map).Broadcast;
-            string text = NewContractMessage(pawn, MapComponent_Tenants.GetComponent(map).Broadcast);
-            if (broadcasted)
-                MapComponent_Tenants.GetComponent(map).Broadcast = false;
-            DiaNode diaNode = new DiaNode(text);
-            //Accepted offer, generating tenant.
-            DiaOption diaOption = new DiaOption("ContractAgree".Translate()) {
-                action = delegate {
-                    pawn.SetFaction(Faction.OfPlayer);
-                    pawn.GetTenantComponent().Contracted = true;
-                    GenSpawn.Spawn(pawn, spawnSpot, map);
-                    pawn.needs.SetInitialLevels();
-                    pawn.playerSettings.AreaRestriction = map.areaManager.Home;
-                    UpdateAllRestrictions(pawn);
-                    TraitDef nightOwl = DefDatabase<TraitDef>.GetNamedSilentFail("NightOwl");
-                    if (nightOwl != null && pawn.story.traits.HasTrait(nightOwl)) {
-                        UpdateTenantNightOwl(pawn);
                     }
-                    if (SettingsHelper.LatestVersion.Weapons) {
-                        pawn.equipment.DestroyAllEquipment();
-                    }
-                    CameraJumper.TryJump(pawn);
-                },
-                resolveTree = true
-            };
-            diaNode.options.Add(diaOption);
+                }
+                //Normal
+                else {
+                    stringBuilder.Append("RequestForTenancyInitial".Translate(pawn.Named("PAWN")));
+                    title = "RequestForTenancyTitle".Translate(map.Parent.Label);
+                    string text = AppendContractDetails(stringBuilder.ToString(), pawn);
+                    if (GenerateContractDialogue(title, text, pawn, map)) {
 
-            //Denied tenant offer
-            string text2 = "RequestForTenancyRejected".Translate(pawn.LabelShort, pawn, pawn.Named("PAWN"));
-            DiaNode diaNode2 = new DiaNode(text2);
-            DiaOption diaOption2 = new DiaOption("OK".Translate()) {
-                resolveTree = true
-            };
-            diaNode2.options.Add(diaOption2);
-            DiaOption diaOption3 = new DiaOption("ContractReject".Translate()) {
-                action = delegate {
-                    if (!Find.WorldPawns.Contains(pawn))
-                        Find.WorldPawns.PassToWorld(pawn);
-                    tenantComp.CleanTenancy();
-                },
-                link = diaNode2
-            };
-            diaNode.options.Add(diaOption3);
-            string title = "RequestForTenancyTitle".Translate(map.Parent.Label);
-            Find.WindowStack.Add(new Dialog_NodeTree(diaNode, delayInteractivity: true, radioMode: true, title));
-            Find.Archive.Add(new ArchivedDialog(diaNode.text, title));
+                    }
+                }
+            }
             return true;
         }
         public static void TenantLeave(Pawn pawn) {
@@ -248,31 +195,76 @@ namespace Tenants {
         public static void TenantTheft(Pawn pawn) {
             pawn.jobs.ClearQueuedJobs();
             pawn.SetFaction(Faction.OfAncients);
-            pawn.GetTenantComponent().ResetTenancy();
+            pawn.GetTenantComponent().IsTenant = false;
             LordMaker.MakeNewLord(pawn.Faction, new LordJob_TenantTheft(), pawn.Map, new List<Pawn> { pawn });
         }
         public static void TenantDeath(Pawn pawn) {
-            pawn.GetTenantComponent().ResetTenancy();
-            pawn.SetFaction(Faction.OfAncients);
-            if (Rand.Value < 0.5f) {
-                MapComponent_Tenants.GetComponent(pawn.Map).DeadTenantsToAvenge.Add(pawn);
-                IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, pawn.Map);
-                parms.raidStrategy = RaidStrategyDefOf.Retribution;
-                parms.forced = true;
-                Find.Storyteller.incidentQueue.Add(IncidentDefOf.RetributionForDead, Find.TickManager.TicksGame + Rand.Range(15000, 90000), parms, 240000);
+            Tenant tenantComp = pawn.GetTenantComponent();
+            tenantComp.IsTenant = false;
+            string text = "TenantDeath".Translate(pawn.Named("PAWN"));
+            text = text.AdjustedFor(pawn);
+            string label = "Death".Translate() + ": " + pawn.LabelShortCap;
+            Find.LetterStack.ReceiveLetter(label, text, LetterDefOf.Death, pawn);
+            pawn.SetFaction(tenantComp.HiddenFaction);
+            if (pawn.Faction.HostileTo(Find.FactionManager.OfPlayer)) {
+                if (Rand.Value < 0.5f) {
+                    FactionRelation relation = tenantComp.WantedBy.RelationWith(Find.FactionManager.OfPlayer);
+                    relation.goodwill = relation.goodwill - SettingsHelper.LatestVersion.OutragePenalty;
+                    Messages.Message("TenantDeathRelative".Translate(pawn.Faction, SettingsHelper.LatestVersion.OutragePenalty, pawn.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
+                    MapComponent_Tenants.GetComponent(pawn.Map).DeadTenantsToAvenge.Add(pawn);
+                    IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, pawn.Map);
+                    parms.raidStrategy = RaidStrategyDefOf.Retribution;
+                    parms.forced = true;
+                    Find.Storyteller.incidentQueue.Add(IncidentDefOf.RetributionForDead, Find.TickManager.TicksGame + Rand.Range(15000, 90000), parms, 240000);
+                }
+            }
+            else {
+                if (Rand.Value < 0.66f) {
+                    FactionRelation relation = tenantComp.WantedBy.RelationWith(Find.FactionManager.OfPlayer);
+                    relation.goodwill = relation.goodwill - SettingsHelper.LatestVersion.OutragePenalty * 2;
+                    Messages.Message("TenantFactionOutrage".Translate(pawn.Faction, SettingsHelper.LatestVersion.OutragePenalty * 2, pawn.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
+                }
+
             }
         }
         public static void TenantCaptured(Pawn pawn, Pawn byPawn) {
-            pawn.GetTenantComponent().ResetTenancy();
-            pawn.GetTenantComponent().WasTenant = true;
-            pawn.SetFaction(Faction.OfAncients);
-            if (Rand.Value < 0.25f) {
-                MapComponent_Tenants.GetComponent(byPawn.Map).CapturedTenantsToAvenge.Add(pawn);
-                IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, byPawn.Map);
-                parms.raidStrategy = RaidStrategyDefOf.Retribution;
-                parms.forced = true;
-                Find.Storyteller.incidentQueue.Add(IncidentDefOf.RetributionForCaptured, Find.TickManager.TicksGame + Rand.Range(15000, 90000), parms, 240000);
+            if (pawn.HostileTo(Find.FactionManager.OfPlayer)) {
+                return;
             }
+            string text = "TenantCaptured".Translate(pawn.Named("PAWN"));
+            text = text.AdjustedFor(pawn);
+            string label = "Captured".Translate() + ": " + pawn.LabelShortCap;
+            Find.LetterStack.ReceiveLetter(label, text, LetterDefOf.NeutralEvent, pawn);
+            Tenant tenantComp = pawn.GetTenantComponent();
+            tenantComp.IsTenant = false;
+            pawn.GetTenantComponent().CapturedTenant = true;
+            pawn.SetFaction(tenantComp.HiddenFaction);
+
+            if (pawn.Faction.HostileTo(Find.FactionManager.OfPlayer)) {
+                if (Rand.Value < 0.25f || tenantComp.Wanted) {
+                    MapComponent_Tenants.GetComponent(byPawn.Map).CapturedTenantsToAvenge.Add(pawn);
+                    IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, byPawn.Map);
+                    parms.raidStrategy = RaidStrategyDefOf.Retribution;
+                    parms.forced = true;
+                    Find.Storyteller.incidentQueue.Add(IncidentDefOf.RetributionForCaptured, Find.TickManager.TicksGame + Rand.Range(15000, 90000), parms, 240000);
+                }
+            }
+            else {
+                if (Rand.Value < 0.66f || tenantComp.Wanted) {
+                    FactionRelation relation = pawn.Faction.RelationWith(Find.FactionManager.OfPlayer);
+                    relation.goodwill = relation.goodwill - SettingsHelper.LatestVersion.OutragePenalty;
+                    Messages.Message("TenantFactionOutrage".Translate(pawn.Faction, SettingsHelper.LatestVersion.OutragePenalty, pawn.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
+                }
+            }
+        }
+        public static void TenantMoleCaptured(Pawn pawn) {
+            Tenant tenantComp = pawn.GetTenantComponent();
+            tenantComp.IsTenant = false;
+            pawn.SetFaction(tenantComp.HiddenFaction);
+            string text = "MoleCaptured".Translate(pawn.Named("PAWN"));
+            text = text.AdjustedFor(pawn);
+            string label = "Captured".Translate() + ": " + pawn.LabelShortCap;
+            Find.LetterStack.ReceiveLetter(label, text, LetterDefOf.PositiveEvent, pawn);
         }
         public static void TenantWantToJoin(Pawn pawn) {
             Tenant tenantComp = pawn.GetTenantComponent();
@@ -314,16 +306,29 @@ namespace Tenants {
         }
         public static void TenantMole(Pawn pawn) {
             Tenant tenantComp = pawn.GetTenantComponent();
-            tenantComp.Mole = true;
             tenantComp.MoleActivated = true;
             tenantComp.MoleMessage = true;
-
-
             MapComponent_Tenants.GetComponent(pawn.Map).Moles.Add(pawn);
             IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, pawn.Map);
             parms.raidStrategy = RaidStrategyDefOf.MoleRaid;
             parms.forced = true;
             Find.Storyteller.incidentQueue.Add(IncidentDefOf.MoleRaid, Find.TickManager.TicksGame + Rand.Range(5000, 30000), parms, 90000);
+        }
+        public static void TenantWanted(Pawn pawn) {
+            Tenant tenantComp = pawn.GetTenantComponent();
+            if (tenantComp.WantedBy.HostileTo(Find.FactionManager.OfPlayer) && !MapComponent_Tenants.GetComponent(pawn.Map).WantedTenants.Contains(pawn)) {
+                MapComponent_Tenants.GetComponent(pawn.Map).WantedTenants.Add(pawn);
+                IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, pawn.Map);
+                parms.raidStrategy = RaidStrategyDefOf.WantedRaid;
+                parms.forced = true;
+                Find.Storyteller.incidentQueue.Add(IncidentDefOf.WantedRaid, Find.TickManager.TicksGame + Rand.Range(30000, 150000), parms, 60000);
+            }
+            else if (Rand.Value < 0.5) {
+                FactionRelation relation = tenantComp.WantedBy.RelationWith(Find.FactionManager.OfPlayer);
+                relation.goodwill = relation.goodwill - SettingsHelper.LatestVersion.HarborPenalty;
+                Messages.Message("HarboringWantedTenant".Translate(pawn.GetTenantComponent().WantedBy, SettingsHelper.LatestVersion.HarborPenalty, pawn.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
+            }
+
         }
         public static void InviteTenant(Building_CommsConsole comms, Pawn pawn) {
             Messages.Message("InviteTenantMessage".Translate(), MessageTypeDefOf.NeutralEvent);
@@ -367,22 +372,118 @@ namespace Tenants {
             return pawns;
         }
 
-        public static bool EmergencyWork(WorkGiver giver) {
-            if (giver is WorkGiver_PatientGoToBedEmergencyTreatment
-                || giver is WorkGiver_PatientGoToBedTreatment
-                || giver is WorkGiver_PatientGoToBedRecuperate
-                || giver.def.workTags == WorkTags.Firefighting) {
-                return true;
+
+        public static Pawn FindRandomTenant() {
+            List<Pawn> pawns = (from p in Find.WorldPawns.AllPawnsAlive
+                                where p.GetTenantComponent() != null && p.GetTenantComponent().IsTenant && !p.Dead && !p.Spawned && !p.Discarded
+                                select p).ToList();
+            if (pawns.Count < 20)
+                for (int i = 0; i < 3; i++)
+                    pawns.Add(GenerateNewTenant());
+            pawns.Shuffle();
+            return pawns[0];
+        }
+        public static bool GenerateWanted(Pawn pawn) {
+            Tenant tenantComp = pawn.TryGetComp<Tenant>();
+            if (tenantComp.HiddenFaction.def != FactionDefOf.Ancients) {
+                List<FactionRelation> entries = Traverse.Create(tenantComp.HiddenFaction).Field("relations").GetValue<List<FactionRelation>>().Where(p => p.kind == FactionRelationKind.Hostile).ToList();
+                if (entries.Count > 0) {
+                    entries.Shuffle();
+                    tenantComp.WantedBy = entries[0].other;
+                    tenantComp.Wanted = true;
+                    return true;
+                }
             }
             return false;
         }
+        public static Pawn GenerateNewTenant() {
+            bool generation = true;
+            Pawn newTenant = null;
+            while (generation) {
+                PawnKindDef random = DefDatabase<PawnKindDef>.GetRandom();
+                Faction faction = FactionUtility.DefaultFactionFrom(random.defaultFactionType);
+                newTenant = PawnGenerator.GeneratePawn(random, faction);
+                if (newTenant != null && !newTenant.Dead && !newTenant.IsDessicated() && !newTenant.AnimalOrWildMan() && newTenant.RaceProps.Humanlike && newTenant.RaceProps.IsFlesh && newTenant.RaceProps.ResolvedDietCategory != DietCategory.NeverEats) {
+                    {
+                        if (SettingsHelper.LatestVersion.SimpleClothing) {
+                            FloatRange range = newTenant.kindDef.apparelMoney;
+                            newTenant.kindDef.apparelMoney = new FloatRange(SettingsHelper.LatestVersion.SimpleClothingMin, SettingsHelper.LatestVersion.SimpleClothingMax);
+                            PawnApparelGenerator.GenerateStartingApparelFor(newTenant, new PawnGenerationRequest(random));
+                            newTenant.kindDef.apparelMoney = range;
+                        }
+                        newTenant.GetTenantComponent().IsTenant = true;
+                        newTenant.GetTenantComponent().HiddenFaction = faction;
+                        newTenant.SetFaction(Faction.OfAncients);
+                        if (SettingsHelper.LatestVersion.Weapons) {
+                            List<Thing> ammo = newTenant.inventory.innerContainer.Where(x => x.def.defName.Contains("Ammunition")).ToList();
+                            foreach (Thing thing in ammo)
+                                newTenant.inventory.innerContainer.Remove(thing);
+                        }
+                        newTenant.DestroyOrPassToWorld();
+                        generation = false;
+                    }
+                }
+            }
+            return newTenant;
+        }
+        public static bool GenerateContractDialogue(string title, string text, Pawn pawn, Map map) {
+            if (!TryFindSpawnSpot(map, out IntVec3 spawnSpot)) {
+                return false;
+            }
+            DiaNode diaNode = new DiaNode(text);
+            //Accepted offer, generating tenant.
+            DiaOption diaOption = new DiaOption("ContractAgree".Translate()) {
+                action = delegate {
+                    pawn.SetFaction(Faction.OfPlayer);
+                    pawn.GetTenantComponent().Contracted = true;
+                    GenSpawn.Spawn(pawn, spawnSpot, map);
+                    pawn.needs.SetInitialLevels();
+                    pawn.playerSettings.AreaRestriction = map.areaManager.Home;
+                    UpdateAllRestrictions(pawn);
+                    TraitDef nightOwl = DefDatabase<TraitDef>.GetNamedSilentFail("NightOwl");
+                    if (nightOwl != null && pawn.story.traits.HasTrait(nightOwl)) {
+                        UpdateNightOwl(pawn);
+                    }
+                    if (SettingsHelper.LatestVersion.Weapons) {
+                        pawn.equipment.DestroyAllEquipment();
+                    }
+                    CameraJumper.TryJump(pawn);
+                },
+                resolveTree = true
+            };
+            diaNode.options.Add(diaOption);
+            //Denied tenant offer
+            string text2 = "RequestForTenancyRejected".Translate(pawn.LabelShort, pawn, pawn.Named("PAWN"));
+            DiaNode diaNode2 = new DiaNode(text2);
+            DiaOption diaOption2 = new DiaOption("OK".Translate()) {
+                resolveTree = true
+            };
+            diaNode2.options.Add(diaOption2);
+            DiaOption diaOption3 = new DiaOption("ContractReject".Translate()) {
+                action = delegate {
+                    pawn.GetTenantComponent().CleanTenancy();
+                },
+                link = diaNode2
+            };
+            diaNode.options.Add(diaOption3);
+            Find.WindowStack.Add(new Dialog_NodeTree(diaNode, delayInteractivity: true, radioMode: true, title));
+            Find.Archive.Add(new ArchivedDialog(diaNode.text, title));
+            return true;
+        }
+        public static void GenerateBasicTenancyContract(Tenant tenantComp) {
+            tenantComp.Payment = Rand.Range(SettingsHelper.LatestVersion.MinDailyCost, SettingsHelper.LatestVersion.MaxDailyCost);
+            tenantComp.ContractLength = Rand.Range(SettingsHelper.LatestVersion.MinContractTime, SettingsHelper.LatestVersion.MaxContractTime) * 60000;
+            tenantComp.ContractDate = Find.TickManager.TicksGame;
+            tenantComp.ContractEndDate = Find.TickManager.TicksAbs + tenantComp.ContractLength + 60000;
+            tenantComp.ResetMood();
+        }
         public static void UpdateAllRestrictions(Pawn pawn) {
-            UpdateTenantWork(pawn);
+            UpdateWork(pawn);
             UpdateOutfitManagement(pawn);
             UpdateFoodManagement(pawn);
             UpdateDrugManagement(pawn);
         }
-        public static void UpdateTenantWork(Pawn pawn) {
+        public static void UpdateWork(Pawn pawn) {
             Tenant tenantComp = pawn.GetTenantComponent();
             foreach (WorkTypeDef def in DefDatabase<WorkTypeDef>.AllDefs) {
 
@@ -412,18 +513,25 @@ namespace Tenants {
                     pawn.workSettings.Disable(def);
             }
         }
+        public static bool UpdateEmergencyWork(WorkGiver giver) {
+            if (giver is WorkGiver_PatientGoToBedEmergencyTreatment
+                || giver is WorkGiver_PatientGoToBedTreatment
+                || giver is WorkGiver_PatientGoToBedRecuperate
+                || giver.def.workTags == WorkTags.Firefighting) {
+                return true;
+            }
+            return false;
+        }
         public static void UpdateOutfitManagement(Pawn pawn) {
             Outfit restriction = Current.Game.outfitDatabase.AllOutfits.FirstOrDefault(x => x.label == "Tenants".Translate());
             if (restriction == null) {
                 int uniqueId = (!Current.Game.outfitDatabase.AllOutfits.Any()) ? 1 : (Current.Game.outfitDatabase.AllOutfits.Max((Outfit o) => o.uniqueId) + 1);
                 restriction = new Outfit(uniqueId, "Tenants".Translate());
-                //List<ThingDef> forbidden = DefDatabase<ThingDef>.AllDefs.Where(x=> !x.defName.Contains("Armor") && x.thingCategories.Contains(ThingCategoryDefOf.Apparel)).ToList();
                 restriction.filter.SetAllow(ThingCategoryDefOf.Apparel, allow: true);
                 Current.Game.outfitDatabase.AllOutfits.Add(restriction);
             }
             pawn.outfits.CurrentOutfit = restriction;
         }
-
         public static void UpdateFoodManagement(Pawn pawn) {
             FoodRestriction restriction = Current.Game.foodRestrictionDatabase.AllFoodRestrictions.FirstOrDefault(x => x.label == "Tenants".Translate());
             if (restriction == null) {
@@ -444,7 +552,7 @@ namespace Tenants {
             }
             pawn.drugs.CurrentPolicy = restriction;
         }
-        public static void UpdateTenantNightOwl(Pawn pawn) {
+        public static void UpdateNightOwl(Pawn pawn) {
             pawn.timetable.times = new List<TimeAssignmentDef>(24);
             for (int i = 0; i < 24; i++) {
                 TimeAssignmentDef item = (i >= 10 && i <= 17) ? TimeAssignmentDefOf.Sleep : TimeAssignmentDefOf.Anything;
@@ -453,12 +561,6 @@ namespace Tenants {
         }
         public static void SpawnPayment(Pawn pawn) {
             Tenant tenantComp = pawn.GetTenantComponent();
-            //Thing thing = ThingMaker.MakeThing(ThingDefOf.Silver);            
-            //thing.stackCount = tenantComp.Payment * (tenantComp.ContractLength / 60000);
-            //pawn.inventory.innerContainer.TryAdd(thing);
-            //while (pawn.inventory.Contains(thing)) {
-            //    pawn.inventory.innerContainer.TryDrop(thing, ThingPlaceMode.Near, out Thing silver);
-            //}
             int payment = (tenantComp.ContractLength / 60000) * tenantComp.Payment;
             while (payment > 500) {
                 DebugThingPlaceHelper.DebugSpawn(ThingDefOf.Silver, pawn.Position, 500);
@@ -501,16 +603,6 @@ namespace Tenants {
             text = AppendPawnDescription(text, pawn);
             PawnRelationUtility.TryAppendRelationsWithColonistsInfo(ref text, pawn);
             return text;
-        }
-        public static string NewContractMessage(Pawn pawn, bool isRandomEvent) {
-            StringBuilder stringBuilder = new StringBuilder("");
-            if (isRandomEvent)
-                stringBuilder.Append("RequestForTenancyOpportunity".Translate(pawn.Named("PAWN")));
-            else {
-                stringBuilder.Append("RequestForTenancyInitial".Translate(pawn.Named("PAWN")));
-            }
-            return AppendContractDetails(stringBuilder.ToString(), pawn);
-
         }
         public static string ProlongContractMessage(Pawn pawn) {
             StringBuilder stringBuilder = new StringBuilder("");

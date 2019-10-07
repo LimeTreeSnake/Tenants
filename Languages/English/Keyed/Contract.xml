@@ -10,6 +10,9 @@
 	<RequestForTenancyRejected>{1_labelShort} mutters something along the line 'who'd want to live with you anyways...'</RequestForTenancyRejected>
 	<RequestForTenancyContinuedRejected>{1_labelShort} is saddened but accepts your decision nevertheless.</RequestForTenancyContinuedRejected>
 
+	<RequestForTenancyHiding>{PAWN_nameDef} is looking for a place to hide in for a while. {PAWN_pronoun} claims that members of {0} is coming for {PAWN_possessive}. Accepting {PAWN_possessive} would anger {0} and they might send raiders your way. </RequestForTenancyHiding>
+	<RequestForTenancyHidingTitle>Request for Shelter in {0}</RequestForTenancyHidingTitle>
+	
 	<RequestTenantWantToJoinTitle>Request from tenant in {0}</RequestTenantWantToJoinTitle>
 	<RequestTenantWantToJoin>{PAWN_nameDef} loves staying here and wants to stay permanently! Will you accept {PAWN_objective}? </RequestTenantWantToJoin>
 	<RequestTenantWantToJoinRejected>{PAWN_nameDef} claims {PAWN_pronoun} will change your mind somehow!</RequestTenantWantToJoinRejected>
@@ -41,6 +44,10 @@
 	<AutoRenew>Auto renew</AutoRenew>
 	<AutoRenewTip>Whether a tenant can automagically renew the contract at the expiry date.</AutoRenewTip>
 	<InviteTenant>Broadcast tenancy invitation</InviteTenant>
+	
+	
+	<AcceptTenant>Accept tenants</AcceptTenant>
+	<RejectTenant>Reject tenants</RejectTenant>
 	
 	<InviteTenantMessage>A broadcast is sent over the rim with your location. The message claims that there is food and comfortable beds for those with silver to spend.</InviteTenantMessage>
 		

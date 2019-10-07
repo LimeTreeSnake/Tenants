@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
-  <IncidentDef>
 	<!--RequestForTenancy-->
+  <IncidentDef>
     <defName>RequestForTenancy</defName>
     <label>Request for tenancy</label>
     <targetTags>
@@ -9,14 +9,12 @@
     </targetTags>
     <workerClass>Tenants.IncidentWorker_TenantProposition</workerClass>
     <category>Misc</category>
-    <baseChance>5</baseChance>
+    <baseChance>6</baseChance>
     <pointsScaleable>true</pointsScaleable>
     <minRefireDays>2</minRefireDays>
   </IncidentDef>
-  
-  
-  <IncidentDef>
 	<!--RetributionForDeadTenant-->
+  <IncidentDef>
     <defName>RetributionForDead</defName>
     <label>Retribution for dead tenant</label>
     <targetTags>
@@ -28,8 +26,8 @@
     <pointsScaleable>true</pointsScaleable>
     <tale>Raid</tale>
   </IncidentDef>  
-   <IncidentDef>
 	<!--RetributionForCapturedTenant-->
+   <IncidentDef>
     <defName>RetributionForCaptured</defName>
     <label>Retribution for captured tenant</label>
     <targetTags>
@@ -41,8 +39,8 @@
     <pointsScaleable>true</pointsScaleable>
     <tale>Raid</tale>
   </IncidentDef>  
-   <IncidentDef>
 	<!--Opportunists-->
+   <IncidentDef>
     <defName>Opportunists</defName>
     <label>Opportunists</label>
     <targetTags>
@@ -54,8 +52,8 @@
     <pointsScaleable>true</pointsScaleable>
     <tale>Raid</tale>
   </IncidentDef>  
-   <IncidentDef>
 	<!--Moles-->
+   <IncidentDef>
     <defName>MoleRaid</defName>
     <label>Mole Raid</label>
     <targetTags>
@@ -67,4 +65,18 @@
     <pointsScaleable>true</pointsScaleable>
     <tale>Raid</tale>
   </IncidentDef>  
-</Defs>
+  
+  <IncidentDef>
+    <defName>WantedRaid</defName>
+    <label>Wanted Raid</label>
+    <targetTags>
+      <li>Map_PlayerHome</li>
+    </targetTags>
+    <workerClass>Tenants.IncidentWorker_Wanted</workerClass>
+    <category>ThreatBig</category>
+    <baseChance>0</baseChance>
+    <pointsScaleable>true</pointsScaleable>
+    <tale>Raid</tale>
+  </IncidentDef>  
+  
+  </Defs>

@@ -6,11 +6,12 @@ namespace Tenants {
         #region Fields
         private bool isTenant = false;
         private bool isTerminated = false;
-        private bool wasTenant = false;
+        private bool capturedTenant = false;
         private bool mayJoin = false;
         private bool autoRenew = false;
         private bool contracted = false;
         private bool wanted = false;
+        private Faction wantedBy;
         private bool mole = false;
         private bool moleActivated = false;
         private bool moleMessage = false;
@@ -31,15 +32,15 @@ namespace Tenants {
         #region Properties
         public bool IsTenant {
             get { return isTenant; }
-            set { isTenant = value; }
+            set { isTenant = value; if (isTenant == false) { CleanTenancy(); } }
         }
         public bool IsTerminated {
             get { return isTerminated; }
             set { isTerminated = value; }
         }
-        public bool WasTenant {
-            get { return wasTenant; }
-            set { wasTenant = value; }
+        public bool CapturedTenant {
+            get { return capturedTenant; }
+            set { capturedTenant = value; }
         }
         public bool MayJoin {
             get { return mayJoin; }
@@ -56,6 +57,10 @@ namespace Tenants {
         public bool Wanted {
             get { return wanted; }
             set { wanted = value; }
+        }
+        public Faction WantedBy {
+            get { return wantedBy; }
+            set { wantedBy = value; }
         }
         public bool Mole {
             get { return mole; }
@@ -146,37 +151,12 @@ namespace Tenants {
             neutralMoodCount = 0;
         }
         /// <summary>
-        /// Used when a Tenant should no longer be a tenant.
-        /// </summary>
-        public void ResetTenancy() {
-            isTenant = false;
-            isTerminated = false;
-            wasTenant = false;
-            mayJoin = false;
-            autoRenew = false;
-            contracted = false;
-            wanted = false;
-            mole = false;
-            moleActivated = false;
-            moleMessage = false;
-            mayFirefight = false;
-            mayBasic = false;
-            mayHaul = false;
-            mayClean = false;
-            contractLength = 0;
-            contractDate = 0;
-            contractEndDate = 0;
-            workCooldown = 0;
-            payment = 0;
-            surgeryQueue = 0;
-            ResetMood();
-        }
-        /// <summary>
         /// Used when a Tenant should leave.
         /// </summary>
         public void CleanTenancy() {
             contracted = false;
             wanted = false;
+            wantedBy = null;
             mole = false;
             moleActivated = false;
             moleMessage = false;
@@ -191,11 +171,12 @@ namespace Tenants {
         public override void PostExposeData() {
             Scribe_Values.Look(ref isTenant, "IsTenant");
             Scribe_Values.Look(ref isTerminated, "IsTerminated");
-            Scribe_Values.Look(ref wasTenant, "WasTenant");
+            Scribe_Values.Look(ref capturedTenant, "CapturedTenant");
             Scribe_Values.Look(ref mayJoin, "MayJoin");
             Scribe_Values.Look(ref autoRenew, "AutoRenew");
             Scribe_Values.Look(ref contracted, "Contracted");
             Scribe_Values.Look(ref wanted, "Wanted");
+            Scribe_References.Look(ref wantedBy, "WantedBy");
             Scribe_Values.Look(ref mole, "Mole");
             Scribe_Values.Look(ref moleActivated, "MoleActivated");
             Scribe_Values.Look(ref moleMessage, "MoleMessage");

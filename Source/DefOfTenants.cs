@@ -9,6 +9,7 @@ namespace Tenants {
         public static IncidentDef Opportunists;
         public static IncidentDef RequestForTenancy;
         public static IncidentDef MoleRaid;
+        public static IncidentDef WantedRaid;
         static IncidentDefOf() {
             DefOfHelper.EnsureInitializedInCtor(typeof(IncidentDefOf));
         }
@@ -17,6 +18,7 @@ namespace Tenants {
     public static class RaidStrategyDefOf {
         public static RaidStrategyDef Retribution;
         public static RaidStrategyDef MoleRaid;
+        public static RaidStrategyDef WantedRaid;
 
         static RaidStrategyDefOf() {
             DefOfHelper.EnsureInitializedInCtor(typeof(RaidStrategyDefOf));

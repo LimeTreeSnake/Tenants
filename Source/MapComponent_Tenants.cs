@@ -10,6 +10,7 @@ namespace Tenants {
         private List<Pawn> deadTenantsToAvenge = new List<Pawn>();
         private List<Pawn> capturedTenantsToAvenge = new List<Pawn>();
         private List<Pawn> moles = new List<Pawn>();
+        private List<Pawn> wantedTenants = new List<Pawn>();
         #endregion Fields
         #region Properties
         public List<Pawn> DeadTenantsToAvenge {
@@ -28,6 +29,12 @@ namespace Tenants {
             get {
                 if (moles == null) { moles = new List<Pawn>(); }
                 return moles;
+            }
+        }
+        public List<Pawn> WantedTenants {
+            get {
+                if (wantedTenants == null) { wantedTenants = new List<Pawn>(); }
+                return wantedTenants;
             }
         }
         public float Karma { get { return karma; } set { karma = value; } }
@@ -52,6 +59,7 @@ namespace Tenants {
             Scribe_Collections.Look(ref deadTenantsToAvenge, "DeadTenants", LookMode.Reference);
             Scribe_Collections.Look(ref capturedTenantsToAvenge, "CapturedTenants", LookMode.Reference);
             Scribe_Collections.Look(ref moles, "Moles", LookMode.Reference);
+            Scribe_Collections.Look(ref wantedTenants, "WantedTenants", LookMode.Reference);
             Scribe_Values.Look(ref karma, "Karma");
             Scribe_Values.Look(ref broadcast, "Broadcast");
         }

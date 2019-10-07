@@ -83,7 +83,6 @@ namespace Tenants {
     }
 
     public class IncidentWorker_MoleRaid : IncidentWorker_RaidEnemy {
-
         protected override string GetLetterLabel(IncidentParms parms) {
             return "Mole".Translate();
         }
@@ -94,10 +93,8 @@ namespace Tenants {
                 Tenant tenantComp = mole.GetTenantComponent();
                 if (Rand.Value < 0.66f) {
                     mole.SetFaction(mole.GetTenantComponent().HiddenFaction);
-                    tenantComp.ResetTenancy();
+                    tenantComp.IsTenant = false;
                 }
-                tenantComp.MoleMessage = false;
-                tenantComp.MoleActivated = false;
 
                 string str = string.Format(parms.raidArrivalMode.textEnemy, parms.faction.def.pawnsPlural, parms.faction.Name);
                 str += "\n\n";
@@ -144,25 +141,61 @@ namespace Tenants {
         }
     }
     public class IncidentWorker_Opportunists : IncidentWorker_RaidEnemy {
-
         protected override string GetLetterLabel(IncidentParms parms) {
             return "Opportunists".Translate();
         }
         protected override string GetLetterText(IncidentParms parms, List<Pawn> pawns) {
             try {
-            MapComponent_Tenants.GetComponent((Map)parms.target).Broadcast = false;
-            string basic = string.Format(parms.raidArrivalMode.textEnemy, parms.faction.def.pawnsPlural, parms.faction.Name);
-            basic += "\n\n";
-            basic += "TenantOpportunists".Translate();
-            Pawn leader = pawns.Find((Pawn x) => x.Faction.leader == x);
-            if (leader != null) {
+                MapComponent_Tenants.GetComponent((Map)parms.target).Broadcast = false;
+                string basic = string.Format(parms.raidArrivalMode.textEnemy, parms.faction.def.pawnsPlural, parms.faction.Name);
                 basic += "\n\n";
-                basic += "EnemyRaidLeaderPresent".Translate(leader.Faction.def.pawnsPlural, leader.LabelShort, leader.Named("LEADER"));
-            }
-            return basic;
+                basic += "TenantOpportunists".Translate();
+                Pawn leader = pawns.Find((Pawn x) => x.Faction.leader == x);
+                if (leader != null) {
+                    basic += "\n\n";
+                    basic += "EnemyRaidLeaderPresent".Translate(leader.Faction.def.pawnsPlural, leader.LabelShort, leader.Named("LEADER"));
+                }
+                return basic;
             }
             catch (System.Exception) {
                 return base.GetLetterText(parms, pawns);
+            }
+        }
+    }
+
+    public class IncidentWorker_Wanted : IncidentWorker_RaidEnemy {
+        protected override string GetLetterLabel(IncidentParms parms) {
+            return "Wanted".Translate();
+        }
+        protected override string GetLetterText(IncidentParms parms, List<Pawn> pawns) {
+            try {
+                if (MapComponent_Tenants.GetComponent((Map)parms.target).WantedTenants.Count > 0)
+                    MapComponent_Tenants.GetComponent((Map)parms.target).WantedTenants.RemoveAt(0);
+                string basic = string.Format(parms.raidArrivalMode.textEnemy, parms.faction.def.pawnsPlural, parms.faction.Name);
+                basic += "\n\n";
+                basic += "WantedTenant".Translate();
+                Pawn leader = pawns.Find((Pawn x) => x.Faction.leader == x);
+                if (leader != null) {
+                    basic += "\n\n";
+                    basic += "EnemyRaidLeaderPresent".Translate(leader.Faction.def.pawnsPlural, leader.LabelShort, leader.Named("LEADER"));
+                }
+                return basic;
+            }
+            catch (System.Exception) {
+                return base.GetLetterText(parms, pawns);
+            }
+        }
+        protected override bool TryResolveRaidFaction(IncidentParms parms) {
+            try {
+                parms.faction = MapComponent_Tenants.GetComponent((Map)parms.target).WantedTenants[0].GetTenantComponent().WantedBy;
+                if (FactionCanBeGroupSource(parms.faction, (Map)parms.target)) {
+                    return true;
+                }
+                else
+                    return false;
+            }
+            catch (System.Exception) {
+                return base.TryResolveRaidFaction(parms);
             }
         }
     }
