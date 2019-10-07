@@ -208,21 +208,26 @@ namespace Tenants {
             pawn.SetFaction(tenantComp.HiddenFaction);
             if (pawn.Faction.HostileTo(Find.FactionManager.OfPlayer)) {
                 if (Rand.Value < 0.5f) {
-                    FactionRelation relation = tenantComp.WantedBy.RelationWith(Find.FactionManager.OfPlayer);
-                    relation.goodwill = relation.goodwill - SettingsHelper.LatestVersion.OutragePenalty;
-                    Messages.Message("TenantDeathRelative".Translate(pawn.Faction, SettingsHelper.LatestVersion.OutragePenalty, pawn.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
-                    MapComponent_Tenants.GetComponent(pawn.Map).DeadTenantsToAvenge.Add(pawn);
-                    IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, pawn.Map);
-                    parms.raidStrategy = RaidStrategyDefOf.Retribution;
-                    parms.forced = true;
-                    Find.Storyteller.incidentQueue.Add(IncidentDefOf.RetributionForDead, Find.TickManager.TicksGame + Rand.Range(15000, 90000), parms, 240000);
+                    if (tenantComp.HiddenFaction.def != FactionDefOf.Ancients) {
+
+                        FactionRelation relation = tenantComp.HiddenFaction.RelationWith(Find.FactionManager.OfPlayer);
+                        relation.goodwill = relation.goodwill - SettingsHelper.LatestVersion.OutragePenalty * 2;
+                        Messages.Message("TenantFactionOutrage".Translate(pawn.Faction, SettingsHelper.LatestVersion.OutragePenalty, pawn.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
+                        MapComponent_Tenants.GetComponent(pawn.Map).DeadTenantsToAvenge.Add(pawn);
+                        IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, pawn.Map);
+                        parms.raidStrategy = RaidStrategyDefOf.Retribution;
+                        parms.forced = true;
+                        Find.Storyteller.incidentQueue.Add(IncidentDefOf.RetributionForDead, Find.TickManager.TicksGame + Rand.Range(15000, 90000), parms, 240000);
+                    }
                 }
             }
             else {
                 if (Rand.Value < 0.66f) {
-                    FactionRelation relation = tenantComp.WantedBy.RelationWith(Find.FactionManager.OfPlayer);
-                    relation.goodwill = relation.goodwill - SettingsHelper.LatestVersion.OutragePenalty * 2;
-                    Messages.Message("TenantFactionOutrage".Translate(pawn.Faction, SettingsHelper.LatestVersion.OutragePenalty * 2, pawn.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
+                    if (tenantComp.HiddenFaction.def != FactionDefOf.Ancients) {
+                        FactionRelation relation = tenantComp.HiddenFaction.RelationWith(Find.FactionManager.OfPlayer);
+                        relation.goodwill = relation.goodwill - SettingsHelper.LatestVersion.OutragePenalty * 2;
+                        Messages.Message("TenantFactionOutrage".Translate(pawn.Faction, SettingsHelper.LatestVersion.OutragePenalty * 2, pawn.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
+                    }
                 }
 
             }
@@ -251,9 +256,11 @@ namespace Tenants {
             }
             else {
                 if (Rand.Value < 0.66f || tenantComp.Wanted) {
-                    FactionRelation relation = pawn.Faction.RelationWith(Find.FactionManager.OfPlayer);
-                    relation.goodwill = relation.goodwill - SettingsHelper.LatestVersion.OutragePenalty;
-                    Messages.Message("TenantFactionOutrage".Translate(pawn.Faction, SettingsHelper.LatestVersion.OutragePenalty, pawn.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
+                    if (tenantComp.HiddenFaction.def != FactionDefOf.Ancients) {
+                        FactionRelation relation = pawn.Faction.RelationWith(Find.FactionManager.OfPlayer);
+                        relation.goodwill = relation.goodwill - SettingsHelper.LatestVersion.OutragePenalty;
+                        Messages.Message("TenantFactionOutrage".Translate(pawn.Faction, SettingsHelper.LatestVersion.OutragePenalty, pawn.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
+                    }
                 }
             }
         }
