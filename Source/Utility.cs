@@ -184,6 +184,9 @@ namespace Tenants {
             pawn.SetFaction(Faction.OfAncients);
             pawn.GetTenantComponent().CleanTenancy();
             LordMaker.MakeNewLord(pawn.Faction, new LordJob_ExitMapBest(), pawn.Map, new List<Pawn> { pawn });
+            if (MapComponent_Tenants.GetComponent(pawn.Map).WantedTenants.Contains(pawn)) {
+                MapComponent_Tenants.GetComponent(pawn.Map).WantedTenants.Remove(pawn);
+            }
         }
         public static void TenantCancelContract(Pawn pawn) {
             Messages.Message("ContractDonePlayerTerminated".Translate(pawn.Named("PAWN")), MessageTypeDefOf.NeutralEvent);

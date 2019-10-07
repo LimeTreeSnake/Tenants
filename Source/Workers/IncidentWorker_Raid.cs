@@ -164,6 +164,15 @@ namespace Tenants {
     }
 
     public class IncidentWorker_Wanted : IncidentWorker_RaidEnemy {
+
+        protected override bool CanFireNowSub(IncidentParms parms) {
+            bool canFire = base.CanFireNowSub(parms);
+
+            if (MapComponent_Tenants.GetComponent((Map)parms.target).WantedTenants.Count < 1)
+                canFire = false;
+
+            return canFire;
+        }
         protected override string GetLetterLabel(IncidentParms parms) {
             return "Wanted".Translate();
         }
