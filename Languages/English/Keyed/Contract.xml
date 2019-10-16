@@ -10,8 +10,8 @@
 	<RequestForTenancyRejected>{1_labelShort} mutters something along the line 'who'd want to live with you anyways...'</RequestForTenancyRejected>
 	<RequestForTenancyContinuedRejected>{1_labelShort} is saddened but accepts your decision nevertheless.</RequestForTenancyContinuedRejected>
 
-	<RequestForTenancyHiding>{PAWN_nameDef} is looking for a place to hide in for a while. {PAWN_pronoun} claims that members of {0} is coming for {PAWN_possessive}. Accepting {PAWN_possessive} would anger {0} and they might send raiders your way. </RequestForTenancyHiding>
-	<RequestForTenancyHidingTitle>Request for Shelter in {0}</RequestForTenancyHidingTitle>
+	<RequestForTenancyHiding>{PAWN_pronoun} claims that members of {0} is coming for {PAWN_possessive}! Accepting {PAWN_possessive} would anger {0} and they might send raiders your way. </RequestForTenancyHiding>
+	<RequestForTenancyHidingTitle>Fugitive looking for shelter in {0}</RequestForTenancyHidingTitle>
 	
 	<RequestTenantWantToJoinTitle>Request from tenant in {0}</RequestTenantWantToJoinTitle>
 	<RequestTenantWantToJoin>{PAWN_nameDef} loves staying here and wants to stay permanently! Will you accept {PAWN_objective}? </RequestTenantWantToJoin>

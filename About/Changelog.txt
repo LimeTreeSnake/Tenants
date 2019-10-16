@@ -1,30 +1,13 @@
-2019-09-19
--Added check to see if tenant is spawned before deciding to do a retribution.
--Removed a faulty label upon tenant not having a contract.
-
-2019-09-21
--Lowered Raid strategy points for redemption raid.
--Reverted code for silver spawning to debug spawning again. Stacking mods are still an issue for generation.
--Checks for tenant retribution now make sure tenants are contracted.
--Faulty check for inspirations made correctly.
--Remade check for tenant table so that broken tenants are listed as well.
--Lowered opportunist chance of spawning from 33% to 20%.
--Remade tenant generation code to include hidden faction belonging.
--Added new event Moles. Prevent them indefinitely by keeping tenants happy.
-
-
-
-2019-09-24
--Mole event message when used.
--No stacking mole events
--Try/Catch on spawning mole events.
--Fixed issue with moles not doing mole job.
-
-2019-09-25
--Lookmode reference when storing listed data in mapcomponent.
-
-2019-09-26
--Auto renew should now spawn payment whoops.
+2019-10-16
+-Added race restrictions for tenancy in mod settings.
+-Removed medical restriction for tenants.
+-New tenant restriction for medical, if it has the isViolation tag set to true then angry tenant. 
+	Example of vanilla violation is Euthanize. 
+	Thus if you find any mods that add an operation that should be considered a violation but works on tenants... 
+	Pester the modder to set it properly.
+-Altered generation code to fit the new race restriction options.
+-Altered the message for fugitive tenants to avoid mixing them with regular tenants.
+-Added a check for wanted tenants to make sure their enemies can raid.
 
 2019-10-07
 -Removed tenant drop-pod events.
@@ -43,3 +26,29 @@
 -Wanted tenants that leave should no longer spawn bounty hunters.
 -If a tenant is downed, you may do non violation surgery on it.
 -Toned down chance for Bounty event a tad :).
+
+2019-09-26
+-Auto renew should now spawn payment whoops.
+
+2019-09-25
+-Lookmode reference when storing listed data in mapcomponent.
+
+2019-09-24
+-Mole event message when used.
+-No stacking mole events
+-Try/Catch on spawning mole events.
+-Fixed issue with moles not doing mole job.
+
+2019-09-21
+-Lowered Raid strategy points for redemption raid.
+-Reverted code for silver spawning to debug spawning again. Stacking mods are still an issue for generation.
+-Checks for tenant retribution now make sure tenants are contracted.
+-Faulty check for inspirations made correctly.
+-Remade check for tenant table so that broken tenants are listed as well.
+-Lowered opportunist chance of spawning from 33% to 20%.
+-Remade tenant generation code to include hidden faction belonging.
+-Added new event Moles. Prevent them indefinitely by keeping tenants happy.
+
+2019-09-19
+-Added check to see if tenant is spawned before deciding to do a retribution.
+-Removed a faulty label upon tenant not having a contract.

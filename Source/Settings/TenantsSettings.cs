@@ -7,6 +7,8 @@ using RimWorld;
 namespace Tenants {
     internal class TenantsSettings : ModSettings {
         #region Fields
+        private static readonly List<string> tenantRaces = new List<string>() { "Human" };
+        private static readonly float raceViewHeight = 300;
         private static readonly int minDailyCost = 50;
         private static readonly int maxDailyCost = 100;
         private static readonly int minContractTime = 5;
@@ -26,6 +28,9 @@ namespace Tenants {
         private static readonly float levelOfHappinessToWork = 70f;
         #endregion Fields
         #region Properties
+        public List<string> TenantRaces = tenantRaces.ListFullCopy();
+        public IEnumerable<ThingDef> AvailableTenantRaces = DefDatabase<PawnKindDef>.AllDefsListForReading.Where(x => x.race != null && x.RaceProps.Humanlike && x.RaceProps.IsFlesh && x.RaceProps.ResolvedDietCategory != DietCategory.NeverEats).Select(s => s.race).Distinct();
+        public float RaceViewHeight = raceViewHeight;
         public int MinDailyCost = minDailyCost;
         public int MaxDailyCost = maxDailyCost;
         public int MinContractTime = minContractTime;
@@ -51,6 +56,8 @@ namespace Tenants {
         public override void ExposeData() {
 
             base.ExposeData();
+            Scribe_Collections.Look(ref TenantRaces, "TenantRaces", LookMode.Value);
+            Scribe_Values.Look(ref RaceViewHeight, "RaceViewHeight", raceViewHeight);
             Scribe_Values.Look(ref MinDailyCost, "MinDailyCost", minDailyCost);
             Scribe_Values.Look(ref MaxDailyCost, "MaxDailyCost", maxDailyCost);
             Scribe_Values.Look(ref MinContractTime, "MinContractTime", minContractTime);
@@ -70,7 +77,9 @@ namespace Tenants {
             Scribe_Values.Look(ref b, "B", b);
             Scribe_Values.Look(ref LevelOfHappinessToWork, "LevelOfHappinessToWork", levelOfHappinessToWork);
         }
-        public void Reset() {
+        internal void Reset() {
+            TenantRaces = tenantRaces.ListFullCopy();
+            RaceViewHeight = raceViewHeight;
             MinDailyCost = minDailyCost;
             MaxDailyCost = maxDailyCost;
             MinContractTime = minContractTime;
@@ -103,6 +112,7 @@ namespace Tenants {
             return "Tenants";
         }
         public static Vector2 scrollPosition = Vector2.zero;
+        public static Vector2 scrollPositionRaces = Vector2.zero;
 
 
         public override void DoSettingsWindowContents(Rect inRect) {
@@ -110,7 +120,7 @@ namespace Tenants {
             inRect.yMax -= 20;
             Listing_Standard list = new Listing_Standard();
             Rect rect = new Rect(inRect.x, inRect.y, inRect.width, inRect.height);
-            Rect rect2 = new Rect(0f, 0f, inRect.width - 16f, inRect.height * 2 + 450f);
+            Rect rect2 = new Rect(0f, 0f, inRect.width - 30f, inRect.height * 2 + tenantsSettings.RaceViewHeight);
             Widgets.BeginScrollView(rect, ref scrollPosition, rect2, true);
             list.Begin(rect2);
             if (list.ButtonText("Default Settings")) {
@@ -160,6 +170,25 @@ namespace Tenants {
             list.Gap();
             list.Label(string.Format("({0}) Needed level of happiness to work.", tenantsSettings.LevelOfHappinessToWork));
             tenantsSettings.LevelOfHappinessToWork = (byte)Mathf.Round(list.Slider(tenantsSettings.LevelOfHappinessToWork, 0f, 100f));
+            list.GapLine();
+            list.Gap();
+            list.Label(string.Format("Available tenant races."));
+
+            list.Label(string.Format("({0}) Height.", tenantsSettings.RaceViewHeight));
+            tenantsSettings.RaceViewHeight = (int)Mathf.Round(list.Slider(tenantsSettings.RaceViewHeight, 1, 1000));
+            Listing_Standard list2 = list.BeginSection(tenantsSettings.RaceViewHeight);
+            list2.ColumnWidth = (rect2.width - 50) / 3;
+            foreach (ThingDef def in tenantsSettings.AvailableTenantRaces) {
+                bool contains = tenantsSettings.TenantRaces.Contains(def.defName);
+                list2.CheckboxLabeled(def.defName, ref contains, "");
+                if (contains == false && tenantsSettings.TenantRaces.Contains(def.defName)) {
+                    tenantsSettings.TenantRaces.Remove(def.defName);
+                }
+                else if (contains == true && !tenantsSettings.TenantRaces.Contains(def.defName)) {
+                    tenantsSettings.TenantRaces.Add(def.defName);
+                }
+            }
+            list.EndSection(list2);
 
             list.End();
             Widgets.EndScrollView();

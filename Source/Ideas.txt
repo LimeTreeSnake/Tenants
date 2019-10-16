@@ -1,6 +1,2 @@
-﻿TEnant bring pets, avenge should dead
-
-Jump through mountains
-
-
-Remove silver on tenants when spawning.
+﻿Remove silver on tenants when spawning.
+Options for tenancy races

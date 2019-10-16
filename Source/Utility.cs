@@ -132,6 +132,8 @@ namespace Tenants {
         public static bool ContractTenancy(Map map) {
             string title = "";
             Pawn pawn = FindRandomTenant();
+            if (pawn == null)
+                return false;
             pawn.relations.everSeenByPlayer = true;
             Tenant tenantComp = pawn.TryGetComp<Tenant>();
             GenerateBasicTenancyContract(tenantComp);
@@ -390,6 +392,9 @@ namespace Tenants {
             if (pawns.Count < 20)
                 for (int i = 0; i < 3; i++)
                     pawns.Add(GenerateNewTenant());
+
+            if (pawns.Count == 0)
+                return null;
             pawns.Shuffle();
             return pawns[0];
         }
@@ -398,8 +403,15 @@ namespace Tenants {
             if (tenantComp.HiddenFaction.def != FactionDefOf.Ancients) {
                 List<FactionRelation> entries = Traverse.Create(tenantComp.HiddenFaction).Field("relations").GetValue<List<FactionRelation>>().Where(p => p.kind == FactionRelationKind.Hostile).ToList();
                 if (entries.Count > 0) {
-                    entries.Shuffle();
-                    tenantComp.WantedBy = entries[0].other;
+                    int count = 0;
+                    while (tenantComp.WantedBy == null && count < 10) {
+                        count++;
+                        entries.Shuffle();
+                        if (entries[0].other.def.pawnGroupMakers != null)
+                            tenantComp.WantedBy = entries[0].other;
+                    }
+                    if (tenantComp.WantedBy == null)
+                        return false;
                     tenantComp.Wanted = true;
                     return true;
                 }
@@ -410,10 +422,13 @@ namespace Tenants {
             bool generation = true;
             Pawn newTenant = null;
             while (generation) {
-                PawnKindDef random = DefDatabase<PawnKindDef>.GetRandom();
+                string race = SettingsHelper.LatestVersion.TenantRaces.RandomElement();
+                PawnKindDef random = DefDatabase<PawnKindDef>.AllDefsListForReading.Where(x => x.race.defName == race).RandomElement();
+                if (random == null)
+                    return null;
                 Faction faction = FactionUtility.DefaultFactionFrom(random.defaultFactionType);
                 newTenant = PawnGenerator.GeneratePawn(random, faction);
-                if (newTenant != null && !newTenant.Dead && !newTenant.IsDessicated() && !newTenant.AnimalOrWildMan() && newTenant.RaceProps.Humanlike && newTenant.RaceProps.IsFlesh && newTenant.RaceProps.ResolvedDietCategory != DietCategory.NeverEats) {
+                if (newTenant != null && !newTenant.Dead && !newTenant.IsDessicated() && !newTenant.AnimalOrWildMan()) {
                     {
                         if (SettingsHelper.LatestVersion.SimpleClothing) {
                             FloatRange range = newTenant.kindDef.apparelMoney;
@@ -421,6 +436,7 @@ namespace Tenants {
                             PawnApparelGenerator.GenerateStartingApparelFor(newTenant, new PawnGenerationRequest(random));
                             newTenant.kindDef.apparelMoney = range;
                         }
+                        RemoveExpensiveItems(newTenant);
                         newTenant.GetTenantComponent().IsTenant = true;
                         newTenant.GetTenantComponent().HiddenFaction = faction;
                         newTenant.SetFaction(Faction.OfAncients);
@@ -578,7 +594,16 @@ namespace Tenants {
             }
             DebugThingPlaceHelper.DebugSpawn(ThingDefOf.Silver, pawn.Position, payment);
         }
-
+        public static void RemoveExpensiveItems(Pawn pawn) {
+            if (pawn.apparel.WornApparel != null && pawn.apparel.WornApparel.Count > 0)
+                foreach (Apparel item in pawn.apparel.WornApparel)
+                    if (item.MarketValue > 400) pawn.apparel.Remove(item);
+            if (pawn.inventory.innerContainer != null && pawn.inventory.innerContainer.Count > 0)
+                foreach (Thing item in pawn.inventory.innerContainer)
+                    if (item.MarketValue > 400) pawn.inventory.innerContainer.Remove(item);
+            if (pawn.equipment.Primary != null)
+                if (pawn.equipment.Primary.MarketValue > 400) pawn.equipment.Primary.Destroy();
+        }
 
         public static string AppendPawnDescription(string text, Pawn pawn) {
             StringBuilder stringBuilder = new StringBuilder(text);

@@ -102,9 +102,9 @@ namespace Tenants {
                         }
                         tenantComp.IsTerminated = false;
                     }
-                    //Operations queue for tenancy rejected.
+                    ////Operations queue for tenancy rejected.
                     if (__instance.BillStack.Count > 0) {
-                        if (!(__instance.Downed && __instance.BillStack.Bills.Where(x => x.recipe.isViolation == true).Count() < 0)) {
+                        if ((__instance.BillStack.Bills.Where(x => x.recipe.isViolation == true).Count() > 0)) {
                             __instance.BillStack.Clear();
                             tenantComp.SurgeryQueue++;
                             if (tenantComp.SurgeryQueue < 2) {
@@ -113,7 +113,7 @@ namespace Tenants {
                             else {
                                 Messages.Message("TenantSurgeryLeave".Translate(__instance.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
                                 Utility.TenantLeave(__instance);
-                            }                        
+                            }
                         }
                     }
                     //Tenancy tick per day
