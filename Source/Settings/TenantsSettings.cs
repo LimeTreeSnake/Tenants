@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
+using System;
 
 namespace Tenants {
     internal class TenantsSettings : ModSettings {
@@ -11,8 +12,8 @@ namespace Tenants {
         private static readonly float raceViewHeight = 300;
         private static readonly int minDailyCost = 50;
         private static readonly int maxDailyCost = 100;
-        private static readonly int minContractTime = 5;
-        private static readonly int maxContractTime = 5;
+        private static readonly int minContractTime = 3;
+        private static readonly int maxContractTime = 7;
         private static readonly float stayChanceHappy = 95F;
         private static readonly float stayChanceNeutral = 50F;
         private static readonly float stayChanceSad = 5f;
@@ -112,10 +113,10 @@ namespace Tenants {
             return "Tenants";
         }
         public static Vector2 scrollPosition = Vector2.zero;
-        public static Vector2 scrollPositionRaces = Vector2.zero;
 
 
         public override void DoSettingsWindowContents(Rect inRect) {
+            try {
             inRect.yMin += 20;
             inRect.yMax -= 20;
             Listing_Standard list = new Listing_Standard();
@@ -172,27 +173,32 @@ namespace Tenants {
             tenantsSettings.LevelOfHappinessToWork = (byte)Mathf.Round(list.Slider(tenantsSettings.LevelOfHappinessToWork, 0f, 100f));
             list.GapLine();
             list.Gap();
-            list.Label(string.Format("Available tenant races."));
-
-            list.Label(string.Format("({0}) Height.", tenantsSettings.RaceViewHeight));
             tenantsSettings.RaceViewHeight = (int)Mathf.Round(list.Slider(tenantsSettings.RaceViewHeight, 1, 1000));
-            Listing_Standard list2 = list.BeginSection(tenantsSettings.RaceViewHeight);
-            list2.ColumnWidth = (rect2.width - 50) / 3;
-            foreach (ThingDef def in tenantsSettings.AvailableTenantRaces) {
-                bool contains = tenantsSettings.TenantRaces.Contains(def.defName);
-                list2.CheckboxLabeled(def.defName, ref contains, "");
-                if (contains == false && tenantsSettings.TenantRaces.Contains(def.defName)) {
-                    tenantsSettings.TenantRaces.Remove(def.defName);
+            if (tenantsSettings.AvailableTenantRaces != null && tenantsSettings.AvailableTenantRaces.Count() > 0) {
+                list.Label(string.Format("Available tenant races."));
+                list.Label(string.Format("({0}) Height.", tenantsSettings.RaceViewHeight));
+                Listing_Standard list2 = list.BeginSection(tenantsSettings.RaceViewHeight);
+                list2.ColumnWidth = (rect2.width - 50) / 3;
+                foreach (ThingDef def in tenantsSettings.AvailableTenantRaces) {
+                    bool contains = tenantsSettings.TenantRaces.Contains(def.defName);
+                    list2.CheckboxLabeled(def.defName, ref contains, "");
+                    if (contains == false && tenantsSettings.TenantRaces.Contains(def.defName)) {
+                        tenantsSettings.TenantRaces.Remove(def.defName);
+                    }
+                    else if (contains == true && !tenantsSettings.TenantRaces.Contains(def.defName)) {
+                        tenantsSettings.TenantRaces.Add(def.defName);
+                    }
                 }
-                else if (contains == true && !tenantsSettings.TenantRaces.Contains(def.defName)) {
-                    tenantsSettings.TenantRaces.Add(def.defName);
-                }
+                list.EndSection(list2);
             }
-            list.EndSection(list2);
 
             list.End();
             Widgets.EndScrollView();
             tenantsSettings.Write();
+            }
+            catch(Exception ex) {
+                Log.Message(ex.Message);
+            }
         }
     }
 }
