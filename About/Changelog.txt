@@ -1,3 +1,8 @@
+2019-10-18
+-Changed default values.
+-New Preview Image
+-Try/Catch for mod settings and nullcheck to avoid exception when possibly a race occur.
+
 2019-10-16
 -Added race restrictions for tenancy in mod settings.
 -Removed medical restriction for tenants.
