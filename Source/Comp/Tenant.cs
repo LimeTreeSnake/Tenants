@@ -24,7 +24,6 @@ namespace Tenants {
         private int contractLength;
         private int contractDate;
         private int contractEndDate;
-        private int workCooldown;
         private int recentBadMoodCount, happyMoodCount, sadMoodCount, neutralMoodCount;
         private int payment;
         private int surgeryQueue;
@@ -110,10 +109,7 @@ namespace Tenants {
         public int ContractEndTick {
             get { return contractDate + contractLength; }
         }
-        public int WorkCooldown {
-            get { return workCooldown; }
-            set { workCooldown = value; }
-        }
+
         public int RecentBadMoodsCount {
             get { return recentBadMoodCount; }
             set { recentBadMoodCount = value; }
@@ -163,7 +159,6 @@ namespace Tenants {
             contractLength = 0;
             contractDate = 0;
             contractEndDate = 0;
-            workCooldown = 0;
             payment = 0;
             surgeryQueue = 0;
             ResetMood();
@@ -188,7 +183,6 @@ namespace Tenants {
             Scribe_Values.Look(ref contractLength, "ContractLength");
             Scribe_Values.Look(ref contractDate, "ContractDate");
             Scribe_Values.Look(ref contractEndDate, "ContractEndDate");
-            Scribe_Values.Look(ref workCooldown, "WorkCooldown");
             Scribe_Values.Look(ref recentBadMoodCount, "RecentBadMoodCount");
             Scribe_Values.Look(ref happyMoodCount, "HappyMoodCount");
             Scribe_Values.Look(ref sadMoodCount, "SadMoodCount");

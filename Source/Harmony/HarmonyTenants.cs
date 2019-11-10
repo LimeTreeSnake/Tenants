@@ -60,6 +60,7 @@ namespace Tenants {
             foreach (ThingDef def in DefDatabase<ThingDef>.AllDefs) {
                 if (def.race != null) {
                     def.comps.Add(new CompProps_Tenant());
+                    def.comps.Add(new CompProps_Courier());
                 }
             }
         }
@@ -82,12 +83,12 @@ namespace Tenants {
                     //Tenant alone with no colonist
                     Pawn colonist = __instance.Map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false);
                     if (colonist == null) {
-                        Utility.ContractConclusion(__instance, true, 1f);
+                        Events.ContractConclusion(__instance, true, 1f);
                         return;
                     }
                     //Tenant contract is out
                     if (Find.TickManager.TicksGame >= tenantComp.ContractEndTick) {
-                        Utility.ContractConclusion(__instance, false);
+                        Events.ContractConclusion(__instance, false);
                         return;
                     }
 
@@ -97,7 +98,7 @@ namespace Tenants {
                             Messages.Message("ContractTerminateFail".Translate(), MessageTypeDefOf.NeutralEvent);
                         }
                         else {
-                            Utility.TenantCancelContract(__instance);
+                            Events.TenantCancelContract(__instance);
                             return;
                         }
                         tenantComp.IsTerminated = false;
@@ -112,7 +113,7 @@ namespace Tenants {
                             }
                             else {
                                 Messages.Message("TenantSurgeryLeave".Translate(__instance.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
-                                Utility.TenantLeave(__instance);
+                                Events.TenantLeave(__instance);
                             }
                         }
                     }
@@ -120,7 +121,7 @@ namespace Tenants {
                     if (Find.TickManager.TicksGame % 60000 == 0) {
                         if (tenantComp.Wanted) {
                             if (!MapComponent_Tenants.GetComponent(__instance.Map).WantedTenants.Contains(__instance)) {
-                                Utility.TenantWanted(__instance);
+                                Events.TenantWanted(__instance);
                             }
                         }
                     }
@@ -140,7 +141,7 @@ namespace Tenants {
                             }
                         }
                         if (__instance.needs.mood.CurInstantLevel > 0.8f) {
-                            Utility.TenantWantToJoin(__instance);
+                            Events.TenantWantToJoin(__instance);
                         }
 
                         //Calculate mood
@@ -152,7 +153,7 @@ namespace Tenants {
                             tenantComp.SadMoodCount++;
                             tenantComp.RecentBadMoodsCount++;
                             if (tenantComp.RecentBadMoodsCount > 5) {
-                                Utility.ContractConclusion(__instance, true);
+                                Events.ContractConclusion(__instance, true);
                             }
                         }
                         else {
@@ -177,10 +178,10 @@ namespace Tenants {
             Tenant tenantComp = pawn.GetTenantComponent();
             if (tenantComp != null && tenantComp.IsTenant) {
                 if (tenantComp.MoleActivated) {
-                    Utility.TenantMoleCaptured(pawn);
+                    Events.TenantMoleCaptured(pawn);
                 }
                 else {
-                    Utility.TenantCaptured(pawn, byPawn);
+                    Events.TenantCaptured(pawn, byPawn);
                 }
             }
         }
@@ -188,7 +189,7 @@ namespace Tenants {
             Tenant tenantComp = __instance.GetTenantComponent();
             if (tenantComp != null)
                 if ((tenantComp.Contracted || tenantComp.CapturedTenant && !__instance.guest.Released) && __instance.Spawned) {
-                    Utility.TenantDeath(__instance);
+                    Events.TenantDeath(__instance);
                 }
         }
         public static bool InspirationCanOccur_PreFix(Pawn pawn) {
@@ -303,10 +304,8 @@ namespace Tenants {
             return true;
         }
         public static void GetFloatMenuOptions_PostFix(Building_CommsConsole __instance, ref IEnumerable<FloatMenuOption> __result, Pawn myPawn) {
-
+            List<FloatMenuOption> list = __result.ToList();
             if (!MapComponent_Tenants.GetComponent(myPawn.Map).Broadcast) {
-
-                List<FloatMenuOption> list = __result.ToList();
                 void inviteTenant() {
                     Job job = new Job(JobDefOf.JobUseCommsConsoleTenants, __instance);
                     myPawn.jobs.TryTakeOrderedJob(job);
@@ -314,14 +313,17 @@ namespace Tenants {
                 }
                 FloatMenuOption inviteTenants = new FloatMenuOption("InviteTenant".Translate(), inviteTenant, MenuOptionPriority.InitiateSocial);
                 list.Add(inviteTenants);
-                if (SettingsHelper.LatestVersion.AcceptTenancy) {
-                    list.Add(new FloatMenuOption("RejectTenant".Translate(), () => SettingsHelper.LatestVersion.AcceptTenancy = false, MenuOptionPriority.InitiateSocial));
-                }
-                else {
-                    list.Add(new FloatMenuOption("AcceptTenant".Translate(), () => SettingsHelper.LatestVersion.AcceptTenancy = true, MenuOptionPriority.InitiateSocial));
-                }
-                __result = list.AsEnumerable();
             }
+            if (!MapComponent_Tenants.GetComponent(myPawn.Map).BroadcastCourier) {
+                void inviteCourier() {
+                    Job job = new Job(JobDefOf.JobUseCommsConsoleInviteCourier, __instance);
+                    myPawn.jobs.TryTakeOrderedJob(job);
+                    PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.OpeningComms, KnowledgeAmount.Total);
+                }
+                FloatMenuOption inviteCouriers = new FloatMenuOption("CourierInvite".Translate(SettingsHelper.LatestVersion.CourierCost), inviteCourier, MenuOptionPriority.InitiateSocial);
+                list.Add(inviteCouriers);
+            }
+            __result = list.AsEnumerable();
         }
         #endregion GUI
     }

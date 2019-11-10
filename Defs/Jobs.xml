@@ -12,4 +12,16 @@
     <reportString>using comms console.</reportString>
     <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
   </JobDef>
+    <JobDef>
+    <defName>JobUseCommsConsoleInviteCourier</defName>
+    <driverClass>Tenants.JobDriver_UseCommsConsoleInviteCourier</driverClass>
+    <reportString>using comms console.</reportString>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
+  <JobDef>
+    <defName>JobCheckMailBox</defName>
+    <driverClass>Tenants.JobDriver_CheckMailBox</driverClass>
+    <reportString>checking mail box.</reportString>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
 </Defs>

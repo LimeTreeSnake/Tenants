@@ -1,54 +1,50 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-
-
 	<RequestForTenancyTitle>Request for Tenancy in {0}</RequestForTenancyTitle>
 	<RequestForTenancyInitial>{PAWN_nameDef} is looking for a place to take shelter in for a while and {PAWN_pronoun} is willing to pay you for it. Would you kindly consider this proposition?</RequestForTenancyInitial>
 	<RequestForTenancyOpportunity>{PAWN_nameDef} heard your broadcast and asks if {PAWN_pronoun} may live with you for a while.</RequestForTenancyOpportunity>
 	<RequestForTenancyContinued>{PAWN_nameDef} asks to renew the contract. Would you like to extend the contract?</RequestForTenancyContinued>
-	<RequestForTenancyContract>{PAWN_nameDef} lives with you for a total of {0} days and pays {1} silver per day. You shall see to all of {PAWN_possessive} needs including safety. Failure to do so may incur future consequenses.\n\n{PAWN_pronoun} may terminate the contract at any time. Full payment will be recieved at the end of a contract period or whenever if {PAWN_pronoun} terminates it. You may terminate the contract but any payment due would be void.</RequestForTenancyContract>
+	<RequestForTenancyContract>{PAWN_nameDef} lives with you for a total of {0} days and pays {1} silver per day. You shall see to all of {PAWN_possessive} needs including safety. Failure to do so may incur future consequenses.\n\n{PAWN_pronoun} may terminate the contract at any time. Full payment will be recieved by a courier service. You may terminate the contract but any payment due would be void.</RequestForTenancyContract>
 	<RequestForTenancyRejected>{1_labelShort} mutters something along the line 'who'd want to live with you anyways...'</RequestForTenancyRejected>
 	<RequestForTenancyContinuedRejected>{1_labelShort} is saddened but accepts your decision nevertheless.</RequestForTenancyContinuedRejected>
 
-	<RequestForTenancyHiding>{PAWN_pronoun} claims that members of {0} is coming for {PAWN_possessive}! Accepting {PAWN_possessive} would anger {0} and they might send raiders your way. </RequestForTenancyHiding>
+	<RequestForTenancyHiding>{PAWN_pronoun} claims that members of {0} is coming for {PAWN_possessive}! Accepting {PAWN_possessive} would anger {0} and they probably will send bounty hunters your way. </RequestForTenancyHiding>
 	<RequestForTenancyHidingTitle>Fugitive looking for shelter in {0}</RequestForTenancyHidingTitle>
-	
+
 	<RequestTenantWantToJoinTitle>Request from tenant in {0}</RequestTenantWantToJoinTitle>
 	<RequestTenantWantToJoin>{PAWN_nameDef} loves staying here and wants to stay permanently! Will you accept {PAWN_objective}? </RequestTenantWantToJoin>
 	<RequestTenantWantToJoinRejected>{PAWN_nameDef} claims {PAWN_pronoun} will change your mind somehow!</RequestTenantWantToJoinRejected>
-	
+
 	<ContractNew>New Contract</ContractNew>
 	<ContractEnd>Contract Ends</ContractEnd>
 	<ContractBreach>Contract Breach</ContractBreach>
 	<ContractRenewedMessage>{PAWN_nameDef} prolongs {PAWN_possessive} tenancy contract.</ContractRenewedMessage>
-	<ContractDoneHappy>The contract with {PAWN_nameDef} is concluded and full a payment of {0} recieved. {PAWN_nameDef} is very happy with {PAWN_possessive} stay.</ContractDoneHappy>
-	<ContractDoneSad>The contract with {PAWN_nameDef} is concluded and full a payment of {0} recieved. {PAWN_nameDef} is rather disatisfied...</ContractDoneSad>
-	<ContractDone>The contract with {PAWN_nameDef} is concluded and full a payment of {0} recieved.</ContractDone>
-	<ContractDoneTerminated>The contract with {PAWN_nameDef} is terminated and full a payment of {0} recieved. {PAWN_nameDef} leaves seemingly bitter...</ContractDoneTerminated>
+	<ContractDoneHappy>The contract with {PAWN_nameDef} is concluded and full a payment of {0} will be delivered. {PAWN_nameDef} is very happy with {PAWN_possessive} stay.</ContractDoneHappy>
+	<ContractDoneSad>The contract with {PAWN_nameDef} is concluded and full a payment of {0} will be delivered. {PAWN_nameDef} is rather disatisfied...</ContractDoneSad>
+	<ContractDone>The contract with {PAWN_nameDef} is concluded and full a payment of {0} will be delivered.</ContractDone>
+	<ContractDoneTerminated>The contract with {PAWN_nameDef} is terminated and full a payment of {0} will be delivered. {PAWN_nameDef} leaves seemingly bitter...</ContractDoneTerminated>
 	<ContractDonePlayerTerminated>The contract with {PAWN_nameDef} is terminated and {PAWN_pronoun} is forced to leave.</ContractDonePlayerTerminated>
 	<ContractDoneTheft>{PAWN_nameDef} decided to sneak away early without paying. {PAWN_pronoun} also has the audacity to try and steal from you! Criminal scum like {PAWN_nameDef} deserves punishment and you are in the right to do with {PAWN_objective} as you please.</ContractDoneTheft>
 	<ContractTerminateFail>You cannot cancel the contract at this time.</ContractTerminateFail>
-	
+
 	<ContractEndDate>Ends at: {0}</ContractEndDate>
 	<ContractPayment>Payment: {0}</ContractPayment>
 	<ContractLength>Days: {0}</ContractLength>
 	<ContractDaily>Payment/day: {0}</ContractDaily>
 	<TenantDescription>{PAWN_nameDef} is {0} years old and is a {1}.</TenantDescription>
-	
+
 	<ContractAgree>Agree</ContractAgree>
 	<ContractReject>Reject</ContractReject>
 	<MayJoin>May join</MayJoin>
 	<MayJoinTip>Whether a tenant may request to join your colony permanently.</MayJoinTip>
 	<Terminate>Terminate</Terminate>
-	<TerminateTip>Terminate the contract early without pay.</TerminateTip>
+	<TerminateTip>Terminate the contract early thus making the payment void.</TerminateTip>
 	<AutoRenew>Auto renew</AutoRenew>
 	<AutoRenewTip>Whether a tenant can automagically renew the contract at the expiry date.</AutoRenewTip>
 	<InviteTenant>Broadcast tenancy invitation</InviteTenant>
-	
-	
+
 	<AcceptTenant>Accept tenants</AcceptTenant>
 	<RejectTenant>Reject tenants</RejectTenant>
-	
-	<InviteTenantMessage>A broadcast is sent over the rim with your location. The message claims that there is food and comfortable beds for those with silver to spend.</InviteTenantMessage>
-		
+
+	<InviteTenantMessage>A broadcast is sent over the rim with your location. The message claims that there is food and comfortable beds for those with silver to spend.</InviteTenantMessage>	
 </LanguageData>

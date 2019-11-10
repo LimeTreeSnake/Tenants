@@ -1,82 +1,99 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 	<!--RequestForTenancy-->
-  <IncidentDef>
-    <defName>RequestForTenancy</defName>
-    <label>Request for tenancy</label>
-    <targetTags>
-      <li>Map_PlayerHome</li>
-    </targetTags>
-    <workerClass>Tenants.IncidentWorker_TenantProposition</workerClass>
-    <category>Misc</category>
-    <baseChance>6</baseChance>
-    <pointsScaleable>true</pointsScaleable>
-    <minRefireDays>2</minRefireDays>
-  </IncidentDef>
+	<IncidentDef>
+		<defName>RequestForTenancy</defName>
+		<label>Request for tenancy</label>
+		<targetTags>
+			<li>Map_PlayerHome</li>
+		</targetTags>
+		<workerClass>Tenants.IncidentWorker_TenantProposition</workerClass>
+		<category>Misc</category>
+		<baseChance>6</baseChance>
+		<pointsScaleable>true</pointsScaleable>
+		<minRefireDays>2</minRefireDays>
+	</IncidentDef>
+	<!--Courier-->
+	<IncidentDef>
+		<defName>TenantCourier</defName>
+		<label>Courier</label>
+		<targetTags>
+			<li>Map_PlayerHome</li>
+		</targetTags>
+		<workerClass>Tenants.IncidentWorker_TenantCourier</workerClass>
+		<category>Misc</category>
+		<baseChance>6</baseChance>
+		<pointsScaleable>true</pointsScaleable>
+		<minRefireDays>4</minRefireDays>
+	</IncidentDef>
+
+
+
+	<!-- Raids -->
 	<!--RetributionForDeadTenant-->
-  <IncidentDef>
-    <defName>RetributionForDead</defName>
-    <label>Retribution for dead tenant</label>
-    <targetTags>
-      <li>Map_PlayerHome</li>
-    </targetTags>
-    <workerClass>Tenants.IncidentWorker_RetributionForDead</workerClass>
-    <category>ThreatBig</category>
-    <baseChance>0</baseChance>
-    <pointsScaleable>true</pointsScaleable>
-    <tale>Raid</tale>
-  </IncidentDef>  
+	<IncidentDef>
+		<defName>RetributionForDead</defName>
+		<label>Retribution for dead tenant</label>
+		<targetTags>
+			<li>Map_PlayerHome</li>
+		</targetTags>
+		<workerClass>Tenants.IncidentWorker_RetributionForDead</workerClass>
+		<category>ThreatBig</category>
+		<baseChance>0</baseChance>
+		<pointsScaleable>true</pointsScaleable>
+		<tale>Raid</tale>
+	</IncidentDef>  
 	<!--RetributionForCapturedTenant-->
-   <IncidentDef>
-    <defName>RetributionForCaptured</defName>
-    <label>Retribution for captured tenant</label>
-    <targetTags>
-      <li>Map_PlayerHome</li>
-    </targetTags>
-    <workerClass>Tenants.IncidentWorker_RetributionForCaptured</workerClass>
-    <category>ThreatBig</category>
-    <baseChance>0</baseChance>
-    <pointsScaleable>true</pointsScaleable>
-    <tale>Raid</tale>
-  </IncidentDef>  
+	<IncidentDef>
+		<defName>RetributionForCaptured</defName>
+		<label>Retribution for captured tenant</label>
+		<targetTags>
+			<li>Map_PlayerHome</li>
+		</targetTags>
+		<workerClass>Tenants.IncidentWorker_RetributionForCaptured</workerClass>
+		<category>ThreatBig</category>
+		<baseChance>0</baseChance>
+		<pointsScaleable>true</pointsScaleable>
+		<tale>Raid</tale>
+	</IncidentDef>  
 	<!--Opportunists-->
-   <IncidentDef>
-    <defName>Opportunists</defName>
-    <label>Opportunists</label>
-    <targetTags>
-      <li>Map_PlayerHome</li>
-    </targetTags>
-    <workerClass>Tenants.IncidentWorker_Opportunists</workerClass>
-    <category>ThreatBig</category>
-    <baseChance>0</baseChance>
-    <pointsScaleable>true</pointsScaleable>
-    <tale>Raid</tale>
-  </IncidentDef>  
+	<IncidentDef>
+		<defName>Opportunists</defName>
+		<label>Opportunists</label>
+		<targetTags>
+			<li>Map_PlayerHome</li>
+		</targetTags>
+		<workerClass>Tenants.IncidentWorker_Opportunists</workerClass>
+		<category>ThreatBig</category>
+		<baseChance>0</baseChance>
+		<pointsScaleable>true</pointsScaleable>
+		<tale>Raid</tale>
+	</IncidentDef>  
 	<!--Moles-->
-   <IncidentDef>
-    <defName>MoleRaid</defName>
-    <label>Mole Raid</label>
-    <targetTags>
-      <li>Map_PlayerHome</li>
-    </targetTags>
-    <workerClass>Tenants.IncidentWorker_MoleRaid</workerClass>
-    <category>ThreatBig</category>
-    <baseChance>0</baseChance>
-    <pointsScaleable>true</pointsScaleable>
-    <tale>Raid</tale>
-  </IncidentDef>  
-  
-  <IncidentDef>
-    <defName>WantedRaid</defName>
-    <label>Wanted Raid</label>
-    <targetTags>
-      <li>Map_PlayerHome</li>
-    </targetTags>
-    <workerClass>Tenants.IncidentWorker_Wanted</workerClass>
-    <category>ThreatBig</category>
-    <baseChance>0</baseChance>
-    <pointsScaleable>true</pointsScaleable>
-    <tale>Raid</tale>
-  </IncidentDef>  
-  
-  </Defs>
+	<IncidentDef>
+		<defName>MoleRaid</defName>
+		<label>Mole Raid</label>
+		<targetTags>
+			<li>Map_PlayerHome</li>
+		</targetTags>
+		<workerClass>Tenants.IncidentWorker_MoleRaid</workerClass>
+		<category>ThreatBig</category>
+		<baseChance>0</baseChance>
+		<pointsScaleable>true</pointsScaleable>
+		<tale>Raid</tale>
+	</IncidentDef>  
+	<!--WantedRaid-->
+	<IncidentDef>
+		<defName>WantedRaid</defName>
+		<label>Wanted Raid</label>
+		<targetTags>
+			<li>Map_PlayerHome</li>
+		</targetTags>
+		<workerClass>Tenants.IncidentWorker_Wanted</workerClass>
+		<category>ThreatBig</category>
+		<baseChance>0</baseChance>
+		<pointsScaleable>true</pointsScaleable>
+		<tale>Raid</tale>
+	</IncidentDef>  
+
+</Defs>

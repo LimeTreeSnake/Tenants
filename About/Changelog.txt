@@ -1,3 +1,11 @@
+2019-11-10
+- Broadcast is not initially set to true.
+- Mod settings updated.
+- Wanted pawns are no longer wanted by your faction.
+- Courier system where money is delivered through couriers instead of spawning randomly.
+- A mailbox to recieve tenancy payments.
+- Lowered chance for bounty hunters.
+
 2019-10-18
 -Changed default values.
 -New Preview Image

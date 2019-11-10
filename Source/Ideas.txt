@@ -1,2 +1,0 @@
-﻿Remove silver on tenants when spawning.
-Options for tenancy races

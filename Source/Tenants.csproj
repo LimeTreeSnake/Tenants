@@ -53,10 +53,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DefOfTenants.cs" />
+    <Compile Include="Comp\Courier.cs" />
+    <Compile Include="Comp\MailBox.cs" />
+    <Compile Include="Def\DefOfTenants.cs" />
+    <Compile Include="Events.cs" />
     <Compile Include="Harmony\HarmonyTenants.cs" />
-    <Compile Include="MapComponent_Tenants.cs" />
-    <Compile Include="Textures.cs" />
+    <Compile Include="Comp\MapComponent_Tenants.cs" />
+    <Compile Include="GUI\Textures.cs" />
     <Compile Include="GUI\Alert_TenantSad.cs" />
     <Compile Include="GUI\PawnColumnWorker_Work.cs" />
     <Compile Include="GUI\PawnColumnWorker_TenantLabel.cs" />
@@ -64,18 +67,16 @@
     <Compile Include="GUI\PawnColumnWorker_AutoRenew.cs" />
     <Compile Include="GUI\PawnColumnWorker_CancelContract.cs" />
     <Compile Include="Workers\IncidentWorker_Raid.cs" />
-    <Compile Include="Workers\IncidentWorker_TenantProposition.cs" />
+    <Compile Include="Workers\IncidentWorker_Tenant.cs" />
     <Compile Include="Workers\JobDriver_Tenants.cs" />
-    <Compile Include="Workers\LordJob_TenantTheft.cs" />
+    <Compile Include="Workers\LordJob_Courier.cs" />
+    <Compile Include="Workers\LordJob_Theft.cs" />
     <Compile Include="GUI\MainTabWindow_Tenant.cs" />
     <Compile Include="GUI\PawnColumnWorker_ContractIcon.cs" />
-    <Compile Include="Tenant.cs" />
+    <Compile Include="Comp\Tenant.cs" />
     <Compile Include="Settings\TenantsSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Ideas.txt" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -81,7 +81,6 @@ namespace Tenants {
             }
         }
     }
-
     public class IncidentWorker_MoleRaid : IncidentWorker_RaidEnemy {
         protected override string GetLetterLabel(IncidentParms parms) {
             return "Mole".Translate();
@@ -162,7 +161,6 @@ namespace Tenants {
             }
         }
     }
-
     public class IncidentWorker_Wanted : IncidentWorker_RaidEnemy {
 
         protected override bool CanFireNowSub(IncidentParms parms) {

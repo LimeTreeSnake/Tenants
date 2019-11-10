@@ -5,12 +5,17 @@ using Verse;
 namespace Tenants {
     public class MapComponent_Tenants : MapComponent {
         #region Fields
-        private float karma;
-        private bool broadcast = true;
+        private bool broadcast = false;
+        private bool broadcastCourier = false;
+        private int killedCourier = 0;
         private List<Pawn> deadTenantsToAvenge = new List<Pawn>();
         private List<Pawn> capturedTenantsToAvenge = new List<Pawn>();
         private List<Pawn> moles = new List<Pawn>();
         private List<Pawn> wantedTenants = new List<Pawn>();
+        private List<Thing> outgoingMail = new List<Thing>();
+        private List<Thing> incomingMail = new List<Thing>();
+        private List<Thing> courierCost = new List<Thing>();
+        private float karma;
         #endregion Fields
         #region Properties
         public List<Pawn> DeadTenantsToAvenge {
@@ -37,8 +42,28 @@ namespace Tenants {
                 return wantedTenants;
             }
         }
-        public float Karma { get { return karma; } set { karma = value; } }
         public bool Broadcast { get { return broadcast; } set { broadcast = value; } }
+        public bool BroadcastCourier { get { return broadcastCourier; } set { broadcastCourier = value; } }
+        public int KilledCourier { get { return killedCourier; } set { killedCourier = value; } }
+        public float Karma { get { return karma; } set { karma = value; } }
+        public List<Thing> OutgoingMail {
+            get {
+                if (outgoingMail == null) { outgoingMail = new List<Thing>(); }
+                return outgoingMail;
+            }
+        }
+        public List<Thing> IncomingMail {
+            get {
+                if (incomingMail == null) { incomingMail = new List<Thing>(); }
+                return incomingMail;
+            }
+        }
+        public List<Thing> CourierCost {
+            get {
+                if (courierCost == null) { courierCost = new List<Thing>(); }
+                return courierCost;
+            }
+        }
         #endregion Properties
         #region Constructors
         public MapComponent_Tenants(Map map)
@@ -60,8 +85,13 @@ namespace Tenants {
             Scribe_Collections.Look(ref capturedTenantsToAvenge, "CapturedTenants", LookMode.Reference);
             Scribe_Collections.Look(ref moles, "Moles", LookMode.Reference);
             Scribe_Collections.Look(ref wantedTenants, "WantedTenants", LookMode.Reference);
-            Scribe_Values.Look(ref karma, "Karma");
+            Scribe_Collections.Look(ref incomingMail, "IncomingMail", LookMode.Deep);
+            Scribe_Collections.Look(ref outgoingMail, "OutgoingMail", LookMode.Deep);
+            Scribe_Collections.Look(ref courierCost, "CourierCost", LookMode.Deep);
             Scribe_Values.Look(ref broadcast, "Broadcast");
+            Scribe_Values.Look(ref broadcastCourier, "BroadcastCourier");
+            Scribe_Values.Look(ref killedCourier, "KilledCourier");
+            Scribe_Values.Look(ref karma, "Karma");
         }
         #endregion Methods
     }
