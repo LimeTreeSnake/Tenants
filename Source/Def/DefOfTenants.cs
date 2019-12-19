@@ -32,6 +32,7 @@ namespace Tenants {
         public static JobDef JobUseCommsConsoleMole;
         public static JobDef JobUseCommsConsoleInviteCourier;
         public static JobDef JobCheckMailBox;
+        public static JobDef JobSendMail;
         static JobDefOf() {
             DefOfHelper.EnsureInitializedInCtor(typeof(JobDef));
         }
@@ -40,6 +41,8 @@ namespace Tenants {
     [DefOf]
     public static class ThingDefOf{
         public static ThingDef Tenants_MailBox;
+        public static ThingDef Tenant_LetterDiplomatic;
+        public static ThingDef Tenant_LetterAngry;
         static ThingDefOf() {
             DefOfHelper.EnsureInitializedInCtor(typeof(ThingDef));
         }

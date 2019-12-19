@@ -1,3 +1,12 @@
+2019-12-xx
+- Removed extra space after RequestForTenancyHiding string.
+- Removed research prerequisites for Mailboxes
+- Fault component check for mailbox, tenants and couriers
+- Mailboxes shouldn't bug out when saving and loading while containing stuff. Derp
+- Tenants does not require a mailbox.
+- Courier message whenever they appear with no Mailbox.
+- Lowered harmony priority on clearing gizmo's.
+
 2019-11-10
 - Broadcast is not initially set to true.
 - Mod settings updated.

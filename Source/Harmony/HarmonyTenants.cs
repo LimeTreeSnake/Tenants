@@ -202,6 +202,7 @@ namespace Tenants {
         }
         #endregion Functionality
         #region GUI
+        [HarmonyPriority(400)]
         public static void GetGizmos_PostFix(ref IEnumerable<Gizmo> __result, ref Pawn __instance) {
             try {
                 if (__instance != null) {
@@ -307,7 +308,7 @@ namespace Tenants {
             List<FloatMenuOption> list = __result.ToList();
             if (!MapComponent_Tenants.GetComponent(myPawn.Map).Broadcast) {
                 void inviteTenant() {
-                    Job job = new Job(JobDefOf.JobUseCommsConsoleTenants, __instance);
+                    Job job = new Job(JobDefOf.JobUseCommsConsoleTenants);
                     myPawn.jobs.TryTakeOrderedJob(job);
                     PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.OpeningComms, KnowledgeAmount.Total);
                 }

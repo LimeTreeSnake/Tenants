@@ -4,11 +4,12 @@
 		<defName>Tenants_MailBox</defName>
 		<label>mailbox</label>
 		<description>A mailbox, commonly used to send letters to friends and/or enemies.</description>
+		<thingClass>Building_WorkTable</thingClass>
 		<graphicData>
 			<texPath>Things/Building/LetterBox</texPath>
 			<graphicClass>Graphic_Multi</graphicClass>
 			<shaderType>CutoutComplex</shaderType>
-			<drawSize>(1.2,1.2)</drawSize>
+			<drawSize>(1.0,1.0)</drawSize>
 			<damageData>
 				<rect>(0.1,0.1,0.8,0.8)</rect>
 			</damageData>
@@ -21,10 +22,13 @@
 		<passability>PassThroughOnly</passability>
 		<minifiedDef>MinifiedThing</minifiedDef>
 		<hasInteractionCell>true</hasInteractionCell>
-		<interactionCellOffset>(0,0,1)</interactionCellOffset>
+		<interactionCellOffset>(0,0,-1)</interactionCellOffset>
 		<thingCategories>
 			<li>BuildingsMisc</li>
 		</thingCategories>
+		<inspectorTabs>
+			<li>ITab_Bills</li>
+		</inspectorTabs>
 		<pathCost>20</pathCost>
 		<canOverlapZones>true</canOverlapZones>
 		<statBases>
@@ -48,9 +52,6 @@
 		<comps>
 			<li Class="Tenants.CompProps_MailBox"/>
 		</comps>
-		<researchPrerequisites>
-			<li>ComplexFurniture</li>
-		</researchPrerequisites>
 	</ThingDef>
 
 </Defs>

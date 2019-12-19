@@ -31,7 +31,6 @@ namespace Tenants {
             yield return invite;
         }
     }
-
     public class JobDriver_UseCommsConsoleMole : JobDriver {
         public override bool TryMakePreToilReservations(bool errorOnFailed) {
             Pawn pawn = base.pawn;
@@ -94,6 +93,27 @@ namespace Tenants {
             checkMailBox.initAction = delegate {
                 Thing building_MailBox = checkMailBox.actor.jobs.curJob.GetTarget(TargetIndex.A).Thing;
                 building_MailBox.GetMailBoxComponent().EmptyMailBox();
+            };
+            yield return checkMailBox;
+        }
+    }
+
+    public class JobDriver_SendMail : JobDriver
+    {
+        public override bool TryMakePreToilReservations(bool errorOnFailed) {
+            pawn.Map.pawnDestinationReservationManager.Reserve(pawn, job, job.targetA.Cell);
+            return true;
+        }
+
+        protected override IEnumerable<Toil> MakeNewToils() {
+            this.FailOnDespawnedOrNull(TargetIndex.A);
+            this.FailOnDespawnedOrNull(TargetIndex.B);
+            yield return Toils_Haul.StartCarryThing(TargetIndex.B);
+            yield return Toils_Goto.GotoCell(TargetIndex.A, PathEndMode.InteractionCell);
+            Toil checkMailBox = new Toil();
+            checkMailBox.initAction = delegate {
+                Thing building_MailBox = checkMailBox.actor.jobs.curJob.GetTarget(TargetIndex.A).Thing;
+                building_MailBox.GetMailBoxComponent().Letters.Add(TargetThingB);
             };
             yield return checkMailBox;
         }

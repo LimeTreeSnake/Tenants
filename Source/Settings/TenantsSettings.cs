@@ -28,7 +28,7 @@ namespace Tenants {
         private static readonly float levelOfHappinessToWork = 70f;
         #endregion Fields
         #region Properties
-        public List<string> AvailableRaces = availableRaces.Count > 0 ? availableRaces.ListFullCopy() : new List<string>();
+        public List<string> AvailableRaces = availableRaces != null|| availableRaces.Count > 0 ? availableRaces.ListFullCopy() : new List<string>() { "Human" };
         public IEnumerable<ThingDef> Races = DefDatabase<PawnKindDef>.AllDefsListForReading.Where(x => x.race != null && x.RaceProps.Humanlike && x.RaceProps.IsFlesh && x.RaceProps.ResolvedDietCategory != DietCategory.NeverEats).Select(s => s.race).Distinct();
         public float RaceViewHeight = 300f;
         public int MinDailyCost = minDailyCost;
@@ -57,7 +57,7 @@ namespace Tenants {
         public override void ExposeData() {
 
             base.ExposeData();
-            Scribe_Collections.Look(ref AvailableRaces, "AvailableRaces", LookMode.Value);
+            Scribe_Collections.Look(ref AvailableRaces, "AvailableRaces", LookMode.Deep);
             Scribe_Values.Look(ref MinDailyCost, "MinDailyCost", minDailyCost);
             Scribe_Values.Look(ref MaxDailyCost, "MaxDailyCost", maxDailyCost);
             Scribe_Values.Look(ref MinContractTime, "MinContractTime", minContractTime);

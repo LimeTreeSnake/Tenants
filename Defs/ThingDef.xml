@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>	
+	<ThingDef Name="Tenants_LetterBase" ParentName="ResourceBase" Abstract="True">
+		<thingClass>ThingWithComps</thingClass>
+		<statBases>
+			<MaxHitPoints>10</MaxHitPoints>
+			<Flammability>1</Flammability>
+			<DeteriorationRate>1.0</DeteriorationRate>
+		</statBases>
+		<tickerType>Normal</tickerType>
+	</ThingDef>
+	<ThingDef Name="Tenant_LetterDiplomatic" ParentName="Tenants_LetterBase" >
+		<defName>Tenant_LetterDiplomatic</defName>
+		<label>diplomatic letter</label>
+		<description>A diplomatic letter that tries to appeal to the masses.</description>
+		<graphicData>
+			<texPath>Item/LetterDiplomatic</texPath>
+			<graphicClass>Graphic_StackCount</graphicClass>
+		</graphicData>
+		<thingCategories>
+			<li>Tenants_Letters</li>
+		</thingCategories>
+		<techLevel>Medieval</techLevel>
+		<statBases>
+			<MarketValue>100</MarketValue>
+			<Mass>0.1</Mass>
+		</statBases>   
+		<comps>
+			<li Class="Tenants.CompProps_MailBox">
+				<letter>1</letter>
+			</li>
+		</comps>
+	</ThingDef>
+
+	<ThingDef Name="Tenant_LetterMean" ParentName="Tenants_LetterBase" >
+		<defName>Tenant_LetterAngry</defName>
+		<label>angry letter</label>
+		<description>A letter most vile, anyone reading this will be filled with disdain.</description>
+		<graphicData>
+			<texPath>Item/LetterAngry</texPath>
+			<graphicClass>Graphic_StackCount</graphicClass>
+		</graphicData>
+		<thingCategories>
+			<li>Tenants_Letters</li>
+		</thingCategories>
+		<techLevel>Medieval</techLevel>
+		<statBases>
+			<MarketValue>50</MarketValue>
+			<Mass>0.1</Mass>
+		</statBases>   
+		<comps>
+			<li Class="Tenants.CompProps_MailBox">
+				<letter>2</letter>
+			</li>
+		</comps>
+	</ThingDef>
+	
+	
+	<ThingCategoryDef>
+		<defName>Tenants_Letters</defName>
+		<label>letters</label>
+		<parent>Manufactured</parent>
+		<iconPath>Item/Letter</iconPath>
+	</ThingCategoryDef>
+</Defs>	

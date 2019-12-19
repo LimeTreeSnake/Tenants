@@ -15,9 +15,10 @@
 	<Cleaning>Clean</Cleaning>
 	<CleaningTip>Whether a tenant should help with cleaning.</CleaningTip>
 	<CleaningError>{PAWN_nameDef} won't clean!</CleaningError>
-	
-	
-	<TenantMood>Mood</TenantMood>
-	<TenantSad>{0} tenants sad.</TenantSad>
-	<TenantSadDesc>These tenants are sad:\n\n{0}\nYou should probably look into this matter.</TenantSadDesc>
+	<MayJoin>May join</MayJoin>
+	<MayJoinTip>Whether a tenant may request to join your colony permanently.</MayJoinTip>
+	<Terminate>Terminate</Terminate>
+	<TerminateTip>Terminate the contract early thus making the payment void.</TerminateTip>
+	<AutoRenew>Auto renew</AutoRenew>
+	<AutoRenewTip>Whether a tenant can automagically renew the contract at the expiry date.</AutoRenewTip>
 </LanguageData>

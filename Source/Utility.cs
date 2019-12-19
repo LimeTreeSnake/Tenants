@@ -15,19 +15,28 @@ namespace Tenants {
             if (ThingCompUtility.TryGetComp<Tenant>(pawn) != null) {
                 return ThingCompUtility.TryGetComp<Tenant>(pawn);
             }
-            return null;
+            else {
+                pawn.def.comps.Add(new CompProps_Tenant());
+                return ThingCompUtility.TryGetComp<Tenant>(pawn);
+            }            
         }
         public static Courier GetCourierComponent(this Pawn pawn) {
             if (ThingCompUtility.TryGetComp<Courier>(pawn) != null) {
                 return ThingCompUtility.TryGetComp<Courier>(pawn);
             }
-            return null;
+            else {
+                pawn.def.comps.Add(new CompProps_Courier());
+                return ThingCompUtility.TryGetComp<Courier>(pawn);
+            }            
         }
         public static MailBox GetMailBoxComponent(this Thing thing) {
             if (ThingCompUtility.TryGetComp<MailBox>(thing) != null) {
                 return ThingCompUtility.TryGetComp<MailBox>(thing);
             }
-            return null;
+            else {
+                thing.def.comps.Add(new CompProps_MailBox());
+                return ThingCompUtility.TryGetComp<MailBox>(thing);
+            }            
         }
         public static bool TryFindSpawnSpot(Map map, out IntVec3 spawnSpot) {
             bool validator(IntVec3 c) => map.reachability.CanReachColony(c) && !c.Fogged(map);

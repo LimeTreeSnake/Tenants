@@ -24,4 +24,10 @@
     <reportString>checking mail box.</reportString>
     <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
   </JobDef>
+  <JobDef>
+    <defName>JobSendMail</defName>
+    <driverClass>Tenants.JobDriver_SendMail</driverClass>
+    <reportString>sending mail.</reportString>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
 </Defs>

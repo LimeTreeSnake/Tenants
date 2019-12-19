@@ -26,8 +26,9 @@ namespace Tenants {
                 if (map != null) {
                     Pawn pawn = map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false && !x.Dead);
                     Building building = map.listerBuildings.allBuildingsColonist.FirstOrDefault(x => x.def == ThingDefOf.Tenants_MailBox);
-                    if (pawn != null && building != null)
-                        return Events.ContractTenancy((Map)parms.target);
+                    if (pawn != null) {
+                            return Events.ContractTenancy((Map)parms.target);                       
+                    }
                 }
             }
             return false;
@@ -54,6 +55,11 @@ namespace Tenants {
                     Building building = map.listerBuildings.allBuildingsColonist.FirstOrDefault(x => x.def == ThingDefOf.Tenants_MailBox);
                     if (building != null ) {
                         return Events.Courier((Map)parms.target, building);
+                    }
+                    else {
+                        string letterLabel = "CourierArrivedTitle".Translate((map.Parent.Label));
+                        string letterText = "CourierMiss".Translate();
+                        Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.NeutralEvent);
                     }
                 }
             }
