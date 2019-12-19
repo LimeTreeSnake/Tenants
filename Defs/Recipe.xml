@@ -5,14 +5,10 @@
 		<label>prepare a diplomatic letter</label>
 		<description>write a letter that appeals.</description>
 		<jobString>writing letter.</jobString>
-		<workAmount>600</workAmount>
-		<workSkill>Social</workSkill>
+		<workAmount>700</workAmount>
 		<workSpeedStat>UnskilledLaborSpeed</workSpeedStat>
 		<effectWorking>Tailor</effectWorking>
 		<soundWorking>Recipe_Tailor</soundWorking>	
-		<recipeUsers>
-			<li>Tenants_MailBox</li>
-		</recipeUsers>
 		<ingredients>
 			<li>
 				<filter>
@@ -20,7 +16,7 @@
 						<li>Silver</li>
 					</thingDefs>
 				</filter>
-				<count>100</count>
+				<count>10</count>
 			</li>
 		</ingredients>
 		<fixedIngredientFilter>
@@ -31,20 +27,19 @@
 		<products>
 			<Tenant_LetterDiplomatic>1</Tenant_LetterDiplomatic>
 		</products>
+		<workSkill>Social</workSkill>
 	</RecipeDef>
+	
 	<RecipeDef>
 		<defName>Make_LetterAngry</defName>
 		<label>prepare an angry letter</label>
 		<description>write a letter that is very intimidating and insulting.</description>
 		<jobString>writing angry letter.</jobString>
 		<workAmount>600</workAmount>
-		<workSkill>Social</workSkill>
 		<workSpeedStat>UnskilledLaborSpeed</workSpeedStat>
 		<effectWorking>Tailor</effectWorking>
 		<soundWorking>Recipe_Tailor</soundWorking>	
-		<recipeUsers>
-			<li>Tenants_MailBox</li>
-		</recipeUsers>
+
 		<ingredients>
 			<li>
 				<filter>
@@ -52,7 +47,7 @@
 						<li>Silver</li>
 					</thingDefs>
 				</filter>
-				<count>50</count>
+				<count>5</count>
 			</li>
 		</ingredients>
 		<fixedIngredientFilter>

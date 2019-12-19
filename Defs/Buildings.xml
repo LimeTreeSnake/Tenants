@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>	
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BenchBase">
 		<defName>Tenants_MailBox</defName>
 		<label>mailbox</label>
 		<description>A mailbox, commonly used to send letters to friends and/or enemies.</description>
@@ -30,7 +30,7 @@
 			<li>ITab_Bills</li>
 		</inspectorTabs>
 		<pathCost>20</pathCost>
-		<canOverlapZones>true</canOverlapZones>
+		<canOverlapZones>false</canOverlapZones>
 		<statBases>
 			<MaxHitPoints>100</MaxHitPoints>
 			<WorkToBuild>600</WorkToBuild>
@@ -44,14 +44,19 @@
 			<li>Woody</li>
 			<li>Stony</li>
 		</stuffCategories>
+		    <recipes>
+      <li>Make_LetterDiplomatic</li>
+      <li>Make_LetterAngry</li>
+    </recipes>
 		<costStuffCount>60</costStuffCount>
-		<defaultPlacingRot>South</defaultPlacingRot>
 		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
 		<designationCategory>Misc</designationCategory>
 		<resourcesFractionWhenDeconstructed>0.2</resourcesFractionWhenDeconstructed>
 		<comps>
 			<li Class="Tenants.CompProps_MailBox"/>
 		</comps>
+		<building>
+			<workSpeedPenaltyOutdoors>false</workSpeedPenaltyOutdoors>
+		</building>
 	</ThingDef>
-
 </Defs>

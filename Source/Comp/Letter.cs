@@ -9,11 +9,19 @@ namespace Tenants
     public enum LetterType { Diplomatic = 1, Mean = 2};
    public class Letter : ThingComp
     {
+        public CompProps_Letter Props => (CompProps_Letter)props;
         public Faction faction;
-        public LetterType letter;
         public override void PostExposeData() {
             Scribe_References.Look(ref faction, "Faction");
-            Scribe_Values.Look(ref letter, "Letter");
+        }
+    }
+
+
+    public class CompProps_Letter : CompProperties
+    {
+        public LetterType letter;
+        public CompProps_Letter() {
+            compClass = typeof(Letter);
         }
     }
 }

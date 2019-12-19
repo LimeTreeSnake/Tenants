@@ -14,8 +14,8 @@
 		<label>diplomatic letter</label>
 		<description>A diplomatic letter that tries to appeal to the masses.</description>
 		<graphicData>
-			<texPath>Item/LetterDiplomatic</texPath>
-			<graphicClass>Graphic_StackCount</graphicClass>
+			<texPath>Things/Letters/LetterDiplomatic</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
 		</graphicData>
 		<thingCategories>
 			<li>Tenants_Letters</li>
@@ -26,7 +26,7 @@
 			<Mass>0.1</Mass>
 		</statBases>   
 		<comps>
-			<li Class="Tenants.CompProps_MailBox">
+			<li Class="Tenants.CompProps_Letter">
 				<letter>1</letter>
 			</li>
 		</comps>
@@ -37,8 +37,8 @@
 		<label>angry letter</label>
 		<description>A letter most vile, anyone reading this will be filled with disdain.</description>
 		<graphicData>
-			<texPath>Item/LetterAngry</texPath>
-			<graphicClass>Graphic_StackCount</graphicClass>
+			<texPath>Things/Letters/LetterAngry</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
 		</graphicData>
 		<thingCategories>
 			<li>Tenants_Letters</li>
@@ -49,7 +49,7 @@
 			<Mass>0.1</Mass>
 		</statBases>   
 		<comps>
-			<li Class="Tenants.CompProps_MailBox">
+			<li Class="Tenants.CompProps_Letter">
 				<letter>2</letter>
 			</li>
 		</comps>
@@ -60,6 +60,6 @@
 		<defName>Tenants_Letters</defName>
 		<label>letters</label>
 		<parent>Manufactured</parent>
-		<iconPath>Item/Letter</iconPath>
+		<iconPath>Things/Letters/LetterDiplomatic</iconPath>
 	</ThingCategoryDef>
 </Defs>	

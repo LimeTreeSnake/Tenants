@@ -3,7 +3,7 @@
 - Removed research prerequisites for Mailboxes
 - Fault component check for mailbox, tenants and couriers
 - Mailboxes shouldn't bug out when saving and loading while containing stuff. Derp
-- Tenants does not require a mailbox.
+- Tenants does not require a mailbox. Although you need it for them courier money.
 - Courier message whenever they appear with no Mailbox.
 - Lowered harmony priority on clearing gizmo's.
 
