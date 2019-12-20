@@ -19,14 +19,14 @@
     <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
   </JobDef>
   <JobDef>
-    <defName>JobCheckMailBox</defName>
-    <driverClass>Tenants.JobDriver_CheckMailBox</driverClass>
-    <reportString>checking mail box.</reportString>
+    <defName>JobSendLetter</defName>
+    <driverClass>Tenants.JobDriver_SendLetter</driverClass>
+    <reportString>sending mail.</reportString>
     <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
   </JobDef>
   <JobDef>
-    <defName>JobSendMail</defName>
-    <driverClass>Tenants.JobDriver_SendMail</driverClass>
+    <defName>JobCheckLetters</defName>
+    <driverClass>Tenants.JobDriver_CheckLetters</driverClass>
     <reportString>sending mail.</reportString>
     <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
   </JobDef>

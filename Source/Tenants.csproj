@@ -55,7 +55,7 @@
   <ItemGroup>
     <Compile Include="Comp\Courier.cs" />
     <Compile Include="Comp\Letter.cs" />
-    <Compile Include="Comp\MailBox.cs" />
+    <Compile Include="Comp\MessageBox.cs" />
     <Compile Include="Def\DefOfTenants.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="Harmony\HarmonyTenants.cs" />

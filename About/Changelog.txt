@@ -1,11 +1,15 @@
 2019-12-xx
+- Mailbox renamed to Messagebox (Unfortunately, your mailboxes will disappear.)
+- Messagebox shouldn't bug out when saving and loading while containing stuff. Derp
+- Fault component check for messagebox, tenants and couriers
 - Removed extra space after RequestForTenancyHiding string.
-- Removed research prerequisites for Mailboxes
-- Fault component check for mailbox, tenants and couriers
-- Mailboxes shouldn't bug out when saving and loading while containing stuff. Derp
-- Tenants does not require a mailbox. Although you need it for them courier money.
-- Courier message whenever they appear with no Mailbox.
+- Removed research prerequisites for Messagebox
+- Tenants does not require a messagebox. Although you need it for them courier money.
+- Courier message whenever they appear with no Messagebox.
 - Lowered harmony priority on clearing gizmo's.
+- Lowered chance for couriers to appear.
+- Added Letters
+- Added Writing Pedestal
 
 2019-11-10
 - Broadcast is not initially set to true.

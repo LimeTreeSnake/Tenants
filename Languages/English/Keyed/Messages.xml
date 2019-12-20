@@ -6,12 +6,9 @@
 	<TenantSad>{0} tenants sad.</TenantSad>
 	<TenantSadDesc>These tenants are sad:\n\n{0}\nYou should probably look into this matter.</TenantSadDesc>
 
-	<!-- Letters -->
-	<CourierArrivedTitle>Courier in {0}</CourierArrivedTitle>
-	<CourierArrivedMessage>A courier has arrived to the colony. Perhaps {PAWN_pronoun} carries letters and gifts for you?</CourierArrivedMessage>
-	<CourierMiss>A Courier wandered nearby but it seems you have no mailbox to deliver to. Build one should you wish to receive letters.</CourierMiss>
-	<MailDelivered>A courier has delivered mail.</MailDelivered>
-	<CourierCost>A sum of {0} has been taken from your gains to cover the courier cost.</CourierCost>
+	<!-- Tenants -->
+	<InviteTenant>Broadcast tenancy invitation</InviteTenant>
+	<InviteTenantMessage>A broadcast is sent over the rim with your location. The message claims that there is food and comfortable beds for those with silver to spend.</InviteTenantMessage>	
 	<RequestForTenancyTitle>Request for Tenancy in {0}</RequestForTenancyTitle>
 	<RequestForTenancyInitial>{PAWN_nameDef} is looking for a place to take shelter in for a while and {PAWN_pronoun} is willing to pay you for it. Would you kindly consider this proposition?</RequestForTenancyInitial>
 	<RequestForTenancyOpportunity>{PAWN_nameDef} heard your broadcast and asks if {PAWN_pronoun} may live with you for a while.</RequestForTenancyOpportunity>
@@ -63,10 +60,15 @@
 	<TenantFactionOutrage>{0} is outraged at the mistreatment of {PAWN_nameDef} thus you recieve a {1} penalty to relations with them.</TenantFactionOutrage>
 	<HarboringWantedTenant>{0} is frustrated that you willingly harbor a wanted fugitive thus you recieve a {1} penalty to relations with them.</HarboringWantedTenant>
 	
-	<!-- Messages -->
-	<InviteTenant>Broadcast tenancy invitation</InviteTenant>
-	<InviteTenantMessage>A broadcast is sent over the rim with your location. The message claims that there is food and comfortable beds for those with silver to spend.</InviteTenantMessage>	
-	<CheckMailBox>Check mail box</CheckMailBox>
+	<!-- Courier -->
+	<CourierArrivedTitle>Courier in {0}</CourierArrivedTitle>
+	<CourierArrivedMessage>A courier has arrived to the colony. Perhaps {PAWN_pronoun} carries letters and gifts for you?</CourierArrivedMessage>
+	<CourierMiss>A Courier wandered nearby but it seems you have no mailbox to deliver to. Build one should you wish to receive letters.</CourierMiss>
+	<CourierDelivered>A courier has delivered rent.</CourierDelivered>
+	<CourierOutgoingLetters>A courier has fetched your outgoing letters.</CourierOutgoingLetters>
+	<CourierLetters>A courier has delivered letters.</CourierLetters>
+	<CourierCost>A sum of {0} has been taken from your gains to cover the courier cost.</CourierCost>
+	<CheckMessageBox>Check message box</CheckMessageBox>
 	<SendLetterDiplomatic>send a Diplomatic letter to {0}</SendLetterDiplomatic>
 	<SendLetterAngry>send an Angry letter to {0}</SendLetterAngry>
 	<CourierInvite>Send for courier. Cost:{0} silver</CourierInvite>

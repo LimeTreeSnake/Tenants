@@ -29,13 +29,13 @@ namespace Tenants {
                 return ThingCompUtility.TryGetComp<Courier>(pawn);
             }            
         }
-        public static MailBox GetMailBoxComponent(this Thing thing) {
-            if (ThingCompUtility.TryGetComp<MailBox>(thing) != null) {
-                return ThingCompUtility.TryGetComp<MailBox>(thing);
+        public static MessageBox GetMailBoxComponent(this Thing thing) {
+            if (ThingCompUtility.TryGetComp<MessageBox>(thing) != null) {
+                return ThingCompUtility.TryGetComp<MessageBox>(thing);
             }
             else {
-                thing.def.comps.Add(new CompProps_MailBox());
-                return ThingCompUtility.TryGetComp<MailBox>(thing);
+                thing.def.comps.Add(new CompProps_MessageBox());
+                return ThingCompUtility.TryGetComp<MessageBox>(thing);
             }            
         }
         public static bool TryFindSpawnSpot(Map map, out IntVec3 spawnSpot) {

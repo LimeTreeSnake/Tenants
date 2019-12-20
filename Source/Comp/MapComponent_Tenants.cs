@@ -12,7 +12,8 @@ namespace Tenants {
         private List<Pawn> capturedTenantsToAvenge = new List<Pawn>();
         private List<Pawn> moles = new List<Pawn>();
         private List<Pawn> wantedTenants = new List<Pawn>();
-        private List<Thing> outgoingMail = new List<Thing>();
+        private List<Letter> outgoingLetters = new List<Letter>();
+        private List<Letter> incomingLetters = new List<Letter>();
         private List<Thing> incomingMail = new List<Thing>();
         private List<Thing> courierCost = new List<Thing>();
         private float karma;
@@ -46,10 +47,16 @@ namespace Tenants {
         public bool BroadcastCourier { get { return broadcastCourier; } set { broadcastCourier = value; } }
         public int KilledCourier { get { return killedCourier; } set { killedCourier = value; } }
         public float Karma { get { return karma; } set { karma = value; } }
-        public List<Thing> OutgoingMail {
+        public List<Letter> OutgoingLetters {
             get {
-                if (outgoingMail == null) { outgoingMail = new List<Thing>(); }
-                return outgoingMail;
+                if (outgoingLetters == null) { outgoingLetters = new List<Letter>(); }
+                return outgoingLetters;
+            }
+        }
+        public List<Letter> IncomingLetters {
+            get {
+                if (incomingLetters == null) { incomingLetters = new List<Letter>(); }
+                return incomingLetters;
             }
         }
         public List<Thing> IncomingMail {
@@ -86,7 +93,7 @@ namespace Tenants {
             Scribe_Collections.Look(ref moles, "Moles", LookMode.Reference);
             Scribe_Collections.Look(ref wantedTenants, "WantedTenants", LookMode.Reference);
             Scribe_Collections.Look(ref incomingMail, "IncomingMail", LookMode.Deep);
-            Scribe_Collections.Look(ref outgoingMail, "OutgoingMail", LookMode.Deep);
+            Scribe_Collections.Look(ref outgoingLetters, "OutgoingMail", LookMode.Deep);
             Scribe_Collections.Look(ref courierCost, "CourierCost", LookMode.Deep);
             Scribe_Values.Look(ref broadcast, "Broadcast");
             Scribe_Values.Look(ref broadcastCourier, "BroadcastCourier");

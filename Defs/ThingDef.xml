@@ -2,13 +2,22 @@
 <Defs>	
 	<ThingDef Name="Tenants_LetterBase" ParentName="ResourceBase" Abstract="True">
 		<thingClass>ThingWithComps</thingClass>
+		<stackLimit>75</stackLimit>
+		<soundInteract>Standard_Drop</soundInteract>
+		<soundDrop>Standard_Drop</soundDrop>
+		<techLevel>Medieval</techLevel>
 		<statBases>
+			<Mass>0.50</Mass>
 			<MaxHitPoints>10</MaxHitPoints>
 			<Flammability>1</Flammability>
 			<DeteriorationRate>1.0</DeteriorationRate>
 		</statBases>
 		<tickerType>Normal</tickerType>
+		<thingCategories>
+			<li>Tenants_Letters</li>
+		</thingCategories>
 	</ThingDef>
+
 	<ThingDef Name="Tenant_LetterDiplomatic" ParentName="Tenants_LetterBase" >
 		<defName>Tenant_LetterDiplomatic</defName>
 		<label>diplomatic letter</label>
@@ -17,14 +26,27 @@
 			<texPath>Things/Letters/LetterDiplomatic</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 		</graphicData>
-		<thingCategories>
-			<li>Tenants_Letters</li>
-		</thingCategories>
-		<techLevel>Medieval</techLevel>
 		<statBases>
 			<MarketValue>100</MarketValue>
-			<Mass>0.1</Mass>
-		</statBases>   
+			<WorkToMake>700</WorkToMake>
+		</statBases>
+		<costList>
+			<Silver>10</Silver>
+		</costList>		
+		<recipeMaker>
+			<workSpeedStat>UnskilledLaborSpeed</workSpeedStat>
+			<workSkill>Social</workSkill>
+			<effectWorking>Tailor</effectWorking>
+			<soundWorking>Recipe_Tailor</soundWorking>	
+			<recipeUsers>
+				<li>TableStonecutter</li>
+				<li>TableSculpting</li>
+				<li>CraftingSpot</li>
+			</recipeUsers>
+			<skillRequirements>
+				<Social>4</Social>
+			</skillRequirements>
+		</recipeMaker>
 		<comps>
 			<li Class="Tenants.CompProps_Letter">
 				<letter>1</letter>
@@ -40,22 +62,34 @@
 			<texPath>Things/Letters/LetterAngry</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 		</graphicData>
-		<thingCategories>
-			<li>Tenants_Letters</li>
-		</thingCategories>
-		<techLevel>Medieval</techLevel>
 		<statBases>
 			<MarketValue>50</MarketValue>
-			<Mass>0.1</Mass>
+			<WorkToMake>500</WorkToMake>
 		</statBases>   
+		<costList>
+			<Silver>5</Silver>
+		</costList>		
+		<recipeMaker>
+			<workSpeedStat>UnskilledLaborSpeed</workSpeedStat>
+			<workSkill>Social</workSkill>
+			<effectWorking>Tailor</effectWorking>
+			<soundWorking>Recipe_Tailor</soundWorking>	
+			<recipeUsers>
+				<li>TableStonecutter</li>
+				<li>TableSculpting</li>
+				<li>CraftingSpot</li>
+			</recipeUsers>
+			<skillRequirements>
+				<Social>4</Social>
+			</skillRequirements>
+		</recipeMaker>
 		<comps>
 			<li Class="Tenants.CompProps_Letter">
 				<letter>2</letter>
 			</li>
 		</comps>
 	</ThingDef>
-	
-	
+
 	<ThingCategoryDef>
 		<defName>Tenants_Letters</defName>
 		<label>letters</label>

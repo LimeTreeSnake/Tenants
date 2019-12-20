@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -81,41 +82,47 @@ namespace Tenants {
             yield return invite;
         }
     }
-    public class JobDriver_CheckMailBox : JobDriver {
+   
+    public class JobDriver_SendLetter : JobDriver
+    {
         public override bool TryMakePreToilReservations(bool errorOnFailed) {
-            pawn.Map.pawnDestinationReservationManager.Reserve(pawn, job, job.targetA.Cell);
             return true;
         }
         protected override IEnumerable<Toil> MakeNewToils() {
             this.FailOnDespawnedOrNull(TargetIndex.A);
-            yield return Toils_Goto.GotoCell(TargetIndex.A, PathEndMode.InteractionCell);
+            yield return Toils_Reserve.Reserve(TargetIndex.B);
+            yield return Toils_Goto.GotoThing(TargetIndex.B, PathEndMode.ClosestTouch).FailOnSomeonePhysicallyInteracting(TargetIndex.B);
+            yield return Toils_Haul.StartCarryThing(TargetIndex.B, false, true, false);
+            Toil carryToCell = Toils_Haul.CarryHauledThingToCell(TargetIndex.A);
+            yield return carryToCell;
+            yield return Toils_Haul.PlaceHauledThingInCell(TargetIndex.B, carryToCell, false);
             Toil checkMailBox = new Toil();
             checkMailBox.initAction = delegate {
                 Thing building_MailBox = checkMailBox.actor.jobs.curJob.GetTarget(TargetIndex.A).Thing;
-                building_MailBox.GetMailBoxComponent().EmptyMailBox();
+                Letter letter = ThingCompUtility.TryGetComp<Letter>(TargetThingB);
+                building_MailBox.GetMailBoxComponent().OutgoingLetters.Add(letter);
+                TargetThingB.Destroy();
             };
             yield return checkMailBox;
         }
     }
-
-    public class JobDriver_SendMail : JobDriver
+    public class JobDriver_CheckLetters : JobDriver
     {
         public override bool TryMakePreToilReservations(bool errorOnFailed) {
             pawn.Map.pawnDestinationReservationManager.Reserve(pawn, job, job.targetA.Cell);
             return true;
         }
-
         protected override IEnumerable<Toil> MakeNewToils() {
             this.FailOnDespawnedOrNull(TargetIndex.A);
-            this.FailOnDespawnedOrNull(TargetIndex.B);
-            yield return Toils_Haul.StartCarryThing(TargetIndex.B);
             yield return Toils_Goto.GotoCell(TargetIndex.A, PathEndMode.InteractionCell);
-            Toil checkMailBox = new Toil();
-            checkMailBox.initAction = delegate {
-                Thing building_MailBox = checkMailBox.actor.jobs.curJob.GetTarget(TargetIndex.A).Thing;
-                building_MailBox.GetMailBoxComponent().Letters.Add(TargetThingB);
+            Toil CheckLetters = new Toil();
+            CheckLetters.initAction = delegate {
+                Thing building_MailBox = CheckLetters.actor.jobs.curJob.GetTarget(TargetIndex.A).Thing;
+                building_MailBox.GetMailBoxComponent().EmptyMessageBox();
+                building_MailBox.GetMailBoxComponent().RecieveLetters();
             };
-            yield return checkMailBox;
+            yield return CheckLetters;
         }
     }
+
 }

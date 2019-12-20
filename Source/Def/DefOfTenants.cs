@@ -31,8 +31,8 @@ namespace Tenants {
         public static JobDef JobUseCommsConsoleTenants;
         public static JobDef JobUseCommsConsoleMole;
         public static JobDef JobUseCommsConsoleInviteCourier;
-        public static JobDef JobCheckMailBox;
-        public static JobDef JobSendMail;
+        public static JobDef JobSendLetter;
+        public static JobDef JobCheckLetters;
         static JobDefOf() {
             DefOfHelper.EnsureInitializedInCtor(typeof(JobDef));
         }

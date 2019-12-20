@@ -22,7 +22,7 @@
 		</targetTags>
 		<workerClass>Tenants.IncidentWorker_TenantCourier</workerClass>
 		<category>Misc</category>
-		<baseChance>6</baseChance>
+		<baseChance>2</baseChance>
 		<pointsScaleable>true</pointsScaleable>
 		<minRefireDays>4</minRefireDays>
 	</IncidentDef>
