@@ -7,7 +7,7 @@
 		<thingClass>Tenants.Building_MessageBox</thingClass>
 		<graphicData>
 			<texPath>Things/Building/MessageBox</texPath>
-			<graphicClass>Graphic_Multi</graphicClass>
+			<graphicClass>Graphic_Single</graphicClass>
 			<shaderType>CutoutComplex</shaderType>
 			<drawSize>(1.0,1.0)</drawSize>
 			<damageData> 
@@ -52,7 +52,7 @@
 		<building>
 			<fullGraveGraphicData>
 				<texPath>Things/Building/MessageBoxFull</texPath>
-				<graphicClass>Graphic_Multi</graphicClass>
+				<graphicClass>Graphic_Single</graphicClass>
 				<shaderType>CutoutComplex</shaderType>
 				<drawSize>(1.0,1.0)</drawSize>
 				<damageData> 

@@ -4,7 +4,7 @@ using System.Linq;
 using Verse;
 
 namespace Tenants {
-    public class IncidentWorker_TenantProposition : IncidentWorker {
+    public class IncidentWorker_TenantCourier : IncidentWorker {
         protected override bool CanFireNowSub(IncidentParms parms) {
             if (!base.CanFireNowSub(parms)) {
                 return false;
@@ -13,9 +13,7 @@ namespace Tenants {
                 Map map = (Map)parms.target;
                 List<Map> maps = Find.Maps.Where(x => x.IsPlayerHome).ToList();
                 if (map != null && maps.Contains(map)) {
-                    Pawn pawn = map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false && !x.Dead);
-                    if (pawn != null)
-                        return Utility.TryFindSpawnSpot(map, out IntVec3 spawnSpot);
+                    return Utility.TryFindSpawnSpot(map, out IntVec3 spawnSpot);
                 }
             }
             return false;
@@ -24,9 +22,14 @@ namespace Tenants {
             if (parms.target != null) {
                 Map map = (Map)parms.target;
                 if (map != null) {
-                    Pawn pawn = map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false && !x.Dead);
-                    if (pawn != null) {
-                        return parms.faction != null ? UtilityTenant.Contract((Map)parms.target) : UtilityTenant.EnvoyTenancy((Map)parms.target, parms.faction);                       
+                    Building building = map.listerBuildings.allBuildingsColonist.FirstOrDefault(x => x.def == ThingDefOf.Tenants_MailBox);
+                    if (building != null) {
+                        return UtilityCourier.Courier((Map)parms.target, building);
+                    }
+                    else {
+                        string letterLabel = "CourierArrivedTitle".Translate((map.Parent.Label));
+                        string letterText = "CourierMiss".Translate();
+                        Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.NeutralEvent);
                     }
                 }
             }

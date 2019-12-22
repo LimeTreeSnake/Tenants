@@ -2,10 +2,12 @@
 using Verse;
 
 namespace Tenants {
+    public enum Mood { Neutral = 1, Happy = 2, Sad = 3 };
     public class Tenant : ThingComp {
         #region Fields
         private bool isTenant = false;
         private bool isTerminated = false;
+        private bool isEnvoy = false;
         private bool capturedTenant = false;
         private bool mayJoin = false;
         private bool autoRenew = false;
@@ -30,109 +32,223 @@ namespace Tenants {
         #endregion Fields
         #region Properties
         public bool IsTenant {
-            get { return isTenant; }
-            set { isTenant = value; if (isTenant == false) { CleanTenancy(); } }
+            get {
+                return isTenant;
+            }
+            set {
+                isTenant = value;
+                if (isTenant == false) {
+                    CleanTenancy();
+                }
+            }
         }
         public bool IsTerminated {
-            get { return isTerminated; }
-            set { isTerminated = value; }
+            get {
+                return isTerminated;
+            }
+            set {
+                isTerminated = value;
+            }
+        }
+        public bool IsEnvoy {
+            get {
+                return isEnvoy;
+            }
+            set {
+                isEnvoy = value;
+            }
         }
         public bool CapturedTenant {
-            get { return capturedTenant; }
-            set { capturedTenant = value; }
+            get {
+                return capturedTenant;
+            }
+            set {
+                capturedTenant = value;
+            }
         }
         public bool MayJoin {
-            get { return mayJoin; }
-            set { mayJoin = value; }
+            get {
+                return mayJoin;
+            }
+            set {
+                mayJoin = value;
+            }
         }
         public bool AutoRenew {
-            get { return autoRenew; }
-            set { autoRenew = value; }
+            get {
+                return autoRenew;
+            }
+            set {
+                autoRenew = value;
+            }
         }
         public bool Contracted {
-            get { return contracted; }
-            set { contracted = value; }
+            get {
+                return contracted;
+            }
+            set {
+                contracted = value;
+            }
         }
         public bool Wanted {
-            get { return wanted; }
-            set { wanted = value; }
+            get {
+                return wanted;
+            }
+            set {
+                wanted = value;
+            }
         }
         public Faction WantedBy {
-            get { return wantedBy; }
-            set { wantedBy = value; }
+            get {
+                return wantedBy;
+            }
+            set {
+                wantedBy = value;
+            }
         }
         public bool Mole {
-            get { return mole; }
-            set { mole = value; }
+            get {
+                return mole;
+            }
+            set {
+                mole = value;
+            }
         }
         public bool MoleActivated {
-            get { return moleActivated; }
-            set { moleActivated = value; }
+            get {
+                return moleActivated;
+            }
+            set {
+                moleActivated = value;
+            }
         }
         public bool MoleMessage {
-            get { return moleMessage; }
-            set { moleMessage = value; }
+            get {
+                return moleMessage;
+            }
+            set {
+                moleMessage = value;
+            }
         }
         public Faction HiddenFaction {
-            get { return hiddenFaction; }
-            set { hiddenFaction = value; }
+            get {
+                return hiddenFaction;
+            }
+            set {
+                hiddenFaction = value;
+            }
         }
         public bool MayFirefight {
-            get { return mayFirefight; }
-            set { mayFirefight = value; }
+            get {
+                return mayFirefight;
+            }
+            set {
+                mayFirefight = value;
+            }
         }
         public bool MayBasic {
-            get { return mayBasic; }
-            set { mayBasic = value; }
+            get {
+                return mayBasic;
+            }
+            set {
+                mayBasic = value;
+            }
         }
         public bool MayHaul {
-            get { return mayHaul; }
-            set { mayHaul = value; }
+            get {
+                return mayHaul;
+            }
+            set {
+                mayHaul = value;
+            }
         }
         public bool MayClean {
-            get { return mayClean; }
-            set { mayClean = value; }
+            get {
+                return mayClean;
+            }
+            set {
+                mayClean = value;
+            }
         }
-
         public int ContractLength {
-            get { return contractLength; }
-            set { contractLength = value; }
+            get {
+                return contractLength;
+            }
+            set {
+                contractLength = value;
+            }
         }
         public int ContractDate {
-            get { return contractDate; }
-            set { contractDate = value; }
+            get {
+                return contractDate;
+            }
+            set {
+                contractDate = value;
+            }
         }
         public int ContractEndDate {
-            get { return contractEndDate; }
-            set { contractEndDate = value; }
+            get {
+                return contractEndDate;
+            }
+            set {
+                contractEndDate = value;
+            }
         }
         public int ContractEndTick {
-            get { return contractDate + contractLength; }
+            get {
+                return contractDate + contractLength;
+            }
         }
-
         public int RecentBadMoodsCount {
-            get { return recentBadMoodCount; }
-            set { recentBadMoodCount = value; }
+            get {
+                return recentBadMoodCount;
+            }
+            set {
+                recentBadMoodCount = value;
+            }
         }
         public int HappyMoodCount {
-            get { return happyMoodCount; }
-            set { happyMoodCount = value; }
+            get {
+                return happyMoodCount;
+            }
+            set {
+                RecentBadMoodsCount = 0;
+                happyMoodCount = value;
+            }
         }
         public int SadMoodCount {
-            get { return sadMoodCount; }
-            set { sadMoodCount = value; }
+            get {
+                return sadMoodCount;
+            }
+            set {
+                RecentBadMoodsCount++;
+                sadMoodCount = value;
+            }
         }
         public int NeutralMoodCount {
-            get { return neutralMoodCount; }
-            set { neutralMoodCount = value; }
+            get {
+                return neutralMoodCount;
+            }
+            set {
+                RecentBadMoodsCount = 0;
+                neutralMoodCount = value;
+            }
         }
         public int Payment {
-            get { return payment; }
-            set { payment = value; }
+            get {
+                return payment;
+            }
+            set {
+                payment = value;
+            }
         }
         public int SurgeryQueue {
-            get { return surgeryQueue; }
-            set { surgeryQueue = value; }
+            get {
+                return surgeryQueue;
+            }
+            set {
+                surgeryQueue = value;
+            }
         }
         #endregion Properties
 
@@ -151,6 +267,7 @@ namespace Tenants {
         /// </summary>
         public void CleanTenancy() {
             contracted = false;
+            isEnvoy = false;
             wanted = false;
             wantedBy = null;
             mole = false;
@@ -166,6 +283,7 @@ namespace Tenants {
         public override void PostExposeData() {
             Scribe_Values.Look(ref isTenant, "IsTenant");
             Scribe_Values.Look(ref isTerminated, "IsTerminated");
+            Scribe_Values.Look(ref isEnvoy, "IsEnvoy");
             Scribe_Values.Look(ref capturedTenant, "CapturedTenant");
             Scribe_Values.Look(ref mayJoin, "MayJoin");
             Scribe_Values.Look(ref autoRenew, "AutoRenew");

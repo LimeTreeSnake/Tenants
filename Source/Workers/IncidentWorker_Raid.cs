@@ -44,7 +44,7 @@ namespace Tenants {
                 }
             }
             catch (System.Exception) {
-                return Utility.NewBasicRaidMessage(parms, pawns);
+                return UtilityRaid.NewBasicRaidMessage(parms, pawns);
             }
 
         }
@@ -77,7 +77,7 @@ namespace Tenants {
                 return str;
             }
             catch (System.Exception) {
-                return Utility.NewBasicRaidMessage(parms, pawns);
+                return UtilityRaid.NewBasicRaidMessage(parms, pawns);
             }
         }
     }
@@ -107,7 +107,7 @@ namespace Tenants {
                 return str;
             }
             catch (System.Exception) {
-                return Utility.NewBasicRaidMessage(parms, pawns);
+                return UtilityRaid.NewBasicRaidMessage(parms, pawns);
             }
         }
 

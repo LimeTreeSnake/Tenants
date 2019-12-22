@@ -6,13 +6,14 @@ using Verse.AI;
 
 namespace Tenants
 {
-    public enum LetterType { Diplomatic = 1, Mean = 2};
+    public enum LetterType { Diplomatic = 1, Mean = 2, Invite = 3};
    public class Letter : ThingComp
     {
         public CompProps_Letter Props => (CompProps_Letter)props;
-        public Faction faction;
+        public int Skill;
+        public Faction Faction;
         public override void PostExposeData() {
-            Scribe_References.Look(ref faction, "Faction");
+            Scribe_References.Look(ref Faction, "Faction");
         }
     }
 

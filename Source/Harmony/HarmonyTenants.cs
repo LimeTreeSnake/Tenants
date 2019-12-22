@@ -73,96 +73,7 @@ namespace Tenants {
         //    }
         //}
         public static void TickRare_PostFix(Pawn __instance) {
-            if (__instance.IsColonist) {
-                Tenant tenantComp = __instance.GetTenantComponent();
-                if (tenantComp != null && tenantComp.IsTenant) {
-                    //If a tenant has joined but has no contract.
-                    if (!tenantComp.Contracted) {
-                        tenantComp.IsTenant = false;
-                    }
-                    //Tenant alone with no colonist
-                    Pawn colonist = __instance.Map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false);
-                    if (colonist == null) {
-                        Events.ContractConclusion(__instance, true, 1f);
-                        return;
-                    }
-                    //Tenant contract is out
-                    if (Find.TickManager.TicksGame >= tenantComp.ContractEndTick) {
-                        Events.ContractConclusion(__instance, false);
-                        return;
-                    }
-
-                    //If tenancy is to be terminated.
-                    if (tenantComp.IsTerminated) {
-                        if (__instance.health.Downed) {
-                            Messages.Message("ContractTerminateFail".Translate(), MessageTypeDefOf.NeutralEvent);
-                        }
-                        else {
-                            Events.TenantCancelContract(__instance);
-                            return;
-                        }
-                        tenantComp.IsTerminated = false;
-                    }
-                    ////Operations queue for tenancy rejected.
-                    if (__instance.BillStack.Count > 0) {
-                        if ((__instance.BillStack.Bills.Where(x => x.recipe.isViolation == true).Count() > 0)) {
-                            __instance.BillStack.Clear();
-                            tenantComp.SurgeryQueue++;
-                            if (tenantComp.SurgeryQueue < 2) {
-                                Messages.Message("TenantSurgeryWarning".Translate(__instance.Named("PAWN")), MessageTypeDefOf.NeutralEvent);
-                            }
-                            else {
-                                Messages.Message("TenantSurgeryLeave".Translate(__instance.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
-                                Events.TenantLeave(__instance);
-                            }
-                        }
-                    }
-                    //Tenancy tick per day
-                    if (Find.TickManager.TicksGame % 60000 == 0) {
-                        if (tenantComp.Wanted) {
-                            if (!MapComponent_Tenants.GetComponent(__instance.Map).WantedTenants.Contains(__instance)) {
-                                Events.TenantWanted(__instance);
-                            }
-                        }
-                    }
-                    //Tenancy tick 1/10 per day
-                    if (Find.TickManager.TicksGame % 6000 == 0) {
-                        if (tenantComp.MoleMessage) {
-                            tenantComp.MoleMessage = false;
-                            Messages.Message("TenantMoleMessage".Translate(), MessageTypeDefOf.NegativeEvent);
-                        }
-                        if (tenantComp.Mole && !tenantComp.MoleActivated) {
-                            if (Utility.CalculateMood(tenantComp) < 1 && tenantComp.NeutralMoodCount > 2) {
-                                Building building = __instance.Map.listerBuildings.allBuildingsColonist.FirstOrDefault(x => x.def.defName.Contains("commsconsole") || x.def.defName.Contains("CommsConsole"));
-                                if (building != null) {
-                                    Job job = new Job(JobDefOf.JobUseCommsConsoleMole, building);
-                                    __instance.jobs.TryTakeOrderedJob(job);
-                                }
-                            }
-                        }
-                        if (__instance.needs.mood.CurInstantLevel > 0.8f) {
-                            Events.TenantWantToJoin(__instance);
-                        }
-
-                        //Calculate mood
-                        if (__instance.needs.mood.CurInstantLevel > 0.66f) {
-                            tenantComp.HappyMoodCount++;
-                            tenantComp.RecentBadMoodsCount = 0;
-                        }
-                        else if (__instance.needs.mood.CurInstantLevel < __instance.mindState.mentalBreaker.BreakThresholdMinor) {
-                            tenantComp.SadMoodCount++;
-                            tenantComp.RecentBadMoodsCount++;
-                            if (tenantComp.RecentBadMoodsCount > 5) {
-                                Events.ContractConclusion(__instance, true);
-                            }
-                        }
-                        else {
-                            tenantComp.NeutralMoodCount++;
-                            tenantComp.RecentBadMoodsCount = 0;
-                        }
-                    }
-                }
-            }
+            UtilityTenant.TenancyCheck(__instance);
         }
         #endregion Ticks
         #region Functionality
@@ -178,10 +89,10 @@ namespace Tenants {
             Tenant tenantComp = pawn.GetTenantComponent();
             if (tenantComp != null && tenantComp.IsTenant) {
                 if (tenantComp.MoleActivated) {
-                    Events.TenantMoleCaptured(pawn);
+                    UtilityTenant.TenantMoleCaptured(pawn);
                 }
                 else {
-                    Events.TenantCaptured(pawn, byPawn);
+                    UtilityTenant.TenantCaptured(pawn, byPawn);
                 }
             }
         }
@@ -189,7 +100,7 @@ namespace Tenants {
             Tenant tenantComp = __instance.GetTenantComponent();
             if (tenantComp != null)
                 if ((tenantComp.Contracted || tenantComp.CapturedTenant && !__instance.guest.Released) && __instance.Spawned) {
-                    Events.TenantDeath(__instance);
+                    UtilityTenant.TenantDeath(__instance);
                 }
         }
         public static bool InspirationCanOccur_PreFix(Pawn pawn) {
@@ -236,7 +147,7 @@ namespace Tenants {
             return true;
         }
         public static void AllSendablePawns_PostFix(ref List<Pawn> __result) {
-            Utility.RemoveTenantsFromList(__result);
+            UtilityTenant.RemoveTenantsFromList(__result);
         }
         public static void RecachePawns_PostFix(PawnTable __instance) {
             if (__instance is PawnTable_Tenants) {
@@ -244,7 +155,7 @@ namespace Tenants {
             }
             List<Pawn> pawns = Traverse.Create(__instance).Field("cachedPawns").GetValue<List<Pawn>>();
             if (pawns != null || pawns.Count > 0)
-                Utility.RemoveTenantsFromList(pawns);
+                UtilityTenant.RemoveTenantsFromList(pawns);
         }
         public static void CalculateDrawLocs_PreFix(List<Vector2> outDrawLocs, out float scale) {
             scale = 1f;
@@ -265,7 +176,7 @@ namespace Tenants {
         }
         public static void GetReport_PostFix(ref AlertReport __result, Alert_ColonistsIdle __instance) {
             if (__result.culprits != null) {
-                Utility.RemoveTenantsFromList(ref __result.culprits);
+                UtilityTenant.RemoveTenantsFromList(ref __result.culprits);
                 __result.active = __result.AnyCulpritValid;
             }
         }

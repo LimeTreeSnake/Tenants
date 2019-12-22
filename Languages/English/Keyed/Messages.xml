@@ -12,15 +12,14 @@
 	<RequestForTenancyTitle>Request for Tenancy in {0}</RequestForTenancyTitle>
 	<RequestForTenancyInitial>{PAWN_nameDef} is looking for a place to take shelter in for a while and {PAWN_pronoun} is willing to pay you for it. Would you kindly consider this proposition?</RequestForTenancyInitial>
 	<RequestForTenancyOpportunity>{PAWN_nameDef} heard your broadcast and asks if {PAWN_pronoun} may live with you for a while.</RequestForTenancyOpportunity>
-	<RequestForTenancyContinued>{PAWN_nameDef} asks to renew the contract. Would you like to extend the contract?</RequestForTenancyContinued>
 	<RequestForTenancyContract>{PAWN_nameDef} lives with you for a total of {0} days and pays {1} silver per day. You shall see to all of {PAWN_possessive} needs including safety. Failure to do so may incur future consequenses.\n\n{PAWN_pronoun} may terminate the contract at any time. Full payment will be recieved by a courier service. You may terminate the contract but any payment due would be void.</RequestForTenancyContract>
 	<RequestForTenancyRejected>{1_labelShort} mutters something along the line 'who'd want to live with you anyways...'</RequestForTenancyRejected>
-	<RequestForTenancyContinuedRejected>{1_labelShort} is saddened but accepts your decision nevertheless.</RequestForTenancyContinuedRejected>
 	<RequestForTenancyHiding>{PAWN_pronoun} claims that members of {0} is coming for {PAWN_possessive}! Accepting {PAWN_possessive} would anger {0} and they probably will send bounty hunters your way.</RequestForTenancyHiding>
-	<RequestForTenancyHidingTitle>Fugitive looking for shelter in {0}</RequestForTenancyHidingTitle>
-	<RequestTenantWantToJoinTitle>Request from tenant in {0}</RequestTenantWantToJoinTitle>
-	<RequestTenantWantToJoin>{PAWN_nameDef} loves staying here and wants to stay permanently! Will you accept {PAWN_objective}? </RequestTenantWantToJoin>
-	<RequestTenantWantToJoinRejected>{PAWN_nameDef} claims {PAWN_pronoun} will change your mind somehow!</RequestTenantWantToJoinRejected>
+	<RequestForTenancyContinued>{PAWN_nameDef} asks to renew the contract. Would you like to extend the contract?</RequestForTenancyContinued>
+	<RequestForTenancyContinuedRejected>{1_labelShort} is saddened but accepts your decision nevertheless.</RequestForTenancyContinuedRejected>
+	<RequestFromTenant>Request from tenant in {0}</RequestFromTenant>
+	<RequestWantToJoin>{PAWN_nameDef} loves staying here and wants to stay permanently! Will you accept {PAWN_objective}? </RequestWantToJoin>
+	<RequestWantToJoinRejected>{PAWN_nameDef} claims {PAWN_pronoun} will change your mind somehow!</RequestWantToJoinRejected>
 	<ContractNew>New Contract</ContractNew>
 	<ContractEnd>Contract Ends</ContractEnd>
 	<ContractBreach>Contract Breach</ContractBreach>
@@ -32,16 +31,27 @@
 	<ContractDonePlayerTerminated>The contract with {PAWN_nameDef} is terminated and {PAWN_pronoun} is forced to leave.</ContractDonePlayerTerminated>
 	<ContractDoneTheft>{PAWN_nameDef} decided to sneak away early without paying. {PAWN_pronoun} also has the audacity to try and steal from you! Criminal scum like {PAWN_nameDef} deserves punishment and you are in the right to do with {PAWN_objective} as you please.</ContractDoneTheft>
 	<ContractTerminateFail>You cannot cancel the contract at this time.</ContractTerminateFail>
+	<ContractTenantDescription>{PAWN_nameDef} is {0} years old and is a {1}.</ContractTenantDescription>
 	<ContractEndDate>Ends at: {0}</ContractEndDate>
 	<ContractPayment>Payment: {0}</ContractPayment>
 	<ContractLength>Days: {0}</ContractLength>
 	<ContractDaily>Payment/day: {0}</ContractDaily>
 	<ContractAgree>Agree</ContractAgree>
 	<ContractReject>Reject</ContractReject>
-	<TenantDescription>{PAWN_nameDef} is {0} years old and is a {1}.</TenantDescription>
-	<AcceptTenant>Accept tenants</AcceptTenant>
-	<RejectTenant>Reject tenants</RejectTenant>
-
+	<AcceptTenant>Accept tenant</AcceptTenant>
+	<RejectTenant>Reject tenant</RejectTenant>
+	
+	<!--Envoy-->
+	<EnvoyStays>{PAWN_nameDef} from {0} has decided to prolong {PAWN_possessive} stay. It seems you have no choice in the matter.</EnvoyStays>
+	<Envoy>Envoy from {0}.</Envoy>	
+	<ContractDoneEnvoy>The envoy {PAWN_nameDef} from {0} is content with {PAWN_possessive} stay and will surely speak well of you.</ContractDoneEnvoy>	
+	<ContractDoneEnvoyHappy>The envoy {PAWN_nameDef} from {0} is astonished by your hospitality and will surely speak well of you.</ContractDoneEnvoyHappy>
+	<ContractDoneEnvoySad>The envoy {PAWN_nameDef} from {0} is very disappointed with you and their treatment while under your care.</ContractDoneEnvoySad>
+	<ContractDoneEnvoyTerminated>The contract with {PAWN_nameDef} is terminated. {PAWN_nameDef} is slighted and is sure to tell {0} about your misconduct. Your relations with them suffers a penalty of {1}</ContractDoneEnvoyTerminated>
+	<ContractDoneEnvoyPlayerTerminated>The contract with {PAWN_nameDef} is terminated and {PAWN_pronoun} is forced to leave. {0} has taken slight from your mistreatment. Your relations with them suffers a penalty of {1}</ContractDoneEnvoyPlayerTerminated>
+	<EnvoyArriveFailed>{0}'s envoy failed to find their way to your home.</EnvoyArriveFailed>
+	<EnvoyArriveSuccess>{0}'s envoy {1} has arrived!</EnvoyArriveSuccess>
+	
 	<!-- Incidents -->
 	<Captured>Captured</Captured>
 	<Retribution>Retribution</Retribution>
@@ -52,6 +62,7 @@
 	<TenantCaptured>You've captured {PAWN_nameDef}!\n\n Watch out as you might earn the ire of {PAWN_nameDef}'s friends and relatives.</TenantCaptured>
 	<TenantCapturedRetribution>Hello, My name is {PAWN_nameDef}, you disrespected my {0}. Prepare to die.</TenantCapturedRetribution>
 	<TenantDeath>{PAWN_nameDef} died!\n\nYou've failed your duties as a host.</TenantDeath>
+	<EnvoyDeath>{PAWN_nameDef} died!\n\nYou've failed your duties as a host and {0} is outraged by your failure to protect their envoy. This diplomatic incident cost you {1} in relations.</EnvoyDeath>
 	<TenantDeathRetribution>Hello, My name is {PAWN_nameDef}, you killed my {0}. Prepare to die.</TenantDeathRetribution>
 	<TenantOpportunists>A group of raiders intervened and killed a prospecting tenant, they will be here shortly!</TenantOpportunists>
 	<TenantMoles>Raiders have arrived as per detailed instruction of a mole within your colony. Prepare your defenses!</TenantMoles>
@@ -68,12 +79,29 @@
 	<CourierOutgoingLetters>A courier has fetched your outgoing letters.</CourierOutgoingLetters>
 	<CourierLetters>A courier has delivered letters.</CourierLetters>
 	<CourierCost>A sum of {0} has been taken from your gains to cover the courier cost.</CourierCost>
-	<CheckMessageBox>Check message box</CheckMessageBox>
-	<SendLetterDiplomatic>send a Diplomatic letter to {0}</SendLetterDiplomatic>
-	<SendLetterAngry>send an Angry letter to {0}</SendLetterAngry>
 	<CourierInvite>Send for courier. Cost:{0} silver</CourierInvite>
 	<CourierInvited>You have sent a broadcast for a courier. One will be dispatched to your location soon. A future cost of {0} silver will be taken upon arrival.</CourierInvited>
 	<CourierDeniedTitle>Courier denied in {0}.</CourierDeniedTitle>
 	<CourierDeniedMessage>It seems the scheduled courier for your outpost has been upheld.</CourierDeniedMessage>
 	<CourierDeniedRadioMessage>You make contact but are told that they won't send any couriers your way anytime soon due to one of their couriers missing in your area.</CourierDeniedRadioMessage>
+	<CheckMessageBox>Check message box</CheckMessageBox>
+	<SendLetterDiplomatic>send a Diplomatic message to {0}</SendLetterDiplomatic>
+	<SendLetterAngry>send an Angry message to {0}</SendLetterAngry>
+	<SendLetterInvite>send an invitation message to {0}</SendLetterInvite>
+	<LetterDiplomaticTitle>Diplomatic response from {0}</LetterDiplomaticTitle>
+	<LetterDiplomaticResponse>{0} was delighted by your message.</LetterDiplomaticResponse>
+	<LetterDiplomaticPositive>{0} was delighted by your message and decided to send gifts.</LetterDiplomaticPositive>
+	<LetterDiplomaticNegative>{0} seems to have taken slight from your message.</LetterDiplomaticNegative>
+	<LetterAngryTitle>Message response from {0}</LetterAngryTitle>
+	<LetterAngryResponse1>{0} claims your mother is a hamster and your father reeks of elderberries.</LetterAngryResponse1>
+	<LetterAngryResponse2>{0} claims that your ways of life is both sad and pathetic.</LetterAngryResponse2>
+	<LetterAngryResponse3>{0} has sent a picture of some genetials in response, how childish.</LetterAngryResponse3>
+	<LetterAngryResponse4>{0} claims they've seen insectoids with more wit than you.</LetterAngryResponse4>
+	<LetterAngryResponse5>{0} has sent a drawing of a muffalo and yourself conducting an act you wont describe further.</LetterAngryResponse5>
+	<LetterAngryPositive>{0} apologies for their misconduct and wishes to improve their relations with you.</LetterAngryPositive>
+	<LetterAngryNegative>A red paper with no content. What could that mean?</LetterAngryNegative>
+	<LetterAngrySad>{0} asks why you would send such a horrid thing?</LetterAngrySad>
+	<LetterInviteTitle>Invitation response from {0}</LetterInviteTitle>
+	<LetterInviteResponse>{0} thanks for the offer but sadly have none to spare as of this time.</LetterInviteResponse>
+	<LetterInvitePositive>{0} is delighted and claims a prospecting tenant is already on its way.</LetterInvitePositive>
 </LanguageData>

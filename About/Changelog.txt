@@ -4,12 +4,15 @@
 - Fault component check for messagebox, tenants and couriers
 - Removed extra space after RequestForTenancyHiding string.
 - Removed research prerequisites for Messagebox
-- Tenants does not require a messagebox. Although you need it for them courier money.
-- Courier message whenever they appear with no Messagebox.
+- Tenants does not require a messagebox. Although you need it for them courier deliveries.
+- Message whenever courier should appear but there is no Messagebox.
 - Lowered harmony priority on clearing gizmo's.
 - Lowered chance for couriers to appear.
-- Added Letters
+- Removed option for tenants to stay if disappointed.
+- Couriers get bows instead of swords.
+- Added Letters (Diplomatic, Angry, Invitation)
 - Added Writing Pedestal
+- Envoys - Diplomatic tenants that you invite through letters for relation buff instead of silver.
 
 2019-11-10
 - Broadcast is not initially set to true.

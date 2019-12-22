@@ -15,7 +15,12 @@
 		<tickerType>Normal</tickerType>
 		<thingCategories>
 			<li>Tenants_Letters</li>
-		</thingCategories>
+		</thingCategories>		
+		<costStuffCount>5</costStuffCount>
+		<stuffCategories>
+			<li>Leathery</li>
+			<li>Fabric</li>
+		</stuffCategories>
 	</ThingDef>
 
 	<ThingDef Name="Tenant_LetterDiplomatic" ParentName="Tenants_LetterBase" >
@@ -86,6 +91,42 @@
 		<comps>
 			<li Class="Tenants.CompProps_Letter">
 				<letter>2</letter>
+			</li>
+		</comps>
+	</ThingDef>
+
+	<ThingDef Name="Tenant_LetterInvite" ParentName="Tenants_LetterBase" >
+		<defName>Tenant_LetterInvite</defName>
+		<label>angry letter</label>
+		<description>A letter of invitation towards a certain faction.</description>
+		<graphicData>
+			<texPath>Things/Letters/LetterInvite</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<statBases>
+			<MarketValue>50</MarketValue>
+			<WorkToMake>500</WorkToMake>
+		</statBases>   
+		<costList>
+			<Silver>10</Silver>
+		</costList>
+		<recipeMaker>
+			<workSpeedStat>UnskilledLaborSpeed</workSpeedStat>
+			<workSkill>Social</workSkill>
+			<effectWorking>Tailor</effectWorking>
+			<soundWorking>Recipe_Tailor</soundWorking>	
+			<recipeUsers>
+				<li>TableStonecutter</li>
+				<li>TableSculpting</li>
+				<li>CraftingSpot</li>
+			</recipeUsers>
+			<skillRequirements>
+				<Social>4</Social>
+			</skillRequirements>
+		</recipeMaker>
+		<comps>
+			<li Class="Tenants.CompProps_Letter">
+				<letter>3</letter>
 			</li>
 		</comps>
 	</ThingDef>
