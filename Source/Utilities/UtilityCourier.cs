@@ -144,8 +144,8 @@ namespace Tenants {
                     Log.Message(letterComp.Faction.def.defName);
                     switch ((LetterType)letterComp.TypeValue) {
                         case LetterType.Diplomatic: {
-                                if (Rand.Value < 0.2f + ((letterComp.Skill * 3f) / 100f)) {
-                                    if (Rand.Value > 0.1) {
+                                if (Rand.Value < 0.2f + ((letterComp.Skill * 3.5f) / 100f)) {
+                                    if (Rand.Value < letterComp.Skill/100) {
                                         int val = Utility.ChangeRelations(letterComp.Faction);
                                         val += Utility.ChangeRelations(letterComp.Faction);
                                         StringBuilder builder = new StringBuilder();
@@ -170,8 +170,13 @@ namespace Tenants {
                                 break;
                             }
                         case LetterType.Angry: {
-                                if (Rand.Value < 0.6f + ((letterComp.Skill * 1f) / 100f)) {
-                                    if (Rand.Value > 0.1) {
+                                if (letter.Faction.RelationKindWith(Find.FactionManager.OfPlayer) == FactionRelationKind.Ally) {
+                                    int val = Utility.ChangeRelations(letterComp.Faction);
+                                    val += Utility.ChangeRelations(letterComp.Faction);
+                                    Find.LetterStack.ReceiveLetter("LetterAngryTitle".Translate(), "LetterAngrySad".Translate(letterComp.Faction) + "\n" + "LetterRelationPenalty".Translate(val), LetterDefOf.NegativeEvent);
+                                }
+                                if (Rand.Value < 0.6f + ((letterComp.Skill * 1.5f) / 100f)) {
+                                    if (Rand.Value < letterComp.Skill / 100) {
                                         int val = Utility.ChangeRelations(letterComp.Faction, true);
                                         val += Utility.ChangeRelations(letterComp.Faction, true);
                                         Find.LetterStack.ReceiveLetter("LetterAngryTitle".Translate(), "LetterAngryNegative".Translate(letterComp.Faction) + "\n" + "LetterRelationPenalty".Translate(val), LetterDefOf.NegativeEvent);
@@ -192,7 +197,7 @@ namespace Tenants {
                                 break;
                             }
                         case LetterType.Invite: {
-                                if (Rand.Value < 0.4f + ((letterComp.Skill * 2f) / 100f)) {
+                                if (Rand.Value < 0.4f + ((letterComp.Skill * 2.5f) / 100f)) {
                                     Find.LetterStack.ReceiveLetter("LetterInviteTitle".Translate(), "LetterInvitePositive".Translate(letterComp.Faction), LetterDefOf.PositiveEvent);
                                     IncidentParms parms = new IncidentParms() { target = map, forced = true, faction = letterComp.Faction };
                                     Find.Storyteller.incidentQueue.Add(IncidentDefOf.RequestForTenancy, Find.TickManager.TicksGame + Rand.Range(15000, 30000), parms, 240000);
