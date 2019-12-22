@@ -58,7 +58,7 @@ namespace Tenants {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Collections.Look(ref AvailableRaces, "AvailableRaces", LookMode.Deep);
+            Scribe_Collections.Look(ref AvailableRaces, "AvailableRaces", LookMode.Value);
             Scribe_Values.Look(ref MinDailyCost, "MinDailyCost", minDailyCost);
             Scribe_Values.Look(ref MaxDailyCost, "MaxDailyCost", maxDailyCost);
             Scribe_Values.Look(ref MinContractTime, "MinContractTime", minContractTime);

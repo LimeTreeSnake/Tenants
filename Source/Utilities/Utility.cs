@@ -39,6 +39,15 @@ namespace Tenants {
             }
         }
 
+        public static Letter GetLetterComponent(this Thing thing) {
+            if (ThingCompUtility.TryGetComp<Letter>(thing) != null) {
+                return ThingCompUtility.TryGetComp<Letter>(thing);
+            }
+            else {
+                thing.def.comps.Add(new CompProps_Letter());
+                return ThingCompUtility.TryGetComp<Letter>(thing);
+            }
+        }
         public static bool TryFindSpawnSpot(Map map, out IntVec3 spawnSpot) {
             bool validator(IntVec3 c) => map.reachability.CanReachColony(c) && !c.Fogged(map);
             return CellFinder.TryFindRandomEdgeCellWith(validator, map, CellFinder.EdgeRoadChance_Neutral, out spawnSpot);

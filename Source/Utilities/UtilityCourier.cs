@@ -38,7 +38,7 @@ namespace Tenants {
                 string letterLabel = "CourierArrivedTitle".Translate(map.Parent.Label);
                 string letterText = "CourierArrivedMessage".Translate(pawn.Named("PAWN"));
                 Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.PositiveEvent, pawn);
-                LordMaker.MakeNewLord(pawn.Faction, new LordJob_CourierDeliver(map.listerThings.ThingsOfDef(ThingDefOf.Tenants_MailBox).RandomElement()), pawn.Map, new List<Pawn> { pawn });
+                LordMaker.MakeNewLord(pawn.Faction, new LordJob_CourierDeliver(map.listerThings.ThingsOfDef(ThingDefOf.Tenant_MessageBox).RandomElement()), pawn.Map, new List<Pawn> { pawn });
                 return true;
             }
             catch (Exception ex) {
@@ -117,6 +117,10 @@ namespace Tenants {
                 Thing top = ThingMaker.MakeThing(topDef, GenStuff.RandomStuffByCommonalityFor(topDef));
                 pawn.apparel.Wear((Apparel)top);
             }
+
+            ThingDef scrollCaseDef = ThingDefOf.Tenant_ScrollCase;
+            Thing scrollCase = ThingMaker.MakeThing(scrollCaseDef, GenStuff.RandomStuffByCommonalityFor(scrollCaseDef));
+            pawn.apparel.Wear((Apparel)scrollCase);
         }
         public static void CourierInventory(Pawn pawn, Map map) {
             ThingDef bowDef = DefDatabase<ThingDef>.AllDefsListForReading.FirstOrDefault(x => x.defName.ToLower() == "bow_recurve");
@@ -131,18 +135,23 @@ namespace Tenants {
                 content.Clear();
             }
         }
-        public static void RecieveLetters(ref List<Letter> content, IntVec3 pos, Map map) {
+        public static void RecieveLetters(ref List<Thing> content, IntVec3 pos, Map map) {
             if (content.Count > 0) {
-                foreach (Letter letter in content) {
-                    switch (letter.Props.letter) {
+                foreach (Thing letter in content) {
+                    Letter letterComp = letter.GetLetterComponent();
+                    Log.Message(letterComp.TypeValue.ToString());
+                    Log.Message(letterComp.Skill.ToString());
+                    Log.Message(letterComp.Faction.def.defName);
+                    switch ((LetterType)letterComp.TypeValue) {
                         case LetterType.Diplomatic: {
-                                if (Rand.Value < 0.2f + (letter.Skill * 3f) / 100f) {
+                                if (Rand.Value < 0.2f + ((letterComp.Skill * 3f) / 100f)) {
                                     if (Rand.Value > 0.1) {
-                                        int val = Utility.ChangeRelations(letter.Faction);
-                                        val += Utility.ChangeRelations(letter.Faction);
+                                        int val = Utility.ChangeRelations(letterComp.Faction);
+                                        val += Utility.ChangeRelations(letterComp.Faction);
                                         StringBuilder builder = new StringBuilder();
-                                        builder.Append("LetterDiplomaticPositive".Translate(letter.Faction) + "\n" + "LetterRelationIncrease".Translate(val));
-                                        List<Thing> gifts = ThingSetMakerDefOf.Gift_Diplomatic.root.Generate(default);
+                                        builder.Append("LetterDiplomaticPositive".Translate(letterComp.Faction) + "\n" + "LetterRelationIncrease".Translate(val));
+
+                                        List<Thing> gifts = ThingSetMakerDefOf.Gift_Diplomatic.root.Generate();
                                         foreach (Thing gift in gifts) {
                                             builder.AppendLine(gift.stackCount + " " + gift.Label);
                                             DebugThingPlaceHelper.DebugSpawn(gift.def, pos, gift.stackCount);
@@ -150,46 +159,46 @@ namespace Tenants {
                                         Find.LetterStack.ReceiveLetter("LetterDiplomaticTitle".Translate(), builder.ToString(), LetterDefOf.PositiveEvent);
                                     }
                                     else {
-                                        int val = Utility.ChangeRelations(letter.Faction);
-                                        Find.LetterStack.ReceiveLetter("LetterDiplomaticTitle".Translate(), "LetterDiplomaticResponse".Translate(letter.Faction) + "\n" + "LetterRelationIncrease".Translate(val), LetterDefOf.PositiveEvent);
+                                        int val = Utility.ChangeRelations(letterComp.Faction);
+                                        Find.LetterStack.ReceiveLetter("LetterDiplomaticTitle".Translate(), "LetterDiplomaticResponse".Translate(letterComp.Faction) + "\n" + "LetterRelationIncrease".Translate(val), LetterDefOf.PositiveEvent);
                                     }
                                 }
                                 else {
-                                    int val = Utility.ChangeRelations(letter.Faction, true);
-                                    Find.LetterStack.ReceiveLetter("LetterDiplomaticTitle".Translate(), "LetterDiplomaticNegative".Translate(letter.Faction) + "\n" + "LetterRelationPenalty".Translate(val), LetterDefOf.NegativeEvent);
+                                    int val = Utility.ChangeRelations(letterComp.Faction, true);
+                                    Find.LetterStack.ReceiveLetter("LetterDiplomaticTitle".Translate(), "LetterDiplomaticNegative".Translate(letterComp.Faction) + "\n" + "LetterRelationPenalty".Translate(val), LetterDefOf.NegativeEvent);
                                 }
                                 break;
                             }
                         case LetterType.Angry: {
-                                if (Rand.Value < 0.6f + (letter.Skill * 1f) / 100f) {
+                                if (Rand.Value < 0.6f + ((letterComp.Skill * 1f) / 100f)) {
                                     if (Rand.Value > 0.1) {
-                                        int val = Utility.ChangeRelations(letter.Faction, true);
-                                        val += Utility.ChangeRelations(letter.Faction, true);
-                                        Find.LetterStack.ReceiveLetter("LetterAngryTitle".Translate(), "LetterAngryNegative".Translate(letter.Faction) + "\n" + "LetterRelationPenalty".Translate(val), LetterDefOf.NegativeEvent);
+                                        int val = Utility.ChangeRelations(letterComp.Faction, true);
+                                        val += Utility.ChangeRelations(letterComp.Faction, true);
+                                        Find.LetterStack.ReceiveLetter("LetterAngryTitle".Translate(), "LetterAngryNegative".Translate(letterComp.Faction) + "\n" + "LetterRelationPenalty".Translate(val), LetterDefOf.NegativeEvent);
                                         IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, map);
                                         parms.raidStrategy = RimWorld.RaidStrategyDefOf.ImmediateAttack;
                                         parms.forced = true;
                                         Find.Storyteller.incidentQueue.Add(RimWorld.IncidentDefOf.RaidEnemy, Find.TickManager.TicksGame + Rand.Range(5000, 30000), parms, 90000);
                                     }
                                     else {
-                                        int val = Utility.ChangeRelations(letter.Faction, true);
-                                        Find.LetterStack.ReceiveLetter("LetterAngryTitle".Translate(), "LetterAngryResponse".Translate(letter.Faction) + "\n" + "LetterRelationPenalty".Translate(val), LetterDefOf.NegativeEvent);
+                                        int val = Utility.ChangeRelations(letterComp.Faction, true);
+                                        Find.LetterStack.ReceiveLetter("LetterAngryTitle".Translate(), "LetterAngryResponse".Translate(letterComp.Faction) + "\n" + "LetterRelationPenalty".Translate(val), LetterDefOf.NegativeEvent);
                                     }
                                 }
                                 else {
-                                    int val = Utility.ChangeRelations(letter.Faction);
-                                    Find.LetterStack.ReceiveLetter("LetterAngryTitle".Translate(), "LetterAngryPositive".Translate(letter.Faction) + "\n" + "LetterRelationIncrease".Translate(val), LetterDefOf.PositiveEvent);
+                                    int val = Utility.ChangeRelations(letterComp.Faction);
+                                    Find.LetterStack.ReceiveLetter("LetterAngryTitle".Translate(), "LetterAngryPositive".Translate(letterComp.Faction) + "\n" + "LetterRelationIncrease".Translate(val), LetterDefOf.PositiveEvent);
                                 }
                                 break;
                             }
                         case LetterType.Invite: {
-                                if (Rand.Value < 0.4f + (letter.Skill * 2f) / 100f) {
-                                    Find.LetterStack.ReceiveLetter("LetterInviteTitle".Translate(), "LetterInvitePositive".Translate(letter.Faction), LetterDefOf.PositiveEvent);
-                                    IncidentParms parms = new IncidentParms() { target = map, forced = true, faction = letter.Faction };
+                                if (Rand.Value < 0.4f + ((letterComp.Skill * 2f) / 100f)) {
+                                    Find.LetterStack.ReceiveLetter("LetterInviteTitle".Translate(), "LetterInvitePositive".Translate(letterComp.Faction), LetterDefOf.PositiveEvent);
+                                    IncidentParms parms = new IncidentParms() { target = map, forced = true, faction = letterComp.Faction };
                                     Find.Storyteller.incidentQueue.Add(IncidentDefOf.RequestForTenancy, Find.TickManager.TicksGame + Rand.Range(15000, 30000), parms, 240000);
                                 }
                                 else {
-                                    Find.LetterStack.ReceiveLetter("LetterInviteTitle".Translate(), "LetterInviteResponse".Translate(letter.Faction), LetterDefOf.NeutralEvent);
+                                    Find.LetterStack.ReceiveLetter("LetterInviteTitle".Translate(), "LetterInviteResponse".Translate(letterComp.Faction), LetterDefOf.NeutralEvent);
                                 }
                                 break;
                             }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>	
 	<ThingDef ParentName="BenchBase">
-		<defName>Tenants_MessageBox</defName>
+		<defName>Tenant_MessageBox</defName>
 		<label>messagebox</label>
 		<description>A message box, commonly used to send messages to friends and/or enemies. Couriers tend to like these.</description>
 		<thingClass>Tenants.Building_MessageBox</thingClass>
@@ -9,20 +9,10 @@
 			<texPath>Things/Building/MessageBox</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 			<shaderType>CutoutComplex</shaderType>
-			<drawSize>(1.0,1.0)</drawSize>
-			<damageData> 
-				<rect>(0.1,0.1,0.8,0.8)</rect>
-			</damageData>
-			<shadowData>
-				<volume>(0.2,0.6,0.2)</volume>
-				<offset>(0,0,0.0)</offset>
-			</shadowData>
 		</graphicData>
 		<altitudeLayer>Building</altitudeLayer>
 		<passability>PassThroughOnly</passability>
 		<minifiedDef>MinifiedThing</minifiedDef>
-		<hasInteractionCell>true</hasInteractionCell>
-		<interactionCellOffset>(0,0,1)</interactionCellOffset>
 		<thingCategories>
 			<li>BuildingsMisc</li>
 		</thingCategories>
@@ -42,7 +32,6 @@
 			<li>Stony</li>
 		</stuffCategories>
 		<costStuffCount>60</costStuffCount>
-		<defaultPlacingRot>South</defaultPlacingRot>
 		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
 		<designationCategory>Misc</designationCategory>
 		<resourcesFractionWhenDeconstructed>0.2</resourcesFractionWhenDeconstructed>
@@ -52,17 +41,10 @@
 		<building>
 			<fullGraveGraphicData>
 				<texPath>Things/Building/MessageBoxFull</texPath>
-				<graphicClass>Graphic_Single</graphicClass>
-				<shaderType>CutoutComplex</shaderType>
-				<drawSize>(1.0,1.0)</drawSize>
-				<damageData> 
-					<rect>(0.1,0.1,0.8,0.8)</rect>
-				</damageData>
-				<shadowData>
-					<volume>(0.2,0.6,0.2)</volume>
-					<offset>(0,0,0.0)</offset>
-				</shadowData>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>CutoutComplex</shaderType>
 			</fullGraveGraphicData>
 		</building>
+    <rotatable>false</rotatable>
 	</ThingDef>
 </Defs>

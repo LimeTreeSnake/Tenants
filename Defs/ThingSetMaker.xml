@@ -4,12 +4,16 @@
 		<defName>Gift_Diplomatic</defName>
 		<root Class="ThingSetMaker_RandomOption">
 			<fixedParams>
-				<qualityGenerator>Gift</qualityGenerator>
-				<maxTotalMass>15</maxTotalMass>
+				<totalMarketValueRange>
+					<min>100</min>
+					<max>600</max>
+				</totalMarketValueRange>
+				<qualityGenerator>Reward</qualityGenerator>
+				<maxTotalMass>20</maxTotalMass>
 			</fixedParams>
 			<options>
 				<li>
-					<weight>2</weight>
+					<weight>4</weight>
 					<thingSetMaker Class="ThingSetMaker_MarketValue">
 						<fixedParams>
 							<filter>
@@ -21,7 +25,7 @@
 					</thingSetMaker>
 				</li>
 				<li>
-					<weight>4</weight>
+					<weight>6</weight>
 					<thingSetMaker Class="ThingSetMaker_MarketValue">
 						<fixedParams>
 							<filter>
@@ -37,7 +41,7 @@
 					</thingSetMaker>
 				</li>
 				<li>
-					<weight>2</weight>
+					<weight>1</weight>
 					<thingSetMaker Class="ThingSetMaker_MarketValue">
 						<fixedParams>
 							<filter>
@@ -67,10 +71,6 @@
 									<li>AnimalPart</li>
 									<li>SingleUseWeapon</li>
 								</thingSetMakerTagsToDisallow>
-								<totalMarketValueRange>
-									<min>100</min>
-									<max>400</max>
-								</totalMarketValueRange>
 							</filter>
 						</fixedParams>
 					</thingSetMaker>

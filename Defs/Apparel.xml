@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>	
+	<ThingDef ParentName="ApparelMakeableBase">
+		<defName>Tenant_ScrollCase</defName>
+		<description>A long case for delivering messages.</description>
+		<label>scrollcase</label>
+		<techLevel>Medieval</techLevel>
+		<recipeMaker>
+			<recipeUsers>
+				<li>ElectricTailoringBench</li>
+				<li>HandTailoringBench</li>
+			</recipeUsers>
+		</recipeMaker>
+		<graphicData>
+			<texPath>Things/Apparel/ScrollCase/ScrollCase</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>CutoutComplex</shaderType>
+		</graphicData>
+		<costStuffCount>80</costStuffCount>
+		<stuffCategories>
+			<li>Leathery</li>
+		</stuffCategories>
+		<thingCategories>
+			<li>Apparel</li>
+		</thingCategories>
+		<statBases>
+			<MaxHitPoints>200</MaxHitPoints>
+			<WorkToMake>1000</WorkToMake>
+			<Mass>2.0</Mass>
+			<EquipDelay>2.5</EquipDelay>
+		</statBases>
+    <equippedStatOffsets>
+		<WorkSpeedGlobal>-0.1</WorkSpeedGlobal>
+		<SocialImpact>0.1</SocialImpact>
+    </equippedStatOffsets>
+		<apparel>
+			<bodyPartGroups>
+				<li>Waist</li>
+			</bodyPartGroups>
+			<wornGraphicPath>Things/Apparel/ScrollCase/ScrollCase</wornGraphicPath>
+			<layers>
+				<li>Shell</li>
+			</layers>
+			<tags>
+				<li>Medieval</li>
+			</tags>
+		</apparel>
+	</ThingDef>
+</Defs>	

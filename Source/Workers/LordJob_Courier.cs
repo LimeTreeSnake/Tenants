@@ -21,7 +21,7 @@ namespace Tenants
         public override StateGraph CreateGraph() {
             StateGraph StateGraph = new StateGraph();
             if (Mailbox == null) {
-                Mailbox = Map.listerThings.ThingsOfDef(ThingDefOf.Tenants_MailBox).RandomElement();
+                Mailbox = Map.listerThings.ThingsOfDef(ThingDefOf.Tenant_MessageBox).RandomElement();
             }
 
             LordToil toilTravel = new LordToil_Travel(Mailbox.Position) {
@@ -100,7 +100,7 @@ namespace Tenants
                 }
                 //Incoming Letters
                 if (MapComp.IncomingLetters.Count > 0) {
-                    foreach (Letter letter in MapComp.IncomingLetters) {
+                    foreach (Thing letter in MapComp.IncomingLetters) {
                         mailBoxComp.IncomingLetters.Add(letter);
                     }
                     MapComp.IncomingLetters.Clear();
@@ -108,8 +108,8 @@ namespace Tenants
                 }
                 //Outgoing Letters
                 if (mailBoxComp.OutgoingLetters.Count > 0) {
-                    foreach (Letter letter in mailBoxComp.OutgoingLetters) {
-                        if (MapComp.IncomingLetters.FirstOrDefault(x => x.Faction == letter.Faction && x.Props.letter == letter.Props.letter) == null) {
+                    foreach (Thing letter in mailBoxComp.OutgoingLetters) {
+                        if (MapComp.IncomingLetters.FirstOrDefault(x => x.Faction == letter.Faction && x.GetLetterComponent().TypeValue == letter.GetLetterComponent().TypeValue) == null) {
                             MapComp.IncomingLetters.Add(letter);
                         }
                     }

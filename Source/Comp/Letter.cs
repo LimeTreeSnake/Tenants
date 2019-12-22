@@ -11,9 +11,12 @@ namespace Tenants
     {
         public CompProps_Letter Props => (CompProps_Letter)props;
         public int Skill;
+        public int TypeValue;
         public Faction Faction;
         public override void PostExposeData() {
+            Scribe_Values.Look(ref Skill, "Skill");
             Scribe_References.Look(ref Faction, "Faction");
+            Scribe_Values.Look(ref TypeValue, "TypeValue");
         }
     }
 

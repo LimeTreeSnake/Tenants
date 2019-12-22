@@ -12,8 +12,8 @@ namespace Tenants {
         private List<Pawn> capturedTenantsToAvenge = new List<Pawn>();
         private List<Pawn> moles = new List<Pawn>();
         private List<Pawn> wantedTenants = new List<Pawn>();
-        private List<Letter> outgoingLetters = new List<Letter>();
-        private List<Letter> incomingLetters = new List<Letter>();
+        private List<Thing> outgoingLetters = new List<Thing>();
+        private List<Thing> incomingLetters = new List<Thing>();
         private List<Thing> incomingMail = new List<Thing>();
         private List<Thing> courierCost = new List<Thing>();
         private float karma;
@@ -47,15 +47,15 @@ namespace Tenants {
         public bool BroadcastCourier { get { return broadcastCourier; } set { broadcastCourier = value; } }
         public int KilledCourier { get { return killedCourier; } set { killedCourier = value; } }
         public float Karma { get { return karma; } set { karma = value; } }
-        public List<Letter> OutgoingLetters {
+        public List<Thing> OutgoingLetters {
             get {
-                if (outgoingLetters == null) { outgoingLetters = new List<Letter>(); }
+                if (outgoingLetters == null) { outgoingLetters = new List<Thing>(); }
                 return outgoingLetters;
             }
         }
-        public List<Letter> IncomingLetters {
+        public List<Thing> IncomingLetters {
             get {
-                if (incomingLetters == null) { incomingLetters = new List<Letter>(); }
+                if (incomingLetters == null) { incomingLetters = new List<Thing>(); }
                 return incomingLetters;
             }
         }
