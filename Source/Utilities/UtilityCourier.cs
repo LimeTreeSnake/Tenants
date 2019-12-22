@@ -133,27 +133,69 @@ namespace Tenants {
         }
         public static void RecieveLetters(ref List<Letter> content, IntVec3 pos, Map map) {
             if (content.Count > 0) {
-                foreach (Letter thing in content) {
-                    switch (thing.Props.letter) {
+                foreach (Letter letter in content) {
+                    switch (letter.Props.letter) {
                         case LetterType.Diplomatic: {
-
-
+                                if (Rand.Value < 0.2f + (letter.Skill * 3f) / 100f) {
+                                    if (Rand.Value > 0.1) {
+                                        int val = Utility.ChangeRelations(letter.Faction);
+                                        val += Utility.ChangeRelations(letter.Faction);
+                                        StringBuilder builder = new StringBuilder();
+                                        builder.Append("LetterDiplomaticPositive".Translate(letter.Faction) + "\n" + "LetterRelationIncrease".Translate(val));
+                                        List<Thing> gifts = ThingSetMakerDefOf.Gift_Diplomatic.root.Generate(default);
+                                        foreach (Thing gift in gifts) {
+                                            builder.AppendLine(gift.stackCount + " " + gift.Label);
+                                            DebugThingPlaceHelper.DebugSpawn(gift.def, pos, gift.stackCount);
+                                        }
+                                        Find.LetterStack.ReceiveLetter("LetterDiplomaticTitle".Translate(), builder.ToString(), LetterDefOf.PositiveEvent);
+                                    }
+                                    else {
+                                        int val = Utility.ChangeRelations(letter.Faction);
+                                        Find.LetterStack.ReceiveLetter("LetterDiplomaticTitle".Translate(), "LetterDiplomaticResponse".Translate(letter.Faction) + "\n" + "LetterRelationIncrease".Translate(val), LetterDefOf.PositiveEvent);
+                                    }
+                                }
+                                else {
+                                    int val = Utility.ChangeRelations(letter.Faction, true);
+                                    Find.LetterStack.ReceiveLetter("LetterDiplomaticTitle".Translate(), "LetterDiplomaticNegative".Translate(letter.Faction) + "\n" + "LetterRelationPenalty".Translate(val), LetterDefOf.NegativeEvent);
+                                }
                                 break;
                             }
-                        case LetterType.Mean: {
-
-
+                        case LetterType.Angry: {
+                                if (Rand.Value < 0.6f + (letter.Skill * 1f) / 100f) {
+                                    if (Rand.Value > 0.1) {
+                                        int val = Utility.ChangeRelations(letter.Faction, true);
+                                        val += Utility.ChangeRelations(letter.Faction, true);
+                                        Find.LetterStack.ReceiveLetter("LetterAngryTitle".Translate(), "LetterAngryNegative".Translate(letter.Faction) + "\n" + "LetterRelationPenalty".Translate(val), LetterDefOf.NegativeEvent);
+                                        IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, map);
+                                        parms.raidStrategy = RimWorld.RaidStrategyDefOf.ImmediateAttack;
+                                        parms.forced = true;
+                                        Find.Storyteller.incidentQueue.Add(RimWorld.IncidentDefOf.RaidEnemy, Find.TickManager.TicksGame + Rand.Range(5000, 30000), parms, 90000);
+                                    }
+                                    else {
+                                        int val = Utility.ChangeRelations(letter.Faction, true);
+                                        Find.LetterStack.ReceiveLetter("LetterAngryTitle".Translate(), "LetterAngryResponse".Translate(letter.Faction) + "\n" + "LetterRelationPenalty".Translate(val), LetterDefOf.NegativeEvent);
+                                    }
+                                }
+                                else {
+                                    int val = Utility.ChangeRelations(letter.Faction);
+                                    Find.LetterStack.ReceiveLetter("LetterAngryTitle".Translate(), "LetterAngryPositive".Translate(letter.Faction) + "\n" + "LetterRelationIncrease".Translate(val), LetterDefOf.PositiveEvent);
+                                }
                                 break;
                             }
                         case LetterType.Invite: {
-
-
+                                if (Rand.Value < 0.4f + (letter.Skill * 2f) / 100f) {
+                                    Find.LetterStack.ReceiveLetter("LetterInviteTitle".Translate(), "LetterInvitePositive".Translate(letter.Faction), LetterDefOf.PositiveEvent);
+                                    IncidentParms parms = new IncidentParms() { target = map, forced = true, faction = letter.Faction };
+                                    Find.Storyteller.incidentQueue.Add(IncidentDefOf.RequestForTenancy, Find.TickManager.TicksGame + Rand.Range(15000, 30000), parms, 240000);
+                                }
+                                else {
+                                    Find.LetterStack.ReceiveLetter("LetterInviteTitle".Translate(), "LetterInviteResponse".Translate(letter.Faction), LetterDefOf.NeutralEvent);
+                                }
                                 break;
                             }
                         default:
                             break;
                     }
-
                 }
                 content.Clear();
             }

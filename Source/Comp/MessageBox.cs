@@ -9,7 +9,7 @@ namespace Tenants {
         private Graphic cachedGraphicFull;
         public override Graphic Graphic {
             get {
-                if (this.GetMailBoxComponent().IncomingLetters.Count > 0) {
+                if (this.GetMessageBoxComponent().IncomingLetters.Count > 0) {
 
                     if (def.building.fullGraveGraphicData == null) {
                         return base.Graphic;
@@ -33,6 +33,7 @@ namespace Tenants {
             Scribe_Collections.Look(ref IncomingLetters, "IncomingLetters", LookMode.Deep);
         }
         public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn pawn) {
+            MessageBox messageBoxComp = parent.GetMessageBoxComponent();
             List<FloatMenuOption> list = new List<FloatMenuOption>();
             //Check inventory
             if (Items.Count > 0) {
@@ -48,51 +49,56 @@ namespace Tenants {
             List<Thing> letters = pawn.Map.listerThings.ThingsOfDef(ThingDefOf.Tenant_LetterDiplomatic);
             if (letters.Count > 0) {
                 foreach (Faction faction in factions) {
-                    void SendMail() {
-                        Thing letter = GenClosest.ClosestThing_Regionwise_ReachablePrioritized(parent.Position, parent.Map, ThingRequest.ForDef(ThingDefOf.Tenant_LetterDiplomatic), PathEndMode.ClosestTouch, TraverseParms.For(TraverseMode.PassDoors, Danger.Unspecified));
-                        ThingCompUtility.TryGetComp<Letter>(letter).Faction = faction;
-                        Job job = new Job(JobDefOf.JobSendLetter, parent, letter) {
-                            count = 1
-                        };
-                        pawn.jobs.TryTakeOrderedJob(job);
+                    if (messageBoxComp.OutgoingLetters.FirstOrDefault(x => x.Props.letter == LetterType.Diplomatic && x.Faction == faction) == null) {
+                        void SendMail() {
+                            Thing letter = GenClosest.ClosestThing_Regionwise_ReachablePrioritized(parent.Position, parent.Map, ThingRequest.ForDef(ThingDefOf.Tenant_LetterDiplomatic), PathEndMode.ClosestTouch, TraverseParms.For(TraverseMode.PassDoors, Danger.Unspecified));
+                            ThingCompUtility.TryGetComp<Letter>(letter).Faction = faction;
+                            Job job = new Job(JobDefOf.JobSendLetter, parent, letter) {
+                                count = 1
+                            };
+                            pawn.jobs.TryTakeOrderedJob(job);
+                        }
+                        FloatMenuOption sendMail = new FloatMenuOption("SendLetterDiplomatic".Translate(faction), SendMail);
+                        list.Add(sendMail);
                     }
-                    FloatMenuOption sendMail = new FloatMenuOption("SendLetterDiplomatic".Translate(faction), SendMail);
-                    list.Add(sendMail);
                 }
             }
             //Angry Letters
             letters = pawn.Map.listerThings.ThingsOfDef(ThingDefOf.Tenant_LetterAngry);
             if (letters.Count > 0) {
                 foreach (Faction faction in factions) {
-                    void SendMail() {
-                        Thing letter = GenClosest.ClosestThing_Regionwise_ReachablePrioritized(parent.Position, parent.Map, ThingRequest.ForDef(ThingDefOf.Tenant_LetterAngry), PathEndMode.ClosestTouch, TraverseParms.For(TraverseMode.PassDoors, Danger.Unspecified));
-                        ThingCompUtility.TryGetComp<Letter>(letter).Faction = faction;
-                        Job job = new Job(JobDefOf.JobSendLetter, parent, letter) {
-                            count = 1
-                        };
-                        pawn.jobs.TryTakeOrderedJob(job);
+                    if (messageBoxComp.OutgoingLetters.FirstOrDefault(x => x.Props.letter == LetterType.Angry && x.Faction == faction) == null) {
+                        void SendMail() {
+                            Thing letter = GenClosest.ClosestThing_Regionwise_ReachablePrioritized(parent.Position, parent.Map, ThingRequest.ForDef(ThingDefOf.Tenant_LetterAngry), PathEndMode.ClosestTouch, TraverseParms.For(TraverseMode.PassDoors, Danger.Unspecified));
+                            ThingCompUtility.TryGetComp<Letter>(letter).Faction = faction;
+                            Job job = new Job(JobDefOf.JobSendLetter, parent, letter) {
+                                count = 1
+                            };
+                            pawn.jobs.TryTakeOrderedJob(job);
+                        }
+                        FloatMenuOption sendMail = new FloatMenuOption("SendLetterAngry".Translate(faction), SendMail);
+                        list.Add(sendMail);
                     }
-                    FloatMenuOption sendMail = new FloatMenuOption("SendLetterAngry".Translate(faction), SendMail);
-                    list.Add(sendMail);
                 }
             }
             //Invite Letters
             letters = pawn.Map.listerThings.ThingsOfDef(ThingDefOf.Tenant_LetterInvite);
             if (letters.Count > 0) {
-                foreach (Faction faction in factions.Where(x=> (int)x.RelationKindWith(Find.FactionManager.OfPlayer) != 0)) {
-                    void SendMail() {
-                        Thing letter = GenClosest.ClosestThing_Regionwise_ReachablePrioritized(parent.Position, parent.Map, ThingRequest.ForDef(ThingDefOf.Tenant_LetterInvite), PathEndMode.ClosestTouch, TraverseParms.For(TraverseMode.PassDoors, Danger.Unspecified));
-                        ThingCompUtility.TryGetComp<Letter>(letter).Faction = faction;
-                        Job job = new Job(JobDefOf.JobSendLetter, parent, letter) {
-                            count = 1
-                        };
-                        pawn.jobs.TryTakeOrderedJob(job);
+                foreach (Faction faction in factions.Where(x => (int)x.RelationKindWith(Find.FactionManager.OfPlayer) != 0)) {
+                    if (messageBoxComp.OutgoingLetters.FirstOrDefault(x => x.Props.letter == LetterType.Invite && x.Faction == faction) == null) {
+                        void SendMail() {
+                            Thing letter = GenClosest.ClosestThing_Regionwise_ReachablePrioritized(parent.Position, parent.Map, ThingRequest.ForDef(ThingDefOf.Tenant_LetterInvite), PathEndMode.ClosestTouch, TraverseParms.For(TraverseMode.PassDoors, Danger.Unspecified));
+                            ThingCompUtility.TryGetComp<Letter>(letter).Faction = faction;
+                            Job job = new Job(JobDefOf.JobSendLetter, parent, letter) {
+                                count = 1
+                            };
+                            pawn.jobs.TryTakeOrderedJob(job);
+                        }
+                        FloatMenuOption sendMail = new FloatMenuOption("SendLetterInvite".Translate(faction), SendMail);
+                        list.Add(sendMail);
                     }
-                    FloatMenuOption sendMail = new FloatMenuOption("SendLetterInvite".Translate(faction), SendMail);
-                    list.Add(sendMail);
                 }
             }
-
             return list.AsEnumerable();
         }
     }

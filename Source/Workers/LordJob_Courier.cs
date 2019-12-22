@@ -64,7 +64,7 @@ namespace Tenants
             }
             if (MailBox != null) {
                 MapComponent_Tenants MapComp = MapComponent_Tenants.GetComponent(MailBox.Map);
-                MessageBox mailBoxComp = MailBox.GetMailBoxComponent();
+                MessageBox mailBoxComp = MailBox.GetMessageBoxComponent();
 
                 //Incoming Gifts
                 if (MapComp.IncomingMail.Count > 0) {
@@ -109,7 +109,9 @@ namespace Tenants
                 //Outgoing Letters
                 if (mailBoxComp.OutgoingLetters.Count > 0) {
                     foreach (Letter letter in mailBoxComp.OutgoingLetters) {
-                        MapComp.OutgoingLetters.Add(letter);
+                        if (MapComp.IncomingLetters.FirstOrDefault(x => x.Faction == letter.Faction && x.Props.letter == letter.Props.letter) == null) {
+                            MapComp.IncomingLetters.Add(letter);
+                        }
                     }
                     mailBoxComp.OutgoingLetters.Clear();
                     Messages.Message("CourierOutgoingLetters".Translate(), MailBox, MessageTypeDefOf.NeutralEvent);

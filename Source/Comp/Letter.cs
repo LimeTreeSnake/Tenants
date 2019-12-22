@@ -6,7 +6,7 @@ using Verse.AI;
 
 namespace Tenants
 {
-    public enum LetterType { Diplomatic = 1, Mean = 2, Invite = 3};
+    public enum LetterType { Diplomatic = 1, Angry = 2, Invite = 3};
    public class Letter : ThingComp
     {
         public CompProps_Letter Props => (CompProps_Letter)props;

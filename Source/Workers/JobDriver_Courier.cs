@@ -50,7 +50,7 @@ namespace Tenants {
                     Thing building_MailBox = checkMailBox.actor.jobs.curJob.GetTarget(TargetIndex.A).Thing;
                     Letter letter = ThingCompUtility.TryGetComp<Letter>(TargetThingB);
                     letter.Skill = pawn.skills.skills.FirstOrDefault(x => x.def.defName.ToLower() == "social").levelInt;
-                    building_MailBox.GetMailBoxComponent().OutgoingLetters.Add(letter);
+                    building_MailBox.GetMessageBoxComponent().OutgoingLetters.Add(letter);
                     TargetThingB.Destroy();
                 };
                 yield return checkMailBox;
@@ -67,7 +67,7 @@ namespace Tenants {
                 Toil CheckLetters = new Toil();
                 CheckLetters.initAction = delegate {
                     Thing building_MessageBox = CheckLetters.actor.jobs.curJob.GetTarget(TargetIndex.A).Thing;
-                    MessageBox comp = building_MessageBox.GetMailBoxComponent();
+                    MessageBox comp = building_MessageBox.GetMessageBoxComponent();
                     UtilityCourier.EmptyMessageBox(ref comp.Items, comp.parent.Position);
                     UtilityCourier.RecieveLetters(ref comp.IncomingLetters, comp.parent.Position, comp.parent.Map);
                 };

@@ -29,7 +29,7 @@ namespace Tenants {
                 return ThingCompUtility.TryGetComp<Courier>(pawn);
             }
         }
-        public static MessageBox GetMailBoxComponent(this Thing thing) {
+        public static MessageBox GetMessageBoxComponent(this Thing thing) {
             if (ThingCompUtility.TryGetComp<MessageBox>(thing) != null) {
                 return ThingCompUtility.TryGetComp<MessageBox>(thing);
             }
@@ -138,14 +138,8 @@ namespace Tenants {
                 if (pawn.equipment.Primary.MarketValue > 400)
                     pawn.equipment.Primary.Destroy();
         }
-        public static int ChangeEnvoyRelations(Faction faction, bool reverse = false) {
-            int val = Rand.Range(SettingsHelper.LatestVersion.MinEnvoyRelation, SettingsHelper.LatestVersion.MaxEnvoyRelation + 1);
-            _ = reverse == false ? faction.RelationWith(Find.FactionManager.OfPlayer).goodwill += val : faction.RelationWith(Find.FactionManager.OfPlayer).goodwill -= val;
-            _ = reverse == false ? Find.FactionManager.OfPlayer.RelationWith(faction).goodwill += val : Find.FactionManager.OfPlayer.RelationWith(faction).goodwill -= val;
-            return val;
-        }
-        public static int ChangeTenantRelations(Faction faction, bool reverse = false) {
-            int val = Rand.Range(SettingsHelper.LatestVersion.MinTenantRelation, SettingsHelper.LatestVersion.MaxTenantRelation + 1);
+        public static int ChangeRelations(Faction faction, bool reverse = false) {
+            int val = Rand.Range(SettingsHelper.LatestVersion.MinRelation, SettingsHelper.LatestVersion.MaxRelation + 1);
             _ = reverse == false ? faction.RelationWith(Find.FactionManager.OfPlayer).goodwill += val : faction.RelationWith(Find.FactionManager.OfPlayer).goodwill -= val;
             _ = reverse == false ? Find.FactionManager.OfPlayer.RelationWith(faction).goodwill += val : Find.FactionManager.OfPlayer.RelationWith(faction).goodwill -= val;
             return val;

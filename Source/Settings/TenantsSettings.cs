@@ -22,11 +22,9 @@ namespace Tenants {
         private static readonly int simpleClothingMin = 100;
         private static readonly int simpleClothingMax = 300;
         private static readonly int courierCost = 30;
-        private static readonly int envoyDayMultiplier = 1;
-        private static readonly int minEnvoyRelation = 1;
-        private static readonly int maxEnvoyRelation = 10;
-        private static readonly int minTenantRelation = 8;
-        private static readonly int maxTenantRelation = 8;
+        private static readonly int envoyDayMultiplier = 2;
+        private static readonly int minRelation = 4;
+        private static readonly int maxRelation = 10;
         private static float r = 127f, g = 63f, b = 191f;
         private static Color color = new Color(r / 255f, g / 255f, b / 255f);
         #endregion Fields
@@ -48,10 +46,8 @@ namespace Tenants {
         public int SimpleClothingMax = simpleClothingMax;
         public int CourierCost = courierCost;
         public int EnvoyDayMultiplier = envoyDayMultiplier;
-        public int MinEnvoyRelation = minEnvoyRelation;
-        public int MaxEnvoyRelation = maxEnvoyRelation;
-        public int MinTenantRelation = minTenantRelation;
-        public int MaxTenantRelation = maxTenantRelation;
+        public int MinRelation = minRelation;
+        public int MaxRelation = maxRelation;
         public string Filter { get; set; }
         public float R { get { return r; } set { r = value; color = new Color(r / 255, g / 255, b / 255); } }
         public float G { get { return g; } set { g = value; color = new Color(r / 255, g / 255, b / 255); } }
@@ -77,10 +73,8 @@ namespace Tenants {
             Scribe_Values.Look(ref SimpleClothingMax, "SimpleClothingMax", simpleClothingMax);
             Scribe_Values.Look(ref CourierCost, "CourierCost", courierCost);
             Scribe_Values.Look(ref EnvoyDayMultiplier, "EnvoyDayMultiplier", envoyDayMultiplier);
-            Scribe_Values.Look(ref MinEnvoyRelation, "MinEnvoyRelation", minEnvoyRelation);
-            Scribe_Values.Look(ref MaxEnvoyRelation, "MaxEnvoyRelation", maxEnvoyRelation);
-            Scribe_Values.Look(ref MinTenantRelation, "MinTenantRelation", minTenantRelation);
-            Scribe_Values.Look(ref MaxTenantRelation, "MaxTenantRelation", maxTenantRelation);
+            Scribe_Values.Look(ref MinRelation, "MinEnvoyRelation", minRelation);
+            Scribe_Values.Look(ref MaxRelation, "MaxEnvoyRelation", maxRelation);
             Scribe_Values.Look(ref r, "R", r);
             Scribe_Values.Look(ref g, "G", g);
             Scribe_Values.Look(ref b, "B", b);
@@ -101,10 +95,8 @@ namespace Tenants {
             SimpleClothingMax = simpleClothingMax;
             CourierCost = courierCost;
             EnvoyDayMultiplier = envoyDayMultiplier;
-            MinEnvoyRelation = minEnvoyRelation;
-            MaxEnvoyRelation = maxEnvoyRelation;
-            MinTenantRelation = minTenantRelation;
-            MaxTenantRelation = maxTenantRelation;
+            MinRelation = minRelation;
+            MaxRelation = maxRelation;
             R = 127f;
             G = 63f;
             B = 191f;
@@ -170,14 +162,10 @@ namespace Tenants {
                 settings.CourierCost = (byte)Mathf.Round(list.Slider(settings.CourierCost, 10f, 100f));
                 list.Label("EnvoyDayMultiplier".Translate(settings.EnvoyDayMultiplier));
                 settings.EnvoyDayMultiplier = (byte)Mathf.Round(list.Slider(settings.EnvoyDayMultiplier, 1f, 10));
-                list.Label("MinEnvoyRelation".Translate(settings.MinEnvoyRelation));
-                settings.MinEnvoyRelation = (byte)Mathf.Round(list.Slider(settings.MinEnvoyRelation, 1f, 10));
-                list.Label("MaxEnvoyRelation".Translate(settings.MaxEnvoyRelation));
-                settings.MaxEnvoyRelation = (byte)Mathf.Round(list.Slider(settings.MaxEnvoyRelation, settings.MinEnvoyRelation, 20f));
-                list.Label("MinTenantRelation".Translate(settings.MinTenantRelation));
-                settings.MinTenantRelation = (int)Mathf.Round(list.Slider(settings.MinTenantRelation, 5f, 10));
-                list.Label("MaxTenantRelation".Translate(settings.MaxTenantRelation));
-                settings.MaxTenantRelation = (int)Mathf.Round(list.Slider(settings.MaxTenantRelation, settings.MinTenantRelation, 20f));
+                list.Label("MinRelation".Translate(settings.MinRelation));
+                settings.MinRelation = (byte)Mathf.Round(list.Slider(settings.MinRelation, 1f, 10));
+                list.Label("MaxRelation".Translate(settings.MaxRelation));
+                settings.MaxRelation = (byte)Mathf.Round(list.Slider(settings.MaxRelation, settings.MinRelation, 20f));
                 list.Gap();
                 list.GapLine();
                 float R = settings.R, G = settings.G, B = settings.B;

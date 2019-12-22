@@ -103,5 +103,7 @@
 	<LetterAngrySad>{0} asks why you would send such a horrid thing?</LetterAngrySad>
 	<LetterInviteTitle>Invitation response from {0}</LetterInviteTitle>
 	<LetterInviteResponse>{0} thanks for the offer but sadly have none to spare as of this time.</LetterInviteResponse>
-	<LetterInvitePositive>{0} is delighted and claims a prospecting tenant is already on its way.</LetterInvitePositive>
+	<LetterInvitePositive>{0} is delighted and claims that a prospecting tenant is on its way.</LetterInvitePositive>
+	<LetterRelationPenalty>You recieve a decrease of {0} to relations with them</LetterRelationPenalty>
+	<LetterRelationIncrease>You recieve an increase of {0} to relations with them</LetterRelationIncrease>
 </LanguageData>
