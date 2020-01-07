@@ -21,7 +21,7 @@ namespace Tenants
         public override StateGraph CreateGraph() {
             StateGraph StateGraph = new StateGraph();
             if (Mailbox == null) {
-                Mailbox = Map.listerThings.ThingsOfDef(ThingDefOf.Tenants_MailBox).RandomElement();
+                Mailbox = Map.listerThings.ThingsOfDef(Defs.ThingDefOf.Tenants_MailBox).RandomElement();
             }
 
             LordToil toilTravel = new LordToil_Travel(Mailbox.Position) {

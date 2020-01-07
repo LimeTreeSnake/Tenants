@@ -56,7 +56,11 @@
     <Compile Include="Comp\Courier.cs" />
     <Compile Include="Comp\Letter.cs" />
     <Compile Include="Comp\MessageBox.cs" />
-    <Compile Include="Def\DefOfTenants.cs" />
+    <Compile Include="Defs\ThoughtDefOf.cs" />
+    <Compile Include="Defs\ThingDefOf.cs" />
+    <Compile Include="Defs\IncidentDefOf.cs" />
+    <Compile Include="Defs\JobDefOf.cs" />
+    <Compile Include="Defs\RaidStrategyDefOf.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="Harmony\HarmonyTenants.cs" />
     <Compile Include="Comp\MapComponent_Tenants.cs" />

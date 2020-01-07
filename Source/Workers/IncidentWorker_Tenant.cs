@@ -25,7 +25,7 @@ namespace Tenants {
                 Map map = (Map)parms.target;
                 if (map != null) {
                     Pawn pawn = map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false && !x.Dead);
-                    Building building = map.listerBuildings.allBuildingsColonist.FirstOrDefault(x => x.def == ThingDefOf.Tenants_MailBox);
+                    Building building = map.listerBuildings.allBuildingsColonist.FirstOrDefault(x => x.def == Defs.ThingDefOf.Tenants_MailBox);
                     if (pawn != null) {
                             return Events.ContractTenancy((Map)parms.target);                       
                     }
@@ -52,7 +52,7 @@ namespace Tenants {
             if (parms.target != null) {
                 Map map = (Map)parms.target;
                 if (map != null) {
-                    Building building = map.listerBuildings.allBuildingsColonist.FirstOrDefault(x => x.def == ThingDefOf.Tenants_MailBox);
+                    Building building = map.listerBuildings.allBuildingsColonist.FirstOrDefault(x => x.def == Defs.ThingDefOf.Tenants_MailBox);
                     if (building != null ) {
                         return Events.Courier((Map)parms.target, building);
                     }

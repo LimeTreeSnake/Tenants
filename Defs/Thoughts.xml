@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<ThoughtDef>
+		<defName>TenantNewClothes</defName>
+		<durationDays>3</durationDays>
+		<stackedEffectMultiplier>0.98</stackedEffectMultiplier>
+		<stackLimit>10</stackLimit>
+		<stages>
+			<li>
+				<label>got new stuff</label>
+				<description>I got new stuff!</description>
+				<baseMoodEffect>5</baseMoodEffect>
+			</li>
+		</stages>
+	</ThoughtDef>
+	<ThoughtDef>
+		<defName>TenantLostClothes</defName>
+		<durationDays>3</durationDays>
+		<stackedEffectMultiplier>0.98</stackedEffectMultiplier>
+		<stackLimit>10</stackLimit>
+		<stages>
+			<li>
+				<label>took my stuff</label>
+				<description>They took my stuff!</description>
+				<baseMoodEffect>-5</baseMoodEffect>
+			</li>
+		</stages>
+	</ThoughtDef>
+</Defs>

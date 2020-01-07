@@ -32,12 +32,15 @@ namespace Tenants {
             harmonyInstance.Patch(AccessTools.Method(typeof(Pawn), "Kill"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("Kill_PreFix")), null);
             //Tenant Inspiration
             harmonyInstance.Patch(AccessTools.Method(typeof(InspirationWorker), "InspirationCanOccur"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("InspirationCanOccur_PreFix")), null);
+
+            //Tenant can work
+            harmonyInstance.Patch(AccessTools.Method(typeof(JobGiver_Work), "PawnCanUseWorkGiver"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("PawnCanUseWorkGiver_PreFix")), null);
+            //Tenant can work
+            harmonyInstance.Patch(AccessTools.Method(typeof(Pawn_EquipmentTracker), "TryDropEquipment"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("TryDropEquipment_PostFix")));
             #endregion Functionality
             #region GUI
             //Removes tenant gizmo
             harmonyInstance.Patch(AccessTools.Method(typeof(Pawn), "GetGizmos"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("GetGizmos_PostFix")));
-            //Tenant can work
-            harmonyInstance.Patch(AccessTools.Method(typeof(JobGiver_Work), "PawnCanUseWorkGiver"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("PawnCanUseWorkGiver_PreFix")), null);
             //Remove tenants from caravan list.
             harmonyInstance.Patch(AccessTools.Method(typeof(CaravanFormingUtility), "AllSendablePawns"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("AllSendablePawns_PostFix")));
             //Removes tenants from from pawn table 
@@ -135,7 +138,7 @@ namespace Tenants {
                             if (Utility.CalculateMood(tenantComp) < 1 && tenantComp.NeutralMoodCount > 2) {
                                 Building building = __instance.Map.listerBuildings.allBuildingsColonist.FirstOrDefault(x => x.def.defName.Contains("commsconsole") || x.def.defName.Contains("CommsConsole"));
                                 if (building != null) {
-                                    Job job = new Job(JobDefOf.JobUseCommsConsoleMole, building);
+                                    Job job = new Job(Defs.JobDefOf.JobUseCommsConsoleMole, building);
                                     __instance.jobs.TryTakeOrderedJob(job);
                                 }
                             }
@@ -200,6 +203,25 @@ namespace Tenants {
                 }
             return true;
         }
+        public static bool PawnCanUseWorkGiver_PreFix(Pawn pawn, WorkGiver giver) {
+            Tenant tenantComp = pawn.GetTenantComponent();
+            if (tenantComp != null && tenantComp.IsTenant && pawn.IsColonist) {
+                if (pawn.needs.mood.CurLevel > SettingsHelper.LatestVersion.LevelOfHappinessToWork / 100f || Utility.UpdateEmergencyWork(giver)) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            return true;
+        }
+        public static bool TryDropEquipment_PostFix(Pawn_EquipmentTracker __instance, bool __result, ThingWithComps eq, ThingWithComps resultingEq) {
+            if (__result) {
+                Log.Message(resultingEq.def.label);
+            }
+           
+            return true;
+        }
         #endregion Functionality
         #region GUI
         [HarmonyPriority(400)]
@@ -223,18 +245,7 @@ namespace Tenants {
                 Log.Message(ex.Message);
             }
         }
-        public static bool PawnCanUseWorkGiver_PreFix(Pawn pawn, WorkGiver giver) {
-            Tenant tenantComp = pawn.GetTenantComponent();
-            if (tenantComp != null && tenantComp.IsTenant && pawn.IsColonist) {
-                if (pawn.needs.mood.CurLevel > SettingsHelper.LatestVersion.LevelOfHappinessToWork / 100f || Utility.UpdateEmergencyWork(giver)) {
-                    return true;
-                }
-                else {
-                    return false;
-                }
-            }
-            return true;
-        }
+
         public static void AllSendablePawns_PostFix(ref List<Pawn> __result) {
             Utility.RemoveTenantsFromList(__result);
         }
@@ -308,7 +319,7 @@ namespace Tenants {
             List<FloatMenuOption> list = __result.ToList();
             if (!MapComponent_Tenants.GetComponent(myPawn.Map).Broadcast) {
                 void inviteTenant() {
-                    Job job = new Job(JobDefOf.JobUseCommsConsoleTenants);
+                    Job job = new Job(Defs.JobDefOf.JobUseCommsConsoleTenants);
                     myPawn.jobs.TryTakeOrderedJob(job);
                     PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.OpeningComms, KnowledgeAmount.Total);
                 }
@@ -317,7 +328,7 @@ namespace Tenants {
             }
             if (!MapComponent_Tenants.GetComponent(myPawn.Map).BroadcastCourier) {
                 void inviteCourier() {
-                    Job job = new Job(JobDefOf.JobUseCommsConsoleInviteCourier, __instance);
+                    Job job = new Job(Defs.JobDefOf.JobUseCommsConsoleInviteCourier, __instance);
                     myPawn.jobs.TryTakeOrderedJob(job);
                     PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.OpeningComms, KnowledgeAmount.Total);
                 }

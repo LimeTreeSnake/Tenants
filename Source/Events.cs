@@ -176,7 +176,7 @@ namespace Tenants {
                 string letterLabel = "CourierArrivedTitle".Translate(map.Parent.Label);
                 string letterText = "CourierArrivedMessage".Translate(pawn.Named("PAWN"));
                 Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.PositiveEvent, pawn);
-                LordMaker.MakeNewLord(pawn.Faction, new LordJob_CourierDeliver(map.listerThings.ThingsOfDef(ThingDefOf.Tenants_MailBox).RandomElement()), pawn.Map, new List<Pawn> { pawn });
+                LordMaker.MakeNewLord(pawn.Faction, new LordJob_CourierDeliver(map.listerThings.ThingsOfDef(Defs.ThingDefOf.Tenants_MailBox).RandomElement()), pawn.Map, new List<Pawn> { pawn });
                 return true;
             }
             catch (Exception ex) {
@@ -224,9 +224,9 @@ namespace Tenants {
                         Messages.Message("TenantFactionOutrage".Translate(pawn.Faction, SettingsHelper.LatestVersion.OutragePenalty, pawn.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
                         MapComponent_Tenants.GetComponent(pawn.Map).DeadTenantsToAvenge.Add(pawn);
                         IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, pawn.Map);
-                        parms.raidStrategy = RaidStrategyDefOf.Retribution;
+                        parms.raidStrategy = Defs.RaidStrategyDefOf.Retribution;
                         parms.forced = true;
-                        Find.Storyteller.incidentQueue.Add(IncidentDefOf.RetributionForDead, Find.TickManager.TicksGame + Rand.Range(15000, 90000), parms, 240000);
+                        Find.Storyteller.incidentQueue.Add(Defs.IncidentDefOf.RetributionForDead, Find.TickManager.TicksGame + Rand.Range(15000, 90000), parms, 240000);
                     }
                 }
             }
@@ -258,9 +258,9 @@ namespace Tenants {
                 if (Rand.Value < 0.25f || tenantComp.Wanted) {
                     MapComponent_Tenants.GetComponent(byPawn.Map).CapturedTenantsToAvenge.Add(pawn);
                     IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, byPawn.Map);
-                    parms.raidStrategy = RaidStrategyDefOf.Retribution;
+                    parms.raidStrategy = Defs.RaidStrategyDefOf.Retribution;
                     parms.forced = true;
-                    Find.Storyteller.incidentQueue.Add(IncidentDefOf.RetributionForCaptured, Find.TickManager.TicksGame + Rand.Range(15000, 90000), parms, 240000);
+                    Find.Storyteller.incidentQueue.Add(Defs.IncidentDefOf.RetributionForCaptured, Find.TickManager.TicksGame + Rand.Range(15000, 90000), parms, 240000);
                 }
             }
             else {
@@ -326,18 +326,18 @@ namespace Tenants {
             tenantComp.MoleMessage = true;
             MapComponent_Tenants.GetComponent(pawn.Map).Moles.Add(pawn);
             IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, pawn.Map);
-            parms.raidStrategy = RaidStrategyDefOf.MoleRaid;
+            parms.raidStrategy = Defs.RaidStrategyDefOf.MoleRaid;
             parms.forced = true;
-            Find.Storyteller.incidentQueue.Add(IncidentDefOf.MoleRaid, Find.TickManager.TicksGame + Rand.Range(5000, 30000), parms, 90000);
+            Find.Storyteller.incidentQueue.Add(Defs.IncidentDefOf.MoleRaid, Find.TickManager.TicksGame + Rand.Range(5000, 30000), parms, 90000);
         }
         public static void TenantWanted(Pawn pawn) {
             Tenant tenantComp = pawn.GetTenantComponent();
             if (Rand.Value < 0.66 && tenantComp.WantedBy.HostileTo(Find.FactionManager.OfPlayer) && !MapComponent_Tenants.GetComponent(pawn.Map).WantedTenants.Contains(pawn)) {
                 MapComponent_Tenants.GetComponent(pawn.Map).WantedTenants.Add(pawn);
                 IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, pawn.Map);
-                parms.raidStrategy = RaidStrategyDefOf.WantedRaid;
+                parms.raidStrategy = Defs.RaidStrategyDefOf.WantedRaid;
                 parms.forced = true;
-                Find.Storyteller.incidentQueue.Add(IncidentDefOf.WantedRaid, Find.TickManager.TicksGame + Rand.Range(100000, 300000), parms, 60000);
+                Find.Storyteller.incidentQueue.Add(Defs.IncidentDefOf.WantedRaid, Find.TickManager.TicksGame + Rand.Range(100000, 300000), parms, 60000);
             }
             else if (Rand.Value < 0.5) {
                 tenantComp.WantedBy.RelationWith(Find.FactionManager.OfPlayer).goodwill -= SettingsHelper.LatestVersion.HarborPenalty;
@@ -352,13 +352,13 @@ namespace Tenants {
             MapComponent_Tenants.GetComponent(pawn.Map).Broadcast = true;
             if (Rand.Value < 0.20f) {
                 IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, pawn.Map);
-                parms.raidStrategy = RaidStrategyDefOf.Retribution;
+                parms.raidStrategy = Defs.RaidStrategyDefOf.Retribution;
                 parms.forced = true;
-                Find.Storyteller.incidentQueue.Add(IncidentDefOf.Opportunists, Find.TickManager.TicksGame + Rand.Range(25000, 150000), parms, 240000);
+                Find.Storyteller.incidentQueue.Add(Defs.IncidentDefOf.Opportunists, Find.TickManager.TicksGame + Rand.Range(25000, 150000), parms, 240000);
             }
             else {
                 IncidentParms parms = new IncidentParms() { target = pawn.Map, forced = true };
-                Find.Storyteller.incidentQueue.Add(IncidentDefOf.RequestForTenancy, Find.TickManager.TicksGame + Rand.Range(15000, 120000), parms, 240000);
+                Find.Storyteller.incidentQueue.Add(Defs.IncidentDefOf.RequestForTenancy, Find.TickManager.TicksGame + Rand.Range(15000, 120000), parms, 240000);
             }
 
         }
@@ -373,7 +373,7 @@ namespace Tenants {
                 Messages.Message("CourierInvited".Translate(SettingsHelper.LatestVersion.CourierCost), MessageTypeDefOf.NeutralEvent);
                 MapComponent_Tenants.GetComponent(pawn.Map).BroadcastCourier = true;
                 IncidentParms parms = new IncidentParms() { target = pawn.Map, forced = true };
-                Find.Storyteller.incidentQueue.Add(IncidentDefOf.TenantCourier, Find.TickManager.TicksGame + Rand.Range(15000, 90000), parms, 240000);
+                Find.Storyteller.incidentQueue.Add(Defs.IncidentDefOf.TenantCourier, Find.TickManager.TicksGame + Rand.Range(15000, 90000), parms, 240000);
                 Thing silver = ThingMaker.MakeThing(RimWorld.ThingDefOf.Silver);
                 silver.stackCount = (int) SettingsHelper.LatestVersion.CourierCost;
                 MapComponent_Tenants.GetComponent(pawn.Map).CourierCost.Add(silver);
