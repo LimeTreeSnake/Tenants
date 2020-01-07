@@ -32,11 +32,10 @@ namespace Tenants {
             harmonyInstance.Patch(AccessTools.Method(typeof(Pawn), "Kill"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("Kill_PreFix")), null);
             //Tenant Inspiration
             harmonyInstance.Patch(AccessTools.Method(typeof(InspirationWorker), "InspirationCanOccur"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("InspirationCanOccur_PreFix")), null);
-
             //Tenant can work
             harmonyInstance.Patch(AccessTools.Method(typeof(JobGiver_Work), "PawnCanUseWorkGiver"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("PawnCanUseWorkGiver_PreFix")), null);
-            //Tenant can work
-            harmonyInstance.Patch(AccessTools.Method(typeof(Pawn_EquipmentTracker), "TryDropEquipment"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("TryDropEquipment_PostFix")));
+
+            harmonyInstance.Patch(AccessTools.Method(typeof(ThinkNode_ConditionalColonist), "Satisfied"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("Satisfied_PostFix")));
             #endregion Functionality
             #region GUI
             //Removes tenant gizmo
@@ -215,12 +214,12 @@ namespace Tenants {
             }
             return true;
         }
-        public static bool TryDropEquipment_PostFix(Pawn_EquipmentTracker __instance, bool __result, ThingWithComps eq, ThingWithComps resultingEq) {
-            if (__result) {
-                Log.Message(resultingEq.def.label);
+        public static void Satisfied_PostFix(ref bool __result, Pawn pawn) {
+            if (__result ) {
+                Tenant tenantComp = pawn.GetTenantComponent();
+                if (tenantComp.IsTenant)
+                    __result = false;
             }
-           
-            return true;
         }
         #endregion Functionality
         #region GUI

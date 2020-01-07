@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+	<ThinkTreeDef>
+		<defName>Tenant_PostDuty</defName>
+		<insertTag>Humanlike_PostDuty</insertTag>
+		<insertPriority>5</insertPriority>
+		<thinkRoot Class="Tenants.ThinkNodes.ThinkNode_ConditionalTenant">
+			<subNodes>		
+				<li Class="ThinkNode_Priority">
+					<subNodes>				
+						<!-- Seek allowed area -->
+						<li Class="JobGiver_SeekAllowedArea" />
+						<!-- Seek safe temperatures -->
+						<li Class="JobGiver_SeekSafeTemperature" />				
+						<!-- Drop unnused inventory -->
+						<li Class="JobGiver_DropUnusedInventory" />								
+						<!-- Emergency work -->
+						<li Class="JobGiver_Work">
+							<leaveJoinableLordIfIssuesJob>true</leaveJoinableLordIfIssuesJob>
+							<emergency>true</emergency>
+						</li>
+						<!-- Get food (only if starving) -->
+						<li Class="ThinkNode_ConditionalStarving">
+							<subNodes>
+								<li Class="ThinkNode_Tagger">
+									<tagToGive>SatisfyingNeeds</tagToGive>
+									<subNodes>
+										<li Class="JobGiver_GetFood">
+											<leaveJoinableLordIfIssuesJob>true</leaveJoinableLordIfIssuesJob>
+										</li>
+									</subNodes>
+								</li>
+							</subNodes>
+						</li>	
+						<!-- Lord directives (medium priority) -->
+						<li Class="ThinkNode_JoinVoluntarilyJoinableLord">
+							<dutyHook>MediumPriority</dutyHook>
+							<subNodes>
+								<li Class="ThinkNode_Subtree">
+									<treeDef>LordDuty</treeDef>
+								</li>
+							</subNodes>
+						</li>
+						<!-- Unload your inventory -->
+						<li Class="ThinkNode_Tagger">
+							<tagToGive>UnloadingOwnInventory</tagToGive>
+							<subNodes>
+								<li Class="JobGiver_UnloadYourInventory" />
+							</subNodes>
+						</li>
+						<!-- Idle tenant -->
+						<li Class="ThinkNode_Tagger">
+							<tagToGive>Idle</tagToGive>
+							<subNodes>
+								<!-- Do random joy activity -->
+								<li Class="ThinkNode_ConditionalNeedPercentageAbove">
+									<need>Joy</need>
+									<threshold>0.9</threshold>
+									<invert>true</invert>
+									<subNodes>
+										<li Class="JobGiver_IdleJoy" />
+									</subNodes>
+								</li>
+
+								<!-- Wander -->
+								<li Class="JobGiver_WanderColony">
+									<maxDanger>None</maxDanger>
+								</li>
+							</subNodes>
+						</li>
+						<!-- Pack food if not hungry-->
+						<li Class="ThinkNode_ConditionalNeedPercentageAbove">
+							<need>Food</need>
+							<threshold>0.6</threshold>
+							<subNodes>
+								<li Class="JobGiver_PackFood">
+									<leaveJoinableLordIfIssuesJob>true</leaveJoinableLordIfIssuesJob>
+								</li>
+							</subNodes>
+						</li>	
+					</subNodes>
+				</li>
+			</subNodes>	
+		</thinkRoot>
+	</ThinkTreeDef>
+
+	<ThinkTreeDef>
+		<defName>Tenant_PostMain</defName>
+		<insertTag>Humanlike_PostMain</insertTag>
+		<insertPriority>5</insertPriority>
+		<thinkRoot Class="Tenants.ThinkNodes.ThinkNode_ConditionalTenant">
+			<subNodes>
+				<li Class="ThinkNode_Priority">
+					<subNodes>				
+						<li Class="ThinkNode_Subtree">
+							<treeDef>MainTenantBehaviorCore</treeDef>
+							<leaveJoinableLordIfIssuesJob>true</leaveJoinableLordIfIssuesJob>
+						</li>
+						<li Class="ThinkNode_Tagger">
+							<tagToGive>Idle</tagToGive>
+							<subNodes>
+								<!-- Do random joy activity -->
+								<li Class="ThinkNode_ConditionalNeedPercentageAbove">
+									<need>Joy</need>
+									<threshold>0.9</threshold>
+									<invert>true</invert>
+									<subNodes>
+										<li Class="JobGiver_IdleJoy" />
+									</subNodes>
+								</li>
+
+								<!-- Wander -->
+								<li Class="JobGiver_WanderColony">
+									<maxDanger>None</maxDanger>
+								</li>
+							</subNodes>
+						</li>
+					</subNodes>
+				</li>
+			</subNodes>
+		</thinkRoot>
+	</ThinkTreeDef>
+
+	<ThinkTreeDef>
+		<defName>MainTenantBehaviorCore</defName>		
+		<thinkRoot Class="ThinkNode_Tagger">
+			<tagToGive>SatisfyingNeeds</tagToGive>
+			<subNodes>
+				<li Class="ThinkNode_PrioritySorter">
+					<subNodes>
+						<li Class="JobGiver_GetFood"/>
+						<li Class="JobGiver_GetRest"/>
+						<li Class="JobGiver_SatisfyChemicalNeed"/>
+						<li Class="JobGiver_TakeDrugsForDrugPolicy"/>
+						<li Class="ThinkNode_Priority_GetJoy">
+							<subNodes>
+								<li Class="JobGiver_GetJoy"/>
+								<li Class="JobGiver_GetJoyInBed"/>
+							</subNodes>
+						</li>
+						<li Class="Tenants.Workers.JobGiver_Tenants"/>
+					</subNodes>
+				</li>
+			</subNodes>
+		</thinkRoot>
+	</ThinkTreeDef>	
+</Defs>
