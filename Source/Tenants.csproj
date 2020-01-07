@@ -71,9 +71,11 @@
     <Compile Include="GUI\PawnColumnWorker_MayJoin.cs" />
     <Compile Include="GUI\PawnColumnWorker_AutoRenew.cs" />
     <Compile Include="GUI\PawnColumnWorker_CancelContract.cs" />
+    <Compile Include="ThinkNodes\ThinkNode_ConditionalTenant.cs" />
     <Compile Include="Workers\IncidentWorker_Raid.cs" />
     <Compile Include="Workers\IncidentWorker_Tenant.cs" />
     <Compile Include="Workers\JobDriver_Tenants.cs" />
+    <Compile Include="Workers\JobGiver_Tenants.cs" />
     <Compile Include="Workers\LordJob_Courier.cs" />
     <Compile Include="Workers\LordJob_Theft.cs" />
     <Compile Include="GUI\MainTabWindow_Tenant.cs" />
