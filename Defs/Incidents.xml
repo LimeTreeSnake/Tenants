@@ -9,7 +9,7 @@
 		</targetTags>
 		<workerClass>Tenants.IncidentWorker_TenantProposition</workerClass>
 		<category>Misc</category>
-		<baseChance>6</baseChance>
+		<baseChance>7</baseChance>
 		<pointsScaleable>true</pointsScaleable>
 		<minRefireDays>2</minRefireDays>
 	</IncidentDef>
@@ -22,13 +22,22 @@
 		</targetTags>
 		<workerClass>Tenants.IncidentWorker_TenantCourier</workerClass>
 		<category>Misc</category>
-		<baseChance>2</baseChance>
+		<baseChance>4</baseChance>
 		<pointsScaleable>true</pointsScaleable>
 		<minRefireDays>4</minRefireDays>
+	<!--Envoy-->
 	</IncidentDef>
-
-
-
+		<IncidentDef>
+		<defName>InvitationForTenancy</defName>
+		<label>tenancy invitation</label>
+		<targetTags>
+			<li>Map_PlayerHome</li>
+		</targetTags>
+		<workerClass>Tenants.IncidentWorker_InvitationForTenancy</workerClass>
+		<category>Misc</category>
+		<baseChance>0</baseChance>
+		<pointsScaleable>true</pointsScaleable>
+	</IncidentDef>
 	<!-- Raids -->
 	<!--RetributionForDeadTenant-->
 	<IncidentDef>

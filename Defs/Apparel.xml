@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<Defs>	
+<Defs>		
 	<ThingDef ParentName="ApparelMakeableBase">
-		<defName>Tenant_ScrollCase</defName>
-		<description>A long case for delivering messages.</description>
-		<label>scrollcase</label>
-		<techLevel>Medieval</techLevel>
+		<defName>Tenant_PostmanBag</defName>
+		<description>A long satchel for delivering messages.</description>
+		<label>postman bag</label>
+		<techLevel>Industrial</techLevel>
 		<recipeMaker>
 			<recipeUsers>
 				<li>ElectricTailoringBench</li>
@@ -12,7 +12,7 @@
 			</recipeUsers>
 		</recipeMaker>
 		<graphicData>
-			<texPath>Things/Apparel/ScrollCase/ScrollCase</texPath>
+			<texPath>Things/Apparel/PostmanBag/PostmanBag</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 			<shaderType>CutoutComplex</shaderType>
 		</graphicData>
@@ -35,14 +35,63 @@
     </equippedStatOffsets>
 		<apparel>
 			<bodyPartGroups>
+				<li>Torso</li>
 				<li>Waist</li>
 			</bodyPartGroups>
 			<wornGraphicPath>Things/Apparel/ScrollCase/ScrollCase</wornGraphicPath>
 			<layers>
-				<li>Shell</li>
+				<li>Belt</li>
 			</layers>
 			<tags>
-				<li>Medieval</li>
+				<li>Industrial</li>
+			</tags>
+		</apparel>
+	</ThingDef>
+	
+	<ThingDef ParentName="ApparelMakeableBase">
+		<defName>Tenant_PostmanJacket</defName>
+		<description>A jacket for people of the honourable trade, postman.</description>
+		<label>postman jacket</label>
+		<techLevel>Industrial</techLevel>
+		<recipeMaker>
+			<recipeUsers>
+				<li>ElectricTailoringBench</li>
+				<li>HandTailoringBench</li>
+			</recipeUsers>
+		</recipeMaker>
+		<graphicData>
+			<texPath>Things/Apparel/PostmanJacket/PostmanJacket</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>CutoutComplex</shaderType>
+		</graphicData>
+		<costStuffCount>80</costStuffCount>
+		<stuffCategories>
+			<li>Leathery</li>
+		</stuffCategories>
+		<thingCategories>
+			<li>Apparel</li>
+		</thingCategories>
+		<statBases>
+			<MaxHitPoints>200</MaxHitPoints>
+			<WorkToMake>1000</WorkToMake>
+			<Mass>2.0</Mass>
+			<EquipDelay>2.5</EquipDelay>
+		</statBases>
+    <equippedStatOffsets>
+		<WorkSpeedGlobal>-0.1</WorkSpeedGlobal>
+		<SocialImpact>0.1</SocialImpact>
+    </equippedStatOffsets>
+		<apparel>
+			<bodyPartGroups>
+				<li>Torso</li>
+				<li>Waist</li>
+			</bodyPartGroups>
+			<wornGraphicPath>Things/Apparel/ScrollCase/ScrollCase</wornGraphicPath>
+			<layers>
+				<li>Belt</li>
+			</layers>
+			<tags>
+				<li>Industrial</li>
 			</tags>
 		</apparel>
 	</ThingDef>

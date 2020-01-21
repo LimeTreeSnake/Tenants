@@ -6,8 +6,10 @@ using RimWorld;
 using System;
 
 namespace Tenants {
+    public enum Style { Auto = 1, LTS = 2, Oskar = 3 };
     internal class TenantsSettings : ModSettings {
         #region Fields
+        private static Style textureStyle = (Style)1;
         private static readonly List<string> availableRaces = new List<string>() { "Human" };
         private static readonly int minDailyCost = 50;
         private static readonly int maxDailyCost = 100;
@@ -15,21 +17,19 @@ namespace Tenants {
         private static readonly int maxContractTime = 7;
         private static readonly float stayChanceHappy = 95F;
         private static readonly float stayChanceNeutral = 50F;
-        private static readonly float levelOfHappinessToWork = 70f;
-        private static readonly float levelOfHappinessToJoin = 80f;
+        private static readonly float levelOfHappiness = 70f;
         private static readonly bool weapons = true;
         private static readonly bool simpleClothing = true;
-        private static readonly int simpleClothingMin = 100;
         private static readonly int simpleClothingMax = 300;
         private static readonly int courierCost = 30;
-        private static readonly int envoyDayMultiplier = 2;
         private static readonly int minRelation = 4;
         private static readonly int maxRelation = 10;
         private static float r = 127f, g = 63f, b = 191f;
         private static Color color = new Color(r / 255f, g / 255f, b / 255f);
         #endregion Fields
         #region Properties
-        public List<string> AvailableRaces = availableRaces != null|| availableRaces.Count > 0 ? availableRaces.ListFullCopy() : new List<string>() { "Human" };
+        public Style TextureStyle = textureStyle;
+        public List<string> AvailableRaces = availableRaces != null|| (availableRaces.Count > 0) ? availableRaces.ListFullCopy() : new List<string>() { "Human" };
         public IEnumerable<ThingDef> Races = DefDatabase<PawnKindDef>.AllDefsListForReading.Where(x => x.race != null && x.RaceProps.Humanlike && x.RaceProps.IsFlesh && x.RaceProps.ResolvedDietCategory != DietCategory.NeverEats).Select(s => s.race).Distinct();
         public float RaceViewHeight = 300f;
         public int MinDailyCost = minDailyCost;
@@ -38,14 +38,11 @@ namespace Tenants {
         public int MaxContractTime = maxContractTime;
         public float StayChanceHappy = stayChanceHappy;
         public float StayChanceNeutral = stayChanceNeutral;
-        public float LevelOfHappinessToWork = levelOfHappinessToWork;
-        public float LevelOfHappinessToJoin = levelOfHappinessToJoin;
+        public float LevelOfHappiness = levelOfHappiness;
         public bool Weapons = weapons;
         public bool SimpleClothing = simpleClothing;
-        public int SimpleClothingMin = simpleClothingMin;
         public int SimpleClothingMax = simpleClothingMax;
         public int CourierCost = courierCost;
-        public int EnvoyDayMultiplier = envoyDayMultiplier;
         public int MinRelation = minRelation;
         public int MaxRelation = maxRelation;
         public string Filter { get; set; }
@@ -58,6 +55,7 @@ namespace Tenants {
 
         public override void ExposeData() {
             base.ExposeData();
+            Scribe_Values.Look(ref TextureStyle, "TextureStyle", textureStyle);
             Scribe_Collections.Look(ref AvailableRaces, "AvailableRaces", LookMode.Value);
             Scribe_Values.Look(ref MinDailyCost, "MinDailyCost", minDailyCost);
             Scribe_Values.Look(ref MaxDailyCost, "MaxDailyCost", maxDailyCost);
@@ -65,21 +63,19 @@ namespace Tenants {
             Scribe_Values.Look(ref MaxContractTime, "MaxContractTime", maxContractTime);
             Scribe_Values.Look(ref StayChanceHappy, "StayChanceHappy", stayChanceHappy);
             Scribe_Values.Look(ref StayChanceNeutral, "StayChanceNeutral", stayChanceNeutral);
-            Scribe_Values.Look(ref LevelOfHappinessToWork, "LevelOfHappinessToWork", levelOfHappinessToWork);
-            Scribe_Values.Look(ref LevelOfHappinessToJoin, "LevelOfHappinessToJoin", levelOfHappinessToJoin);
+            Scribe_Values.Look(ref LevelOfHappiness, "LevelOfHappiness", levelOfHappiness);
             Scribe_Values.Look(ref Weapons, "Weapons", weapons);
             Scribe_Values.Look(ref SimpleClothing, "SimpleClothing", simpleClothing);
-            Scribe_Values.Look(ref SimpleClothingMin, "SimpleClothingMin", simpleClothingMin);
             Scribe_Values.Look(ref SimpleClothingMax, "SimpleClothingMax", simpleClothingMax);
             Scribe_Values.Look(ref CourierCost, "CourierCost", courierCost);
-            Scribe_Values.Look(ref EnvoyDayMultiplier, "EnvoyDayMultiplier", envoyDayMultiplier);
             Scribe_Values.Look(ref MinRelation, "MinEnvoyRelation", minRelation);
             Scribe_Values.Look(ref MaxRelation, "MaxEnvoyRelation", maxRelation);
-            Scribe_Values.Look(ref r, "R", r);
-            Scribe_Values.Look(ref g, "G", g);
-            Scribe_Values.Look(ref b, "B", b);
+            Scribe_Values.Look(ref r, "R");
+            Scribe_Values.Look(ref g, "G");
+            Scribe_Values.Look(ref b, "B");
         }
         internal void Reset() {
+            TextureStyle = textureStyle;
             AvailableRaces = availableRaces.Count > 0 ? availableRaces.ListFullCopy() : new List<string>();
             MinDailyCost = minDailyCost;
             MaxDailyCost = maxDailyCost;
@@ -87,14 +83,11 @@ namespace Tenants {
             MaxContractTime = maxContractTime;
             StayChanceHappy = stayChanceHappy;
             StayChanceNeutral = stayChanceNeutral;
-            LevelOfHappinessToWork = levelOfHappinessToWork;
-            LevelOfHappinessToJoin = levelOfHappinessToJoin;
+            LevelOfHappiness = levelOfHappiness;
             Weapons = weapons;
             SimpleClothing = simpleClothing;
-            SimpleClothingMin = simpleClothingMin;
             SimpleClothingMax = simpleClothingMax;
             CourierCost = courierCost;
-            EnvoyDayMultiplier = envoyDayMultiplier;
             MinRelation = minRelation;
             MaxRelation = maxRelation;
             R = 127f;
@@ -131,6 +124,9 @@ namespace Tenants {
                 if (list.ButtonText("DefaultSettings".Translate())) {
                     settings.Reset();
                 };
+                list.Label("Texture Style : " + settings.TextureStyle);
+                list.Label("1 = Auto, 2 = LTS, 3 = Oskar");
+                settings.TextureStyle = (Style)Mathf.Round(list.Slider((float)settings.TextureStyle, 1f, 3f));
                 list.Label("MinDailyCost".Translate(settings.MinDailyCost));
                 settings.MinDailyCost = (int)Mathf.Round(list.Slider(settings.MinDailyCost, 0, 100));
                 list.Label("MaxDailyCost".Translate(settings.MaxDailyCost));
@@ -143,25 +139,19 @@ namespace Tenants {
                 settings.StayChanceHappy = (int)Mathf.Round(list.Slider(settings.StayChanceHappy, settings.StayChanceNeutral, 100f));
                 list.Label("StayChanceNeutral".Translate(settings.StayChanceNeutral));
                 settings.StayChanceNeutral = (int)Mathf.Round(list.Slider(settings.StayChanceNeutral, 0f, 100f));
-                list.Label("LevelOfHappinessToWork".Translate(settings.LevelOfHappinessToWork));
-                settings.LevelOfHappinessToWork = (byte)Mathf.Round(list.Slider(settings.LevelOfHappinessToWork, 0f, 100f));
-                list.Label("LevelOfHappinessToJoin".Translate(settings.LevelOfHappinessToJoin));
-                settings.LevelOfHappinessToJoin = (byte)Mathf.Round(list.Slider(settings.LevelOfHappinessToJoin, 50f, 100f));
+                list.Label("LevelOfHappiness".Translate(settings.LevelOfHappiness));
+                settings.LevelOfHappiness = (byte)Mathf.Round(list.Slider(settings.LevelOfHappiness, 60, 100f));
                 list.Gap();
-                list.CheckboxLabeled("TenantWeaponry".Translate(), ref settings.Weapons, "TenantWeaponryDesc".Translate());
+                list.CheckboxLabeled("TenantWeaponry".Translate(), ref settings.Weapons);
                 list.Gap();
-                list.CheckboxLabeled("TenantApparel".Translate(), ref settings.SimpleClothing, "TenantApparelDesc".Translate());
+                list.CheckboxLabeled("TenantApparel".Translate(), ref settings.SimpleClothing);
                 if (settings.SimpleClothing) {
                     list.Gap();
-                    list.Label("SimpleClothingMin".Translate(settings.SimpleClothingMin));
-                    settings.SimpleClothingMin = (int)Mathf.Round(list.Slider(settings.SimpleClothingMin, 0f, 500f));
                     list.Label("SimpleClothingMax".Translate(settings.SimpleClothingMax));
                     settings.SimpleClothingMax = (int)Mathf.Round(list.Slider(settings.SimpleClothingMax, 0f, 1000f));
                 }
                 list.Label("CourierCost".Translate(settings.CourierCost));
                 settings.CourierCost = (byte)Mathf.Round(list.Slider(settings.CourierCost, 10f, 100f));
-                list.Label("EnvoyDayMultiplier".Translate(settings.EnvoyDayMultiplier));
-                settings.EnvoyDayMultiplier = (byte)Mathf.Round(list.Slider(settings.EnvoyDayMultiplier, 1f, 10));
                 list.Label("MinRelation".Translate(settings.MinRelation));
                 settings.MinRelation = (byte)Mathf.Round(list.Slider(settings.MinRelation, 1f, 10));
                 list.Label("MaxRelation".Translate(settings.MaxRelation));

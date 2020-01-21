@@ -26,7 +26,42 @@ namespace Tenants {
                 if (map != null) {
                     Pawn pawn = map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false && !x.Dead);
                     if (pawn != null) {
-                        return parms.faction != null ? UtilityTenant.Contract((Map)parms.target) : UtilityTenant.EnvoyTenancy((Map)parms.target, parms.faction);                       
+                        UtilityTenant.Contract((Map)parms.target);                       
+                    }
+                }
+            }
+            return false;
+        }
+    }
+    public class IncidentWorker_InvitationForTenancy : IncidentWorker {
+        protected override bool CanFireNowSub(IncidentParms parms) {
+            if (!base.CanFireNowSub(parms)) {
+                return false;
+            }
+            if (parms.target != null) {
+                Map map = (Map)parms.target;
+                List<Map> maps = Find.Maps.Where(x => x.IsPlayerHome).ToList();
+                if (map != null && maps.Contains(map)) {
+                    Pawn pawn = map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false && !x.Dead);
+                    if (pawn != null)
+                        return Utility.TryFindSpawnSpot(map, out IntVec3 spawnSpot);
+                    else {
+                        Messages.Message("EnvoyArriveFailed".Translate(parms.faction), MessageTypeDefOf.NeutralEvent);
+                    }
+                }
+            }
+            return false;
+        }
+        protected override bool TryExecuteWorker(IncidentParms parms) {
+            if (parms.target != null) {
+                Map map = (Map)parms.target;
+                if (map != null) {
+                    Pawn pawn = map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false && !x.Dead);
+                    if (pawn != null) {
+                        return UtilityTenant.EnvoyTenancy((Map)parms.target, parms.faction);
+                    }
+                    else {
+                        Messages.Message("EnvoyArriveFailed".Translate(parms.faction), MessageTypeDefOf.NeutralEvent);
                     }
                 }
             }

@@ -97,7 +97,7 @@
 
 	<ThingDef Name="Tenant_LetterInvite" ParentName="Tenants_LetterBase" >
 		<defName>Tenant_LetterInvite</defName>
-		<label>angry letter</label>
+		<label>Invitation letter</label>
 		<description>A letter of invitation towards a certain faction.</description>
 		<graphicData>
 			<texPath>Things/Letters/LetterInvite</texPath>

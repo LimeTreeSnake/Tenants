@@ -1,25 +1,17 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
+using Tenants.Comp;
 using Verse;
 using Verse.AI;
 
 namespace Tenants {
     public class Building_MessageBox : Building_WorkTable {
-        private Graphic cachedGraphicFull;
+        private GraphicAlternator GraphicComp => GetComp<GraphicAlternator>();
+        private EraAlternator EraAlternatorComp => GetComp<EraAlternator>();
         public override Graphic Graphic {
             get {
-                if (this.GetMessageBoxComponent().IncomingLetters.Count > 0) {
-
-                    if (def.building.fullGraveGraphicData == null) {
-                        return base.Graphic;
-                    }
-                    if (cachedGraphicFull == null) {
-                        cachedGraphicFull = def.building.fullGraveGraphicData.GraphicColoredFor(this);
-                    }
-                    return cachedGraphicFull;
-                }
-                return base.Graphic;
+                return Utility.GraphicFinder(GraphicComp, EraAlternatorComp, this.GetMessageBoxComponent().IncomingLetters.Count < 1, this);
             }
         }
     }
@@ -36,7 +28,7 @@ namespace Tenants {
             MessageBox messageBoxComp = parent.GetMessageBoxComponent();
             List<FloatMenuOption> list = new List<FloatMenuOption>();
             //Check inventory
-            if (Items.Count > 0|| IncomingLetters.Count > 0) {
+            if (Items.Count > 0 || IncomingLetters.Count > 0) {
                 void CheckInventory() {
                     Job job = new Job(JobDefOf.JobCheckLetters, parent);
                     pawn.jobs.TryTakeOrderedJob(job);
@@ -104,6 +96,7 @@ namespace Tenants {
             }
             return list.AsEnumerable();
         }
+
     }
     public class CompProps_MessageBox : CompProperties {
         public CompProps_MessageBox() {

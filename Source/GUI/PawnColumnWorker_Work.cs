@@ -20,7 +20,10 @@ namespace Tenants {
 
         protected override void SetValue(Pawn pawn, bool value) {
             Tenant tenantComp = pawn.GetTenantComponent();
-            if (value && !pawn.story.WorkTagIsDisabled(WorkTags.Firefighting)) {
+            if (tenantComp.IsEnvoy) {
+                tenantComp.MayFirefight = false;
+            }
+            else if(value && !pawn.story.WorkTagIsDisabled(WorkTags.Firefighting)) {
                 pawn.workSettings.SetPriority(DefDatabase<WorkTypeDef>.AllDefs.FirstOrFallback(x => x.defName == "Firefighter"), 3);
                 tenantComp.MayFirefight = true;
             }
@@ -50,7 +53,10 @@ namespace Tenants {
 
         protected override void SetValue(Pawn pawn, bool value) {
             Tenant tenantComp = pawn.GetTenantComponent();
-            if (value && !pawn.story.WorkTagIsDisabled(WorkTags.ManualDumb)) {
+            if (tenantComp.IsEnvoy) {
+                tenantComp.MayBasic = false;
+            }
+            else if (value && !pawn.story.WorkTagIsDisabled(WorkTags.ManualDumb)) {
                 pawn.workSettings.SetPriority(DefDatabase<WorkTypeDef>.AllDefs.FirstOrFallback(x => x.defName == "BasicWorker"), 3);
                 tenantComp.MayBasic = true;
             }
@@ -80,7 +86,10 @@ namespace Tenants {
 
         protected override void SetValue(Pawn pawn, bool value) {
             Tenant tenantComp = pawn.GetTenantComponent();
-            if (value && !(pawn.story.WorkTagIsDisabled(WorkTags.ManualDumb) || pawn.story.WorkTagIsDisabled(WorkTags.Hauling))) {
+            if (tenantComp.IsEnvoy) {
+                tenantComp.MayHaul = false;
+            }
+            else if(value && !(pawn.story.WorkTagIsDisabled(WorkTags.ManualDumb) || pawn.story.WorkTagIsDisabled(WorkTags.Hauling))) {
                 pawn.workSettings.SetPriority(DefDatabase<WorkTypeDef>.AllDefs.FirstOrFallback(x => x.defName == "Hauling"), 3);
                 tenantComp.MayHaul = true;
             }
@@ -110,7 +119,10 @@ namespace Tenants {
 
         protected override void SetValue(Pawn pawn, bool value) {
             Tenant tenantComp = pawn.GetTenantComponent();
-            if (value && !(pawn.story.WorkTagIsDisabled(WorkTags.ManualDumb) || pawn.story.WorkTagIsDisabled(WorkTags.Cleaning))) {
+            if (tenantComp.IsEnvoy) {
+                tenantComp.MayClean = false;
+            }
+            else if(value && !(pawn.story.WorkTagIsDisabled(WorkTags.ManualDumb) || pawn.story.WorkTagIsDisabled(WorkTags.Cleaning))) {
                 pawn.workSettings.SetPriority(DefDatabase<WorkTypeDef>.AllDefs.FirstOrFallback(x => x.defName == "Cleaning"), 3);
                 tenantComp.MayClean = true;
             }

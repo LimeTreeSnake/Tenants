@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>	
-	<ThingDef ParentName="BenchBase">
+	<ThingDef ParentName="BuildingBase">
 		<defName>Tenant_MessageBox</defName>
 		<label>messagebox</label>
-		<description>A message box, commonly used to send messages to friends and/or enemies. Couriers tend to like these.</description>
+		<description>A message box, commonly used to send messages to friends and/or enemies. Couriers tend to demand these as they are a fickle bunch.</description>
 		<thingClass>Tenants.Building_MessageBox</thingClass>
-		<graphicData>
-			<texPath>Things/Building/MessageBox</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-			<shaderType>CutoutComplex</shaderType>
-		</graphicData>
 		<altitudeLayer>Building</altitudeLayer>
 		<passability>PassThroughOnly</passability>
 		<minifiedDef>MinifiedThing</minifiedDef>
 		<thingCategories>
 			<li>BuildingsMisc</li>
 		</thingCategories>
+		<uiIconPath>Things/Building/LetterBox</uiIconPath>
+		<uiIconScale>0.7</uiIconScale>
 		<pathCost>20</pathCost>
 		<canOverlapZones>false</canOverlapZones>
 		<statBases>
@@ -23,7 +20,7 @@
 			<WorkToBuild>800</WorkToBuild>
 			<Flammability>1.0</Flammability>
 			<Mass>10</Mass>
-			<Beauty>2</Beauty>
+			<Beauty>1</Beauty>
 		</statBases>
 		<size>(1,1)</size>
 		<stuffCategories>
@@ -36,15 +33,45 @@
 		<designationCategory>Misc</designationCategory>
 		<resourcesFractionWhenDeconstructed>0.2</resourcesFractionWhenDeconstructed>
 		<comps>
-			<li Class="Tenants.CompProps_MessageBox"/>
+			<li Class="Tenants.Comp.MessageBox"/>
+			<li Class="Tenants.Comp.GraphicAlternator">
+				<Texture>
+					<graphicData>
+						<texPath>Things/Building/LetterBox</texPath>
+						<graphicClass>Graphic_Single</graphicClass>
+						<shaderType>CutoutComplex</shaderType>
+						<drawSize>(1,1)</drawSize>
+					</graphicData>
+				</Texture>
+				<TextureAlternate>
+					<graphicData>
+						<texPath>Things/Building/LetterBoxFull</texPath>
+						<graphicClass>Graphic_Single</graphicClass>
+						<shaderType>CutoutComplex</shaderType>
+						<drawSize>(1,1)</drawSize>
+					</graphicData>
+				</TextureAlternate>
+			</li>
+			<!-- <li Class="Tenants.Comp.CompProps_EraAlternator"> -->
+				<!-- <Texture> -->
+					<!-- <graphicData> -->
+						<!-- <texPath>Things/Building/MessageBox</texPath> -->
+						<!-- <graphicClass>Graphic_Single</graphicClass> -->
+						<!-- <shaderType>CutoutComplex</shaderType> -->
+						<!-- <drawSize>(1,1)</drawSize> -->
+					<!-- </graphicData> -->
+				<!-- </Texture> -->
+				<!-- <TextureAlternate> -->
+					<!-- <graphicData> -->
+						<!-- <texPath>Things/Building/MessageBoxFull</texPath> -->
+						<!-- <graphicClass>Graphic_Single</graphicClass> -->
+						<!-- <shaderType>CutoutComplex</shaderType> -->
+						<!-- <drawSize>(1,1)</drawSize> -->
+					<!-- </graphicData> -->
+				<!-- </TextureAlternate>				 -->
+				<!-- <TechLevel>3</TechLevel> -->
+			<!-- </li> -->
 		</comps>
-		<building>
-			<fullGraveGraphicData>
-				<texPath>Things/Building/MessageBoxFull</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-			<shaderType>CutoutComplex</shaderType>
-			</fullGraveGraphicData>
-		</building>
-    <rotatable>false</rotatable>
+		<rotatable>true</rotatable>
 	</ThingDef>
 </Defs>

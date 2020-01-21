@@ -5,6 +5,7 @@ namespace Tenants {
     [DefOf]
     public static class IncidentDefOf {
         public static IncidentDef RequestForTenancy;
+        public static IncidentDef InvitationForTenancy;
         public static IncidentDef TenantCourier;
 
         public static IncidentDef RetributionForDead;

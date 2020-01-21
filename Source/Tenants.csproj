@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Comp\Courier.cs" />
+    <Compile Include="Comp\GraphicAlternator.cs" />
     <Compile Include="Comp\Letter.cs" />
     <Compile Include="Comp\MessageBox.cs" />
     <Compile Include="Def\ThingDefOf.cs" />

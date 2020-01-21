@@ -1,18 +1,24 @@
 2019-12-xx
 - Mailbox renamed to Messagebox (Unfortunately, your mailboxes will disappear.)
 - Messagebox shouldn't bug out when saving and loading while containing stuff. Derp
-- Fault component check for messagebox, tenants and couriers
+- Fault component check for messagebox, tenants and couriers.
 - Removed extra space after RequestForTenancyHiding string.
-- Removed research prerequisites for Messagebox
+- Removed research prerequisites for Messagebox.
 - Tenants does not require a messagebox. Although you need it for them courier deliveries.
 - Message whenever courier should appear but there is no Messagebox.
 - Lowered harmony priority on clearing gizmo's.
 - Lowered chance for couriers to appear.
 - Removed option for tenants to stay if disappointed.
 - Couriers get bows instead of swords.
-- Added Letters (Diplomatic, Angry, Invitation)
-- Added Writing Pedestal
-- Envoys - Diplomatic tenants that you invite through letters for relation buff instead of silver.
+- Added Letters (Diplomatic, Angry, Invitation).
+- Added Writing Pedestal.
+- Envoys - Diplomatic lazy tenants that you invite through letters for relation buff instead of silver.
+- Scrollcase apparel for couriers.
+- Proper checks when removing expensive apparels from tenants.
+- Added better reaction for rejecting fugitives.
+- Regular tenants works if allowed to. No need to be happy no more.
+- Auto renew works as intended regarding payment.
+- Carried tenants no longer causes tick ref exceptions.
 
 2019-11-10
 - Broadcast is not initially set to true.

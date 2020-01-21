@@ -5,6 +5,7 @@ using System.Text;
 using Harmony;
 using RimWorld;
 using RimWorld.Planet;
+using Tenants.Comp;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
@@ -72,30 +73,21 @@ namespace Tenants {
                     pawn.workSettings.SetPriority(DefDatabase<WorkTypeDef>.AllDefs.FirstOrFallback(x => x.defName == "Firefighter"), 3);
                     tenantComp.MayFirefight = true;
                 }
-                else if (!pawn.story.WorkTagIsDisabled(WorkTags.ManualDumb) && def.defName == "BasicWorker") {
+                else if (!pawn.story.WorkTagIsDisabled(WorkTags.ManualDumb) && def.defName == "BasicWorker" && !tenantComp.IsEnvoy) {
                     pawn.workSettings.SetPriority(DefDatabase<WorkTypeDef>.AllDefs.FirstOrFallback(x => x.defName == "BasicWorker"), 3);
                     tenantComp.MayBasic = true;
                 }
-                else if (!(pawn.story.WorkTagIsDisabled(WorkTags.ManualDumb) || pawn.story.WorkTagIsDisabled(WorkTags.Hauling)) && def.defName == "Hauling") {
+                else if (!(pawn.story.WorkTagIsDisabled(WorkTags.ManualDumb) || pawn.story.WorkTagIsDisabled(WorkTags.Hauling)) && def.defName == "Hauling" && !tenantComp.IsEnvoy) {
                     pawn.workSettings.SetPriority(DefDatabase<WorkTypeDef>.AllDefs.FirstOrFallback(x => x.defName == "Hauling"), 3);
                     tenantComp.MayHaul = true;
                 }
-                else if (!(pawn.story.WorkTagIsDisabled(WorkTags.ManualDumb) || pawn.story.WorkTagIsDisabled(WorkTags.Cleaning)) && def.defName == "Cleaning") {
+                else if (!(pawn.story.WorkTagIsDisabled(WorkTags.ManualDumb) || pawn.story.WorkTagIsDisabled(WorkTags.Cleaning)) && def.defName == "Cleaning" && !tenantComp.IsEnvoy) {
                     pawn.workSettings.SetPriority(DefDatabase<WorkTypeDef>.AllDefs.FirstOrFallback(x => x.defName == "Cleaning"), 3);
                     tenantComp.MayClean = true;
                 }
                 else
                     pawn.workSettings.Disable(def);
             }
-        }
-        public static bool UpdateEmergencyWork(WorkGiver giver) {
-            if (giver is WorkGiver_PatientGoToBedEmergencyTreatment
-                || giver is WorkGiver_PatientGoToBedTreatment
-                || giver is WorkGiver_PatientGoToBedRecuperate
-                || giver.def.workTags == WorkTags.Firefighting) {
-                return true;
-            }
-            return false;
         }
         public static void UpdateOutfitManagement(Pawn pawn) {
             Outfit restriction = Current.Game.outfitDatabase.AllOutfits.FirstOrDefault(x => x.label == "Tenants".Translate());
@@ -127,22 +119,37 @@ namespace Tenants {
             }
             pawn.drugs.CurrentPolicy = restriction;
         }
-        public static void UpdateNightOwl(Pawn pawn) {
+        public static void UpdateTimeManagement(Pawn pawn) {
             pawn.timetable.times = new List<TimeAssignmentDef>(24);
-            for (int i = 0; i < 24; i++) {
-                TimeAssignmentDef item = (i >= 10 && i <= 17) ? TimeAssignmentDefOf.Sleep : TimeAssignmentDefOf.Anything;
-                pawn.timetable.times.Add(item);
+            TraitDef nightOwl = DefDatabase<TraitDef>.GetNamedSilentFail("NightOwl");
+            if (nightOwl != null && pawn.story.traits.HasTrait(nightOwl)) {
+                for (int i = 0; i < 24; i++) {
+                    TimeAssignmentDef item = (i >= 10 && i <= 17) ? TimeAssignmentDefOf.Sleep : TimeAssignmentDefOf.Joy;
+                    pawn.timetable.times.Add(item);
+                }
+            }
+            else {
+                for (int i = 0; i < 24; i++) {
+                    TimeAssignmentDef item = (i >= 22 && i <= 8) ? TimeAssignmentDefOf.Sleep : TimeAssignmentDefOf.Joy;
+                    pawn.timetable.times.Add(item);
+                }
             }
         }
         public static void RemoveExpensiveItems(Pawn pawn) {
             if (pawn.apparel.WornApparel != null && pawn.apparel.WornApparel.Count > 0)
-                foreach (Apparel item in pawn.apparel.WornApparel)
-                    if (item.MarketValue > 400)
-                        pawn.apparel.Remove(item);
+                for (int i = 0; i < pawn.apparel.WornApparel.Count; i++) {
+                    if (pawn.apparel.WornApparel[i].MarketValue > 400) {
+                        pawn.apparel.WornApparel.RemoveAt(i);
+                        i--;
+                    }
+                }
             if (pawn.inventory.innerContainer != null && pawn.inventory.innerContainer.Count > 0)
-                foreach (Thing item in pawn.inventory.innerContainer)
-                    if (item.MarketValue > 400)
-                        pawn.inventory.innerContainer.Remove(item);
+                for (int i = 0; i < pawn.inventory.innerContainer.Count; i++) {
+                    if (pawn.inventory.innerContainer[i].MarketValue > 400) {
+                        pawn.inventory.innerContainer.RemoveAt(i);
+                        i--;
+                    }
+                }
             if (pawn.equipment.Primary != null)
                 if (pawn.equipment.Primary.MarketValue > 400)
                     pawn.equipment.Primary.Destroy();
@@ -160,5 +167,51 @@ namespace Tenants {
             tenantComp.ContractEndDate = Find.TickManager.TicksAbs + tenantComp.ContractLength + 60000;
             tenantComp.ResetMood();
         }
+
+        public static Graphic GraphicFinder(GraphicAlternator graphicAlternator, EraAlternator eraAlternator, bool useAlternate, Thing thing) {
+            if (useAlternate) {
+                switch (SettingsHelper.LatestVersion.TextureStyle) {
+                    case Style.Auto: {
+                            if (eraAlternator != null && Find.FactionManager.OfPlayer.def.techLevel <= eraAlternator.Props.TechLevel) {
+                                return eraAlternator.Props.Texture.GraphicColoredFor(thing);
+                            }
+                            return graphicAlternator.Props.Texture.GraphicColoredFor(thing);
+                        }
+                    case Style.LTS: {
+                            if (eraAlternator != null) {
+                                return eraAlternator.Props.Texture.GraphicColoredFor(thing);
+                            }
+                            return graphicAlternator.Props.Texture.GraphicColoredFor(thing);
+                        }
+                    case Style.Oskar:
+                        return graphicAlternator.Props.Texture.GraphicColoredFor(thing);
+                    default:
+                        return graphicAlternator.Props.Texture.GraphicColoredFor(thing);
+
+                }
+            }
+            else {
+                switch (SettingsHelper.LatestVersion.TextureStyle) {
+                    case Style.Auto: {
+                            if (eraAlternator != null && Find.FactionManager.OfPlayer.def.techLevel <= eraAlternator.Props.TechLevel) {
+                                return eraAlternator.Props.TextureAlternate.GraphicColoredFor(thing);
+                            }
+                            return graphicAlternator.Props.TextureAlternate.GraphicColoredFor(thing);
+                        }
+                    case Style.LTS: {
+                            if (eraAlternator != null) {
+                                return eraAlternator.Props.TextureAlternate.GraphicColoredFor(thing);
+                            }
+                            return graphicAlternator.Props.TextureAlternate.GraphicColoredFor(thing);
+                        }
+                    case Style.Oskar:
+                        return graphicAlternator.Props.TextureAlternate.GraphicColoredFor(thing);
+                    default:
+                        return graphicAlternator.Props.TextureAlternate.GraphicColoredFor(thing);
+                }
+
+            }
+        }
+
     }
 }

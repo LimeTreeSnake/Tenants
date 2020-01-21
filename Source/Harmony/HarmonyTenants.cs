@@ -36,8 +36,6 @@ namespace Tenants {
             #region GUI
             //Removes tenant gizmo
             harmonyInstance.Patch(AccessTools.Method(typeof(Pawn), "GetGizmos"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("GetGizmos_PostFix")));
-            //Tenant can work
-            harmonyInstance.Patch(AccessTools.Method(typeof(JobGiver_Work), "PawnCanUseWorkGiver"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("PawnCanUseWorkGiver_PreFix")), null);
             //Remove tenants from caravan list.
             harmonyInstance.Patch(AccessTools.Method(typeof(CaravanFormingUtility), "AllSendablePawns"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("AllSendablePawns_PostFix")));
             //Removes tenants from from pawn table 
@@ -113,7 +111,7 @@ namespace Tenants {
         }
         #endregion Functionality
         #region GUI
-        [HarmonyPriority(400)]
+        [HarmonyPriority(0)]
         public static void GetGizmos_PostFix(ref IEnumerable<Gizmo> __result, ref Pawn __instance) {
             try {
                 if (__instance != null) {
@@ -122,7 +120,6 @@ namespace Tenants {
                         List<Gizmo> gizmos = __result.ToList();
                         if (gizmos != null) {
                             foreach (Gizmo giz in gizmos.ToList()) {
-                                if ((giz as Command).defaultLabel == "Draft")
                                     gizmos.Remove(giz);
                             }
                             __result = gizmos.AsEnumerable();
@@ -133,18 +130,6 @@ namespace Tenants {
             catch (Exception ex) {
                 Log.Message(ex.Message);
             }
-        }
-        public static bool PawnCanUseWorkGiver_PreFix(Pawn pawn, WorkGiver giver) {
-            Tenant tenantComp = pawn.GetTenantComponent();
-            if (tenantComp != null && tenantComp.IsTenant && pawn.IsColonist) {
-                if (pawn.needs.mood.CurLevel > SettingsHelper.LatestVersion.LevelOfHappinessToWork / 100f || Utility.UpdateEmergencyWork(giver)) {
-                    return true;
-                }
-                else {
-                    return false;
-                }
-            }
-            return true;
         }
         public static void AllSendablePawns_PostFix(ref List<Pawn> __result) {
             UtilityTenant.RemoveTenantsFromList(__result);
@@ -157,7 +142,7 @@ namespace Tenants {
             if (pawns != null || pawns.Count > 0)
                 UtilityTenant.RemoveTenantsFromList(pawns);
         }
-        public static void CalculateDrawLocs_PreFix(List<Vector2> outDrawLocs, out float scale) {
+        public static void CalculateDrawLocs_PreFix(out float scale) {
             scale = 1f;
             List<Entry> entries = Traverse.Create(Find.ColonistBar).Field("cachedEntries").GetValue<List<Entry>>();
             if (entries != null && entries.Count > 0) {

@@ -30,11 +30,11 @@ namespace Tenants {
                 Pawn pawn = FindRandomCourier();
                 if (pawn == null)
                     return false;
-                GenSpawn.Spawn(pawn, spawnSpot, map);
-                pawn.SetFaction(Faction.OfAncients);
-                pawn.relations.everSeenByPlayer = true;
+                GenSpawn.Spawn(pawn, spawnSpot, map);    
                 CourierDress(pawn, map);
                 CourierInventory(pawn, map);
+                pawn.relations.everSeenByPlayer = true;
+                pawn.SetFaction(Faction.OfAncients);
                 string letterLabel = "CourierArrivedTitle".Translate(map.Parent.Label);
                 string letterText = "CourierArrivedMessage".Translate(pawn.Named("PAWN"));
                 Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.PositiveEvent, pawn);
@@ -64,17 +64,13 @@ namespace Tenants {
             }
         }
         public static Pawn FindRandomCourier() {
-            List<Pawn> pawns = (from p in Find.WorldPawns.AllPawnsAlive
-                                where p.GetCourierComponent() != null && p.GetCourierComponent().isCourier && !p.Dead && !p.Spawned && !p.Discarded
-                                select p).ToList();
-            if (pawns.Count < 20)
-                for (int i = 0; i < 3; i++)
+            IEnumerable<Pawn> pawns = Find.WorldPawns.AllPawnsAlive.Where(x => x.GetCourierComponent() != null && x.GetCourierComponent().isCourier && !x.Dead && !x.Spawned && !x.Discarded);
+            if (pawns.Count() < 20)
+                for (int i = 0; i < 3; i++) 
                     pawns.Add(GenerateNewCourier());
-
-            if (pawns.Count == 0)
+            if (pawns.Count() == 0)
                 return null;
-            pawns.Shuffle();
-            return pawns[0];
+            return pawns.RandomElement();
         }
         public static Pawn GenerateNewCourier() {
             bool generation = true;
@@ -123,7 +119,7 @@ namespace Tenants {
             pawn.apparel.Wear((Apparel)scrollCase);
         }
         public static void CourierInventory(Pawn pawn, Map map) {
-            ThingDef bowDef = DefDatabase<ThingDef>.AllDefsListForReading.FirstOrDefault(x => x.defName.ToLower() == "bow_recurve");
+            ThingDef bowDef = DefDatabase<ThingDef>.AllDefs.FirstOrDefault(x => x.defName.ToLower() == "bow_recurve".ToLower());
             Thing bow = ThingMaker.MakeThing(bowDef, GenStuff.RandomStuffByCommonalityFor(bowDef));
             pawn.equipment.AddEquipment((ThingWithComps)bow);
         }
@@ -139,13 +135,10 @@ namespace Tenants {
             if (content.Count > 0) {
                 foreach (Thing letter in content) {
                     Letter letterComp = letter.GetLetterComponent();
-                    Log.Message(letterComp.TypeValue.ToString());
-                    Log.Message(letterComp.Skill.ToString());
-                    Log.Message(letterComp.Faction.def.defName);
                     switch ((LetterType)letterComp.TypeValue) {
                         case LetterType.Diplomatic: {
                                 if (Rand.Value < 0.2f + ((letterComp.Skill * 3.5f) / 100f)) {
-                                    if (Rand.Value < letterComp.Skill/100) {
+                                    if (Rand.Value < letterComp.Skill/100f) {
                                         int val = Utility.ChangeRelations(letterComp.Faction);
                                         val += Utility.ChangeRelations(letterComp.Faction);
                                         StringBuilder builder = new StringBuilder();
@@ -176,7 +169,7 @@ namespace Tenants {
                                     Find.LetterStack.ReceiveLetter("LetterAngryTitle".Translate(), "LetterAngrySad".Translate(letterComp.Faction) + "\n" + "LetterRelationPenalty".Translate(val), LetterDefOf.NegativeEvent);
                                 }
                                 if (Rand.Value < 0.6f + ((letterComp.Skill * 1.5f) / 100f)) {
-                                    if (Rand.Value < letterComp.Skill / 100) {
+                                    if (Rand.Value < letterComp.Skill / 100f) {
                                         int val = Utility.ChangeRelations(letterComp.Faction, true);
                                         val += Utility.ChangeRelations(letterComp.Faction, true);
                                         Find.LetterStack.ReceiveLetter("LetterAngryTitle".Translate(), "LetterAngryNegative".Translate(letterComp.Faction) + "\n" + "LetterRelationPenalty".Translate(val), LetterDefOf.NegativeEvent);
