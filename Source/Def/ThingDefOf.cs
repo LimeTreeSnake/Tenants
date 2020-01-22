@@ -1,7 +1,7 @@
 ﻿using RimWorld;
 using Verse;
 
-namespace Tenants {   
+namespace Tenants.Defs {   
     [DefOf]
     public static class ThingDefOf{
         public static ThingDef Tenant_MessageBox;

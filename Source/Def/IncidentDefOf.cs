@@ -1,7 +1,7 @@
 ﻿using RimWorld;
 using Verse;
 
-namespace Tenants {
+namespace Tenants.Defs {
     [DefOf]
     public static class IncidentDefOf {
         public static IncidentDef RequestForTenancy;

@@ -9,7 +9,7 @@ using Verse;
 using Verse.AI;
 using Verse.AI.Group;
 
-namespace Tenants {
+namespace Tenants.Utilities {
     public static class UtilityRaid {
         public static string NewBasicRaidMessage(IncidentParms parms, List<Pawn> pawns) {
             Log.Message("Couldn't spawn correct letter for retribution.");

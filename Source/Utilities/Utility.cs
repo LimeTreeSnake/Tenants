@@ -5,50 +5,13 @@ using System.Text;
 using Harmony;
 using RimWorld;
 using RimWorld.Planet;
-using Tenants.Comp;
+using Tenants.Comps;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
 
-namespace Tenants {
-    public static class Utility {
-        public static Tenant GetTenantComponent(this Pawn pawn) {
-            if (ThingCompUtility.TryGetComp<Tenant>(pawn) != null) {
-                return ThingCompUtility.TryGetComp<Tenant>(pawn);
-            }
-            else {
-                pawn.def.comps.Add(new CompProps_Tenant());
-                return ThingCompUtility.TryGetComp<Tenant>(pawn);
-            }
-        }
-        public static Courier GetCourierComponent(this Pawn pawn) {
-            if (ThingCompUtility.TryGetComp<Courier>(pawn) != null) {
-                return ThingCompUtility.TryGetComp<Courier>(pawn);
-            }
-            else {
-                pawn.def.comps.Add(new CompProps_Courier());
-                return ThingCompUtility.TryGetComp<Courier>(pawn);
-            }
-        }
-        public static MessageBox GetMessageBoxComponent(this Thing thing) {
-            if (ThingCompUtility.TryGetComp<MessageBox>(thing) != null) {
-                return ThingCompUtility.TryGetComp<MessageBox>(thing);
-            }
-            else {
-                thing.def.comps.Add(new CompProps_MessageBox());
-                return ThingCompUtility.TryGetComp<MessageBox>(thing);
-            }
-        }
-
-        public static Letter GetLetterComponent(this Thing thing) {
-            if (ThingCompUtility.TryGetComp<Letter>(thing) != null) {
-                return ThingCompUtility.TryGetComp<Letter>(thing);
-            }
-            else {
-                thing.def.comps.Add(new CompProps_Letter());
-                return ThingCompUtility.TryGetComp<Letter>(thing);
-            }
-        }
+namespace Tenants.Utilities {
+    public static class Utility {     
         public static bool TryFindSpawnSpot(Map map, out IntVec3 spawnSpot) {
             bool validator(IntVec3 c) => map.reachability.CanReachColony(c) && !c.Fogged(map);
             return CellFinder.TryFindRandomEdgeCellWith(validator, map, CellFinder.EdgeRoadChance_Neutral, out spawnSpot);
@@ -60,7 +23,7 @@ namespace Tenants {
             UpdateDrugManagement(pawn);
         }
         public static void UpdateWork(Pawn pawn) {
-            Tenant tenantComp = pawn.GetTenantComponent();
+            Tenant tenantComp = ThingCompUtility.TryGetComp<Tenant>(pawn);
             foreach (WorkTypeDef def in DefDatabase<WorkTypeDef>.AllDefs) {
 
                 if (def.defName == "Patient") {
@@ -135,34 +98,15 @@ namespace Tenants {
                 }
             }
         }
-        public static void RemoveExpensiveItems(Pawn pawn) {
-            if (pawn.apparel.WornApparel != null && pawn.apparel.WornApparel.Count > 0)
-                for (int i = 0; i < pawn.apparel.WornApparel.Count; i++) {
-                    if (pawn.apparel.WornApparel[i].MarketValue > 400) {
-                        pawn.apparel.WornApparel.RemoveAt(i);
-                        i--;
-                    }
-                }
-            if (pawn.inventory.innerContainer != null && pawn.inventory.innerContainer.Count > 0)
-                for (int i = 0; i < pawn.inventory.innerContainer.Count; i++) {
-                    if (pawn.inventory.innerContainer[i].MarketValue > 400) {
-                        pawn.inventory.innerContainer.RemoveAt(i);
-                        i--;
-                    }
-                }
-            if (pawn.equipment.Primary != null)
-                if (pawn.equipment.Primary.MarketValue > 400)
-                    pawn.equipment.Primary.Destroy();
-        }
         public static int ChangeRelations(Faction faction, bool reverse = false) {
-            int val = Rand.Range(SettingsHelper.LatestVersion.MinRelation, SettingsHelper.LatestVersion.MaxRelation + 1);
+            int val = Rand.Range(Settings.SettingsHelper.LatestVersion.MinRelation, Settings.SettingsHelper.LatestVersion.MaxRelation + 1);
             _ = reverse == false ? faction.RelationWith(Find.FactionManager.OfPlayer).goodwill += val : faction.RelationWith(Find.FactionManager.OfPlayer).goodwill -= val;
             _ = reverse == false ? Find.FactionManager.OfPlayer.RelationWith(faction).goodwill += val : Find.FactionManager.OfPlayer.RelationWith(faction).goodwill -= val;
             return val;
         }
         public static void GenerateBasicContract(Tenant tenantComp, int payment, int timeMultiplier = 1) {
             tenantComp.Payment = payment;
-            tenantComp.ContractLength = (Rand.Range(SettingsHelper.LatestVersion.MinContractTime, SettingsHelper.LatestVersion.MaxContractTime) * timeMultiplier) * 60000;
+            tenantComp.ContractLength = (Rand.Range(Settings.SettingsHelper.LatestVersion.MinContractTime, Settings.SettingsHelper.LatestVersion.MaxContractTime) * timeMultiplier) * 60000;
             tenantComp.ContractDate = Find.TickManager.TicksGame;
             tenantComp.ContractEndDate = Find.TickManager.TicksAbs + tenantComp.ContractLength + 60000;
             tenantComp.ResetMood();
@@ -170,20 +114,20 @@ namespace Tenants {
 
         public static Graphic GraphicFinder(GraphicAlternator graphicAlternator, EraAlternator eraAlternator, bool useAlternate, Thing thing) {
             if (useAlternate) {
-                switch (SettingsHelper.LatestVersion.TextureStyle) {
-                    case Style.Auto: {
+                switch (Settings.SettingsHelper.LatestVersion.TextureStyle) {
+                    case Settings.Style.Auto: {
                             if (eraAlternator != null && Find.FactionManager.OfPlayer.def.techLevel <= eraAlternator.Props.TechLevel) {
                                 return eraAlternator.Props.Texture.GraphicColoredFor(thing);
                             }
                             return graphicAlternator.Props.Texture.GraphicColoredFor(thing);
                         }
-                    case Style.LTS: {
+                    case Settings.Style.LTS: {
                             if (eraAlternator != null) {
                                 return eraAlternator.Props.Texture.GraphicColoredFor(thing);
                             }
                             return graphicAlternator.Props.Texture.GraphicColoredFor(thing);
                         }
-                    case Style.Oskar:
+                    case Settings.Style.Oskar:
                         return graphicAlternator.Props.Texture.GraphicColoredFor(thing);
                     default:
                         return graphicAlternator.Props.Texture.GraphicColoredFor(thing);
@@ -191,20 +135,20 @@ namespace Tenants {
                 }
             }
             else {
-                switch (SettingsHelper.LatestVersion.TextureStyle) {
-                    case Style.Auto: {
+                switch (Settings.SettingsHelper.LatestVersion.TextureStyle) {
+                    case Settings.Style.Auto: {
                             if (eraAlternator != null && Find.FactionManager.OfPlayer.def.techLevel <= eraAlternator.Props.TechLevel) {
                                 return eraAlternator.Props.TextureAlternate.GraphicColoredFor(thing);
                             }
                             return graphicAlternator.Props.TextureAlternate.GraphicColoredFor(thing);
                         }
-                    case Style.LTS: {
+                    case Settings.Style.LTS: {
                             if (eraAlternator != null) {
                                 return eraAlternator.Props.TextureAlternate.GraphicColoredFor(thing);
                             }
                             return graphicAlternator.Props.TextureAlternate.GraphicColoredFor(thing);
                         }
-                    case Style.Oskar:
+                    case Settings.Style.Oskar:
                         return graphicAlternator.Props.TextureAlternate.GraphicColoredFor(thing);
                     default:
                         return graphicAlternator.Props.TextureAlternate.GraphicColoredFor(thing);

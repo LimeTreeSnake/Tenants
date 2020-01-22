@@ -9,7 +9,7 @@ using Verse;
 using Verse.AI;
 using Verse.AI.Group;
 
-namespace Tenants {
+namespace Tenants.Utilities {
     public static class UtilityCourier {
 
         public static bool Courier(Map map, Building box) {

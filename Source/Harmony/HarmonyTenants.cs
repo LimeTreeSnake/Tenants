@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Tenants.Comps;
 using UnityEngine;
 using Verse;
 using Verse.AI;
@@ -15,8 +16,6 @@ namespace Tenants {
     internal static class HarmonyTenants {
         static HarmonyTenants() {
             HarmonyInstance harmonyInstance = HarmonyInstance.Create("rimworld.limetreesnake.tenants");
-
-
             #region Ticks
             //Tenant Tick
             //harmonyInstance.Patch(AccessTools.Method(typeof(Pawn), "Tick"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("Tick_PostFix")));
@@ -24,8 +23,6 @@ namespace Tenants {
             harmonyInstance.Patch(AccessTools.Method(typeof(Pawn), "TickRare"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("TickRare_PostFix")));
             #endregion Ticks
             #region Functionality
-            //Removes ability to control tenant
-            harmonyInstance.Patch(AccessTools.Method(typeof(FloatMenuMakerMap), "CanTakeOrder"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("CanTakeOrder_PreFix")), null);
             //What happens when you capture a tenant 
             harmonyInstance.Patch(AccessTools.Method(typeof(Pawn_GuestTracker), "CapturedBy"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("CapturedBy_PreFix")), null);
             //Tenant dies
@@ -34,167 +31,51 @@ namespace Tenants {
             harmonyInstance.Patch(AccessTools.Method(typeof(InspirationWorker), "InspirationCanOccur"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("InspirationCanOccur_PreFix")), null);
             #endregion Functionality
             #region GUI
-            //Removes tenant gizmo
-            harmonyInstance.Patch(AccessTools.Method(typeof(Pawn), "GetGizmos"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("GetGizmos_PostFix")));
-            //Remove tenants from caravan list.
-            harmonyInstance.Patch(AccessTools.Method(typeof(CaravanFormingUtility), "AllSendablePawns"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("AllSendablePawns_PostFix")));
-            //Removes tenants from from pawn table 
-            harmonyInstance.Patch(AccessTools.Method(typeof(PawnTable_PlayerPawns), "RecachePawns"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("RecachePawns_PostFix")));
-            //Removes tenants from from colonist bar 
-            harmonyInstance.Patch(typeof(ColonistBarDrawLocsFinder).GetMethods().FirstOrDefault(x => x.Name == "CalculateDrawLocs" && x.GetParameters().Count() == 2), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("CalculateDrawLocs_PreFix")), null);
-            //Removes check for idle tenants
-            harmonyInstance.Patch(AccessTools.Method(typeof(Alert_ColonistsIdle), "GetReport"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("GetReport_PostFix")));
-            //Removes check for idle tenants
-            harmonyInstance.Patch(AccessTools.Method(typeof(Alert_ColonistsIdle), "GetExplanation"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("GetExplanation_PreFix")), null);
-            //Removes check for idle tenants
-            harmonyInstance.Patch(AccessTools.Method(typeof(Alert_ColonistsIdle), "GetLabel"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("GetLabel_PreFix")), null);
             //Pawn name color patch
             harmonyInstance.Patch(AccessTools.Method(typeof(PawnNameColorUtility), "PawnNameColorOf"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("PawnNameColorOf_PreFix")), null);
             //Comms Console Float Menu Option
             harmonyInstance.Patch(AccessTools.Method(typeof(Building_CommsConsole), "GetFloatMenuOptions"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("GetFloatMenuOptions_PostFix")));
-
             #endregion GUI
-
-            foreach (ThingDef def in DefDatabase<ThingDef>.AllDefs) {
-                if (def.race != null) {
-                    def.comps.Add(new CompProps_Tenant());
-                    def.comps.Add(new CompProps_Courier());
-                }
-            }
         }
-
         #region Ticks
-        //public static void Tick_PostFix(Pawn __instance) {
-        //    Tenant tenantComp = __instance.GetTenantComponent();
-        //    if (tenantComp != null && tenantComp.IsTenant && __instance.IsColonist) {
-
-        //    }
-        //}
-        public static void TickRare_PostFix(Pawn __instance) {
-            UtilityTenant.TenancyCheck(__instance);
+        public static void TickRare_PostFix(ref Pawn __instance) {
+            Utilities.UtilityTenant.TenancyCheck(__instance);
         }
         #endregion Ticks
         #region Functionality
-        public static bool CanTakeOrder_PreFix(Pawn pawn) {
-            Tenant tenantComp = pawn.GetTenantComponent();
-            if (tenantComp != null && tenantComp.IsTenant) {
-                return false;
-            }
-            return true;
-        }
-        public static void CapturedBy_PreFix(Pawn_GuestTracker __instance, Faction by, Pawn byPawn) {
+        public static void CapturedBy_PreFix(ref Pawn_GuestTracker __instance,ref Faction by,ref Pawn byPawn) {
             Pawn pawn = Traverse.Create(__instance).Field("pawn").GetValue<Pawn>();
-            Tenant tenantComp = pawn.GetTenantComponent();
-            if (tenantComp != null && tenantComp.IsTenant) {
-                if (tenantComp.MoleActivated) {
-                    UtilityTenant.TenantMoleCaptured(pawn);
+            Tenant tenantComp = ThingCompUtility.TryGetComp<Tenant>(pawn);
+            if (tenantComp != null) {
+                Mole mole = ThingCompUtility.TryGetComp<Mole>(pawn);
+                if (mole != null && mole.Activated) {
+                    Utilities.UtilityTenant.TenantMoleCaptured(pawn);
                 }
                 else {
-                    UtilityTenant.TenantCaptured(pawn, byPawn);
+                    Utilities.UtilityTenant.TenantCaptured(pawn, byPawn);
                 }
             }
         }
-        public static void Kill_PreFix(Pawn __instance, DamageInfo? dinfo) {
-            Tenant tenantComp = __instance.GetTenantComponent();
+        public static void Kill_PreFix(ref Pawn __instance, ref DamageInfo? dinfo) {
+            Tenant tenantComp = ThingCompUtility.TryGetComp<Tenant>(__instance);
             if (tenantComp != null)
                 if ((tenantComp.Contracted || tenantComp.CapturedTenant && !__instance.guest.Released) && __instance.Spawned) {
-                    UtilityTenant.TenantDeath(__instance);
+                    Utilities.UtilityTenant.TenantDeath(__instance);
                 }
         }
-        public static bool InspirationCanOccur_PreFix(Pawn pawn) {
-            Tenant tenantComp = pawn.GetTenantComponent();
+        public static bool InspirationCanOccur_PreFix(ref Pawn pawn) {
+            Tenant tenantComp = ThingCompUtility.TryGetComp<Tenant>(pawn);
             if (tenantComp != null)
-                if (tenantComp.IsTenant) {
                     return false;
-                }
             return true;
         }
         #endregion Functionality
         #region GUI
-        [HarmonyPriority(0)]
-        public static void GetGizmos_PostFix(ref IEnumerable<Gizmo> __result, ref Pawn __instance) {
-            try {
-                if (__instance != null) {
-                    Tenant tenantComp = __instance.GetTenantComponent();
-                    if (tenantComp != null && tenantComp.IsTenant && __result != null) {
-                        List<Gizmo> gizmos = __result.ToList();
-                        if (gizmos != null) {
-                            foreach (Gizmo giz in gizmos.ToList()) {
-                                    gizmos.Remove(giz);
-                            }
-                            __result = gizmos.AsEnumerable();
-                        }
-                    }
-                }
-            }
-            catch (Exception ex) {
-                Log.Message(ex.Message);
-            }
-        }
-        public static void AllSendablePawns_PostFix(ref List<Pawn> __result) {
-            UtilityTenant.RemoveTenantsFromList(__result);
-        }
-        public static void RecachePawns_PostFix(PawnTable __instance) {
-            if (__instance is PawnTable_Tenants) {
-                return;
-            }
-            List<Pawn> pawns = Traverse.Create(__instance).Field("cachedPawns").GetValue<List<Pawn>>();
-            if (pawns != null || pawns.Count > 0)
-                UtilityTenant.RemoveTenantsFromList(pawns);
-        }
-        public static void CalculateDrawLocs_PreFix(out float scale) {
-            scale = 1f;
-            List<Entry> entries = Traverse.Create(Find.ColonistBar).Field("cachedEntries").GetValue<List<Entry>>();
-            if (entries != null && entries.Count > 0) {
-                List<Entry> newentries = new List<Entry>();
-                foreach (Entry entry in entries) {
-                    if (entry.pawn != null) {
-                        Tenant tenantComp = entry.pawn.GetTenantComponent();
-                        if (tenantComp != null && tenantComp.IsTenant)
-                            newentries.Add(entry);
-                    }
-                }
-                foreach (Entry entry in newentries) {
-                    entries.Remove(entry);
-                }
-            }
-        }
-        public static void GetReport_PostFix(ref AlertReport __result, Alert_ColonistsIdle __instance) {
-            if (__result.culprits != null) {
-                UtilityTenant.RemoveTenantsFromList(ref __result.culprits);
-                __result.active = __result.AnyCulpritValid;
-            }
-        }
-        public static bool GetExplanation_PreFix(ref string __result, Alert_ColonistsIdle __instance) {
-
-            StringBuilder stringBuilder = new StringBuilder();
-            IEnumerable<Pawn> IdleColonists = Traverse.Create(__instance).Property("IdleColonists").GetValue<IEnumerable<Pawn>>();
-
-            foreach (Pawn idleColonist in IdleColonists) {
-                Tenant tenantComp = idleColonist.GetTenantComponent();
-                if (tenantComp != null && !tenantComp.IsTenant)
-                    stringBuilder.AppendLine("    " + idleColonist.LabelShort.CapitalizeFirst());
-            }
-            __result = "ColonistsIdleDesc".Translate(stringBuilder.ToString());
-
-            return false;
-        }
-        public static bool GetLabel_PreFix(ref string __result, Alert_ColonistsIdle __instance) {
-            IEnumerable<Pawn> IdleColonists = Traverse.Create(__instance).Property("IdleColonists").GetValue<IEnumerable<Pawn>>();
-            int x = 0;
-            foreach (Pawn idleColonist in IdleColonists) {
-                Tenant tenantComp = idleColonist.GetTenantComponent();
-                if (tenantComp != null && !tenantComp.IsTenant)
-                    x++;
-            }
-            __result = "ColonistsIdle".Translate(x.ToStringCached());
-            return false;
-        }
-        public static bool PawnNameColorOf_PreFix(ref Color __result, Pawn pawn) {
+        public static bool PawnNameColorOf_PreFix(ref Color __result, ref Pawn pawn) {
             if (pawn.IsColonist) {
-                Tenant tenantComp = pawn.GetTenantComponent();
-                if (tenantComp != null && tenantComp.IsTenant) {
-                    __result = SettingsHelper.LatestVersion.Color;
+                Tenant tenantComp = ThingCompUtility.TryGetComp<Tenant>(pawn);
+                if (tenantComp != null) {
+                    __result = Settings.SettingsHelper.LatestVersion.Color;
                     return false;
                 }
             }
@@ -204,7 +85,7 @@ namespace Tenants {
             List<FloatMenuOption> list = __result.ToList();
             if (!MapComponent_Tenants.GetComponent(myPawn.Map).Broadcast) {
                 void inviteTenant() {
-                    Job job = new Job(JobDefOf.JobUseCommsConsoleTenants);
+                    Job job = new Job(Defs.JobDefOf.JobUseCommsConsoleTenants);
                     myPawn.jobs.TryTakeOrderedJob(job);
                     PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.OpeningComms, KnowledgeAmount.Total);
                 }
@@ -213,11 +94,11 @@ namespace Tenants {
             }
             if (!MapComponent_Tenants.GetComponent(myPawn.Map).BroadcastCourier) {
                 void inviteCourier() {
-                    Job job = new Job(JobDefOf.JobUseCommsConsoleInviteCourier, __instance);
+                    Job job = new Job(Defs.JobDefOf.JobUseCommsConsoleInviteCourier, __instance);
                     myPawn.jobs.TryTakeOrderedJob(job);
                     PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.OpeningComms, KnowledgeAmount.Total);
                 }
-                FloatMenuOption inviteCouriers = new FloatMenuOption("CourierInvite".Translate(SettingsHelper.LatestVersion.CourierCost), inviteCourier, MenuOptionPriority.InitiateSocial);
+                FloatMenuOption inviteCouriers = new FloatMenuOption("CourierInvite".Translate(Settings.SettingsHelper.LatestVersion.CourierCost), inviteCourier, MenuOptionPriority.InitiateSocial);
                 list.Add(inviteCouriers);
             }
             __result = list.AsEnumerable();
