@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using Tenants.Comps;
 using Verse;
 
 namespace Tenants.UI {
@@ -14,11 +15,11 @@ namespace Tenants.UI {
             return "TerminateTip".Translate();
         }
         protected override bool GetValue(Pawn pawn) {
-            return pawn.GetTenantComponent().IsTerminated;
+            return ThingCompUtility.TryGetComp<TenantComp>(pawn).IsTerminated;
         }
 
         protected override void SetValue(Pawn pawn, bool value) {
-            pawn.GetTenantComponent().IsTerminated = value;
+            ThingCompUtility.TryGetComp<TenantComp>(pawn).IsTerminated = value;
         }
     }
 }

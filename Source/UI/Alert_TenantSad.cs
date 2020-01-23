@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Tenants.Utilities;
+using Tenants.Comps;
+using Tenants.Controllers;
 using Verse;
 
 namespace Tenants.UI {
@@ -14,7 +15,7 @@ namespace Tenants.UI {
                 for (int i = 0; i < maps.Count; i++) {
                     if (maps[i].IsPlayerHome) {
                         foreach (Pawn item in maps[i].mapPawns.FreeColonistsSpawned) {
-                            if (item.GetTenantComponent().IsTenant && item.needs.mood.CurInstantLevel < item.mindState.mentalBreaker.BreakThresholdMinor) {
+                            if (ThingCompUtility.TryGetComp<TenantComp>(item) != null && item.needs.mood.CurInstantLevel < item.mindState.mentalBreaker.BreakThresholdMinor) {
                                 yield return item;
                             }
                         }

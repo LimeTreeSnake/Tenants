@@ -5,6 +5,7 @@ using Verse.AI;
 using Verse.AI.Group;
 using System.Linq;
 using System.Text;
+using Tenants.Comps;
 
 namespace Tenants.LordJobs {
     public class LordJob_CourierDeliver : LordJob {
@@ -60,8 +61,8 @@ namespace Tenants.LordJobs {
                 lord.ownedPawns[i].mindState.duty = new PawnDuty(DutyDefOf.TravelOrWait);
             }
             if (MailBox != null) {
-                MapComponent_Tenants MapComp = MapComponent_Tenants.GetComponent(MailBox.Map);
-                MessageBox mailBoxComp = MailBox.GetMessageBoxComponent();
+                TenantsMapComp MapComp = TenantsMapComp.GetComponent(MailBox.Map);
+                MessageBoxComp mailBoxComp = ThingCompUtility.TryGetComp<MessageBoxComp>(MailBox);
 
                 //Incoming Gifts
                 if (MapComp.IncomingMail.Count > 0) {
@@ -106,7 +107,7 @@ namespace Tenants.LordJobs {
                 //Outgoing Letters
                 if (mailBoxComp.OutgoingLetters.Count > 0) {
                     foreach (Thing letter in mailBoxComp.OutgoingLetters) {
-                        if (MapComp.IncomingLetters.FirstOrDefault(x => x.Faction == letter.Faction && x.GetLetterComponent().TypeValue == letter.GetLetterComponent().TypeValue) == null) {
+                        if (MapComp.IncomingLetters.FirstOrDefault(x => x.Faction == letter.Faction && ThingCompUtility.TryGetComp<Comps.LetterComp>(x).TypeValue == ThingCompUtility.TryGetComp<Comps.LetterComp>(letter).TypeValue) == null) {
                             MapComp.IncomingLetters.Add(letter);
                         }
                     }

@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using Tenants.Comps;
 using UnityEngine;
 using Verse;
 
@@ -16,11 +17,11 @@ namespace Tenants.UI {
             return "MayJoinTip".Translate();
         }
         protected override bool GetValue(Pawn pawn) {
-            return pawn.GetTenantComponent().MayJoin;
+            return ThingCompUtility.TryGetComp<TenantComp>(pawn).MayJoin;
         }
 
         protected override void SetValue(Pawn pawn, bool value) {
-            pawn.GetTenantComponent().MayJoin = value;
+            ThingCompUtility.TryGetComp<TenantComp>(pawn).MayJoin = value;
         }
     }
 }

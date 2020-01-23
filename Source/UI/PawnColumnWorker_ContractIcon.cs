@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using Tenants.Comps;
 using UnityEngine;
 using Verse;
 
@@ -10,7 +11,7 @@ namespace Tenants.UI {
         private static readonly Texture2D EnvoyIcon = Textures.EnvoyIcon;
 
         protected override Texture2D GetIconFor(Pawn pawn) {
-            Tenant tenantComp = pawn.GetTenantComponent();
+            TenantComp tenantComp = ThingCompUtility.TryGetComp<TenantComp>(pawn);
             if (!tenantComp.IsEnvoy)
                 return ContractIcon;
             else
@@ -19,8 +20,8 @@ namespace Tenants.UI {
         }
 
         protected override string GetIconTip(Pawn pawn) {
-            Tenant tenantComp = pawn.GetTenantComponent();
-            if (tenantComp != null && !tenantComp.IsTenant) {
+            TenantComp tenantComp = ThingCompUtility.TryGetComp<TenantComp>(pawn);
+            if (tenantComp != null) {
                 return string.Empty;
             }
             string value = "FullDate".Translate(Find.ActiveLanguageWorker.OrdinalNumber(GenDate.DayOfSeason(tenantComp.ContractEndDate, 0f)), QuadrumUtility.Label(GenDate.Quadrum(tenantComp.ContractEndDate, 0f)), GenDate.Year(tenantComp.ContractEndDate, 0f));

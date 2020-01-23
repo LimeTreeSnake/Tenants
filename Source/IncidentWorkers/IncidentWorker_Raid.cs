@@ -2,7 +2,7 @@
 using System.Linq;
 using RimWorld;
 using Tenants.Comps;
-using Tenants.Utilities;
+using Tenants.Controllers;
 using Verse;
 
 namespace Tenants.IncidentWorkers {
@@ -14,8 +14,8 @@ namespace Tenants.IncidentWorkers {
         protected override string GetLetterText(IncidentParms parms, List<Pawn> pawns) {
             try {
                 Pawn related = pawns[pawns.Count - 1];
-                if ( MapComponent_Tenants.GetComponent(related.Map).DeadTenantsToAvenge.Count > 0) {
-                    Pawn dead = MapComponent_Tenants.GetComponent(related.Map).DeadTenantsToAvenge[0];
+                if ( TenantsMapComp.GetComponent(related.Map).DeadTenantsToAvenge.Count > 0) {
+                    Pawn dead = TenantsMapComp.GetComponent(related.Map).DeadTenantsToAvenge[0];
                     if (dead.ageTracker.AgeBiologicalYears > 25) {
                         related.relations.AddDirectRelation(PawnRelationDefOf.Parent, dead);
                     }
@@ -30,7 +30,7 @@ namespace Tenants.IncidentWorkers {
                         str += "\n\n";
                         str += "EnemyRaidLeaderPresent".Translate(pawn.Faction.def.pawnsPlural, pawn.LabelShort, pawn.Named("LEADER"));
                     }
-                    MapComponent_Tenants.GetComponent(pawns[0].Map).DeadTenantsToAvenge.Remove(dead);
+                    TenantsMapComp.GetComponent(pawns[0].Map).DeadTenantsToAvenge.Remove(dead);
                     return str;
                 }
                 else {
@@ -46,7 +46,7 @@ namespace Tenants.IncidentWorkers {
                 }
             }
             catch (System.Exception) {
-                return Utilities.UtilityRaid.NewBasicRaidMessage(parms, pawns);
+                return Controllers.RaidUtility.NewBasicRaidMessage(parms, pawns);
             }
 
         }
@@ -59,7 +59,7 @@ namespace Tenants.IncidentWorkers {
         protected override string GetLetterText(IncidentParms parms, List<Pawn> pawns) {
             try {
                 Pawn related = pawns[pawns.Count - 1];
-                Pawn captured = MapComponent_Tenants.GetComponent(related.Map).CapturedTenantsToAvenge[0];
+                Pawn captured = TenantsMapComp.GetComponent(related.Map).CapturedTenantsToAvenge[0];
 
                 if (captured.ageTracker.AgeBiologicalYears > 25) {
                     related.relations.AddDirectRelation(PawnRelationDefOf.Parent, captured);
@@ -75,11 +75,11 @@ namespace Tenants.IncidentWorkers {
                     str += "\n\n";
                     str += "EnemyRaidLeaderPresent".Translate(pawn.Faction.def.pawnsPlural, pawn.LabelShort, pawn.Named("LEADER"));
                 }
-                MapComponent_Tenants.GetComponent(pawns[0].Map).CapturedTenantsToAvenge.Remove(captured);
+                TenantsMapComp.GetComponent(pawns[0].Map).CapturedTenantsToAvenge.Remove(captured);
                 return str;
             }
             catch (System.Exception) {
-                return Utilities.UtilityRaid.NewBasicRaidMessage(parms, pawns);
+                return Controllers.RaidUtility.NewBasicRaidMessage(parms, pawns);
             }
         }
     }
@@ -90,11 +90,11 @@ namespace Tenants.IncidentWorkers {
         protected override string GetLetterText(IncidentParms parms, List<Pawn> pawns) {
             try {
                 Pawn related = pawns[pawns.Count - 1];
-                Pawn mole = MapComponent_Tenants.GetComponent((Map)parms.target).Moles[0];
-                Tenant tenantComp = mole.GetTenantComponent();
+                Pawn mole = TenantsMapComp.GetComponent((Map)parms.target).Moles[0];
+                TenantComp tenantComp = ThingCompUtility.TryGetComp<TenantComp>(mole);
                 if (Rand.Value < 0.66f) {
-                    mole.SetFaction(mole.GetTenantComponent().HiddenFaction);
-                    tenantComp.IsTenant = false;
+                    mole.SetFaction(ThingCompUtility.TryGetComp<TenantComp>(mole).HiddenFaction);
+                    mole.AllComps.Remove(tenantComp);
                 }
 
                 string str = string.Format(parms.raidArrivalMode.textEnemy, parms.faction.def.pawnsPlural, parms.faction.Name);
@@ -105,19 +105,19 @@ namespace Tenants.IncidentWorkers {
                     str += "\n\n";
                     str += "EnemyRaidLeaderPresent".Translate(pawn.Faction.def.pawnsPlural, pawn.LabelShort, pawn.Named("LEADER"));
                 }
-                MapComponent_Tenants.GetComponent((Map)parms.target).CapturedTenantsToAvenge.Remove(mole);
+                TenantsMapComp.GetComponent((Map)parms.target).CapturedTenantsToAvenge.Remove(mole);
                 return str;
             }
             catch (System.Exception) {
-                return UtilityRaid.NewBasicRaidMessage(parms, pawns);
+                return RaidUtility.NewBasicRaidMessage(parms, pawns);
             }
         }
 
         protected override void ResolveRaidStrategy(IncidentParms parms, PawnGroupKindDef groupKind) {
             try {
                 base.ResolveRaidStrategy(parms, groupKind);
-                Pawn mole = MapComponent_Tenants.GetComponent((Map)parms.target).Moles[0];
-                if (mole.GetTenantComponent().HiddenFaction.def.techLevel >= TechLevel.Spacer && Rand.Value < 0.5f) {
+                Pawn mole = TenantsMapComp.GetComponent((Map)parms.target).Moles[0];
+                if (ThingCompUtility.TryGetComp<TenantComp>(mole).HiddenFaction.def.techLevel >= TechLevel.Spacer && Rand.Value < 0.5f) {
                     parms.raidArrivalMode = PawnsArrivalModeDefOf.CenterDrop;
                 }
             }
@@ -128,7 +128,7 @@ namespace Tenants.IncidentWorkers {
         }
         protected override bool TryResolveRaidFaction(IncidentParms parms) {
             try {
-                parms.faction = MapComponent_Tenants.GetComponent((Map)parms.target).Moles[0].GetTenantComponent().HiddenFaction;
+                parms.faction = ThingCompUtility.TryGetComp<TenantComp>(TenantsMapComp.GetComponent((Map)parms.target).Moles[0]).HiddenFaction;
 
                 if (FactionCanBeGroupSource(parms.faction, (Map)parms.target)) {
                     return true;
@@ -147,7 +147,7 @@ namespace Tenants.IncidentWorkers {
         }
         protected override string GetLetterText(IncidentParms parms, List<Pawn> pawns) {
             try {
-                MapComponent_Tenants.GetComponent((Map)parms.target).Broadcast = false;
+                TenantsMapComp.GetComponent((Map)parms.target).Broadcast = false;
                 string basic = string.Format(parms.raidArrivalMode.textEnemy, parms.faction.def.pawnsPlural, parms.faction.Name);
                 basic += "\n\n";
                 basic += "TenantOpportunists".Translate();
@@ -168,7 +168,7 @@ namespace Tenants.IncidentWorkers {
         protected override bool CanFireNowSub(IncidentParms parms) {
             bool canFire = base.CanFireNowSub(parms);
 
-            if (MapComponent_Tenants.GetComponent((Map)parms.target).WantedTenants.Count < 1)
+            if (TenantsMapComp.GetComponent((Map)parms.target).WantedTenants.Count < 1)
                 canFire = false;
 
             return canFire;
@@ -178,8 +178,8 @@ namespace Tenants.IncidentWorkers {
         }
         protected override string GetLetterText(IncidentParms parms, List<Pawn> pawns) {
             try {
-                if (MapComponent_Tenants.GetComponent((Map)parms.target).WantedTenants.Count > 0)
-                    MapComponent_Tenants.GetComponent((Map)parms.target).WantedTenants.RemoveAt(0);
+                if (TenantsMapComp.GetComponent((Map)parms.target).WantedTenants.Count > 0)
+                    TenantsMapComp.GetComponent((Map)parms.target).WantedTenants.RemoveAt(0);
                 string basic = string.Format(parms.raidArrivalMode.textEnemy, parms.faction.def.pawnsPlural, parms.faction.Name);
                 basic += "\n\n";
                 basic += "WantedTenant".Translate();
@@ -196,7 +196,7 @@ namespace Tenants.IncidentWorkers {
         }
         protected override bool TryResolveRaidFaction(IncidentParms parms) {
             try {
-                parms.faction = MapComponent_Tenants.GetComponent((Map)parms.target).WantedTenants[0].GetTenantComponent().WantedBy;
+                parms.faction = ThingCompUtility.TryGetComp<WantedComp>(TenantsMapComp.GetComponent((Map)parms.target).WantedTenants[0]).WantedBy;
                 if (FactionCanBeGroupSource(parms.faction, (Map)parms.target)) {
                     return true;
                 }

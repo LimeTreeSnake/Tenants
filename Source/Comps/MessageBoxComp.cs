@@ -1,21 +1,21 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
-using Tenants.Utilities;
+using Tenants.Controllers;
 using Verse;
 using Verse.AI;
 
 namespace Tenants.Comps {
     public class Building_MessageBox : Building_WorkTable {
-        private GraphicAlternator GraphicComp => GetComp<GraphicAlternator>();
-        private EraAlternator EraAlternatorComp => GetComp<EraAlternator>();
+        private GraphicAlternatorComp GraphicComp => GetComp<GraphicAlternatorComp>();
+        private EraAlternatorComp EraAlternatorComp => GetComp<EraAlternatorComp>();
         public override Graphic Graphic {
             get {
-                return Utility.GraphicFinder(GraphicComp, EraAlternatorComp, ThingCompUtility.TryGetComp<MessageBox>(this).IncomingLetters.Count < 1, this);
+                return MapUtilities.GraphicFinder(GraphicComp, EraAlternatorComp, ThingCompUtility.TryGetComp<MessageBoxComp>(this).IncomingLetters.Count < 1, this);
             }
         }
     }
-    public class MessageBox : ThingComp {
+    public class MessageBoxComp : ThingComp {
         public List<Thing> Items = new List<Thing>();
         public List<Thing> OutgoingLetters = new List<Thing>();
         public List<Thing> IncomingLetters = new List<Thing>();
@@ -25,7 +25,7 @@ namespace Tenants.Comps {
             Scribe_Collections.Look(ref IncomingLetters, "IncomingLetters", LookMode.Deep);
         }
         public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn pawn) {
-            MessageBox messageBoxComp = ThingCompUtility.TryGetComp<MessageBox>(parent);
+            MessageBoxComp messageBoxComp = ThingCompUtility.TryGetComp<MessageBoxComp>(parent);
             List<FloatMenuOption> list = new List<FloatMenuOption>();
             //Check inventory
             if (Items.Count > 0 || IncomingLetters.Count > 0) {
@@ -41,11 +41,11 @@ namespace Tenants.Comps {
             List<Thing> letters = pawn.Map.listerThings.ThingsOfDef(Defs.ThingDefOf.Tenant_LetterDiplomatic);
             if (letters.Count > 0) {
                 foreach (Faction faction in factions) {
-                    if (messageBoxComp.OutgoingLetters.FirstOrDefault(x => ThingCompUtility.TryGetComp<Letter>(x).TypeValue == (int)LetterType.Diplomatic && x.Faction == faction) == null) {
+                    if (messageBoxComp.OutgoingLetters.FirstOrDefault(x => ThingCompUtility.TryGetComp<LetterComp>(x).TypeValue == (int)LetterType.Diplomatic && x.Faction == faction) == null) {
                         void SendMail() {
                             Thing letter = GenClosest.ClosestThing_Regionwise_ReachablePrioritized(parent.Position, parent.Map, ThingRequest.ForDef(Defs.ThingDefOf.Tenant_LetterDiplomatic), PathEndMode.ClosestTouch, TraverseParms.For(TraverseMode.PassDoors, Danger.Unspecified));
-                            ThingCompUtility.TryGetComp<Letter>(letter).Faction = faction;
-                            ThingCompUtility.TryGetComp<Letter>(letter).TypeValue = (int)LetterType.Diplomatic;
+                            ThingCompUtility.TryGetComp<LetterComp>(letter).Faction = faction;
+                            ThingCompUtility.TryGetComp<LetterComp>(letter).TypeValue = (int)LetterType.Diplomatic;
                             Job job = new Job(Defs.JobDefOf.JobSendLetter, parent, letter) {
                                 count = 1
                             };
@@ -60,11 +60,11 @@ namespace Tenants.Comps {
             letters = pawn.Map.listerThings.ThingsOfDef(Defs.ThingDefOf.Tenant_LetterAngry);
             if (letters.Count > 0) {
                 foreach (Faction faction in factions) {
-                    if (messageBoxComp.OutgoingLetters.FirstOrDefault(x => ThingCompUtility.TryGetComp<Letter>(x).TypeValue == (int)LetterType.Angry && x.Faction == faction) == null) {
+                    if (messageBoxComp.OutgoingLetters.FirstOrDefault(x => ThingCompUtility.TryGetComp<LetterComp>(x).TypeValue == (int)LetterType.Angry && x.Faction == faction) == null) {
                         void SendMail() {
                             Thing letter = GenClosest.ClosestThing_Regionwise_ReachablePrioritized(parent.Position, parent.Map, ThingRequest.ForDef(Defs.ThingDefOf.Tenant_LetterAngry), PathEndMode.ClosestTouch, TraverseParms.For(TraverseMode.PassDoors, Danger.Unspecified));
-                            ThingCompUtility.TryGetComp<Letter>(letter).Faction = faction;
-                            ThingCompUtility.TryGetComp<Letter>(letter).TypeValue = (int)LetterType.Angry;
+                            ThingCompUtility.TryGetComp<LetterComp>(letter).Faction = faction;
+                            ThingCompUtility.TryGetComp<LetterComp>(letter).TypeValue = (int)LetterType.Angry;
                             Job job = new Job(Defs.JobDefOf.JobSendLetter, parent, letter) {
                                 count = 1
                             };
@@ -79,11 +79,11 @@ namespace Tenants.Comps {
             letters = pawn.Map.listerThings.ThingsOfDef(Defs.ThingDefOf.Tenant_LetterInvite);
             if (letters.Count > 0) {
                 foreach (Faction faction in factions.Where(x => (int)x.RelationKindWith(Find.FactionManager.OfPlayer) != 0)) {
-                    if (messageBoxComp.OutgoingLetters.FirstOrDefault(x => ThingCompUtility.TryGetComp<Letter>(x).TypeValue == (int)LetterType.Invite && x.Faction == faction) == null) {
+                    if (messageBoxComp.OutgoingLetters.FirstOrDefault(x => ThingCompUtility.TryGetComp<LetterComp>(x).TypeValue == (int)LetterType.Invite && x.Faction == faction) == null) {
                         void SendMail() {
                             Thing letter = GenClosest.ClosestThing_Regionwise_ReachablePrioritized(parent.Position, parent.Map, ThingRequest.ForDef(Defs.ThingDefOf.Tenant_LetterInvite), PathEndMode.ClosestTouch, TraverseParms.For(TraverseMode.PassDoors, Danger.Unspecified));
-                            ThingCompUtility.TryGetComp<Letter>(letter).Faction = faction;
-                            ThingCompUtility.TryGetComp<Letter>(letter).TypeValue = (int)LetterType.Invite;
+                            ThingCompUtility.TryGetComp<LetterComp>(letter).Faction = faction;
+                            ThingCompUtility.TryGetComp<LetterComp>(letter).TypeValue = (int)LetterType.Invite;
                             Job job = new Job(Defs.JobDefOf.JobSendLetter, parent, letter) {
                                 count = 1
                             };
@@ -100,7 +100,7 @@ namespace Tenants.Comps {
     }
     public class CompProps_MessageBox : CompProperties {
         public CompProps_MessageBox() {
-            compClass = typeof(MessageBox);
+            compClass = typeof(MessageBoxComp);
         }
     }
 }

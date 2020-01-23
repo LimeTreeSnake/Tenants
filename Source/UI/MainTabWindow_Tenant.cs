@@ -4,6 +4,7 @@ using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Tenants.Comps;
 using Verse;
 
 namespace Tenants.UI {
@@ -11,7 +12,7 @@ namespace Tenants.UI {
         private static PawnTableDef pawnTableDef;
         protected override PawnTableDef PawnTableDef => pawnTableDef ?? (pawnTableDef = DefDatabase<PawnTableDef>.GetNamed("Tenants"));
         protected override IEnumerable<Pawn> Pawns => from p in Find.CurrentMap.mapPawns.AllPawns
-                                                      where p.GetTenantComponent() != null && p.GetTenantComponent().IsTenant && p.GetTenantComponent().Contracted
+                                                      where ThingCompUtility.TryGetComp<TenantComp>(p) != null  && ThingCompUtility.TryGetComp<TenantComp>(p).Contracted
                                                       select p;
         public override void PostOpen() {
             base.PostOpen();

@@ -39,41 +39,51 @@ namespace Tenants {
         }
         #region Ticks
         public static void TickRare_PostFix(ref Pawn __instance) {
-            Utilities.UtilityTenant.TenancyCheck(__instance);
+            if (__instance.Spawned && __instance.NonHumanlikeOrWildMan()) {
+            }
+            TenantComp tenant = ThingCompUtility.TryGetComp<TenantComp>(__instance);
+            EnvoyComp envoy = ThingCompUtility.TryGetComp<EnvoyComp>(__instance);
+            WantedComp wanted = ThingCompUtility.TryGetComp<WantedComp>(__instance);
+            MoleComp mole = ThingCompUtility.TryGetComp<MoleComp>(__instance);
+
+            Controllers.TenantController.Tick(__instance, tenant);
+            Controllers.EnvoyController.Tick(__instance, envoy);
+            Controllers.WantedController.Tick(__instance, wanted);
+            Controllers.MoleController.Tick(__instance, mole);
         }
         #endregion Ticks
         #region Functionality
-        public static void CapturedBy_PreFix(ref Pawn_GuestTracker __instance,ref Faction by,ref Pawn byPawn) {
+        public static void CapturedBy_PreFix(ref Pawn_GuestTracker __instance, ref Faction by, ref Pawn byPawn) {
             Pawn pawn = Traverse.Create(__instance).Field("pawn").GetValue<Pawn>();
-            Tenant tenantComp = ThingCompUtility.TryGetComp<Tenant>(pawn);
+            TenantComp tenantComp = ThingCompUtility.TryGetComp<TenantComp>(pawn);
             if (tenantComp != null) {
-                Mole mole = ThingCompUtility.TryGetComp<Mole>(pawn);
+                MoleComp mole = ThingCompUtility.TryGetComp<MoleComp>(pawn);
                 if (mole != null && mole.Activated) {
-                    Utilities.UtilityTenant.TenantMoleCaptured(pawn);
+                    Controllers.TenantController.TenantMoleCaptured(pawn);
                 }
                 else {
-                    Utilities.UtilityTenant.TenantCaptured(pawn, byPawn);
+                    Controllers.TenantController.TenantCaptured(pawn, byPawn);
                 }
             }
         }
         public static void Kill_PreFix(ref Pawn __instance, ref DamageInfo? dinfo) {
-            Tenant tenantComp = ThingCompUtility.TryGetComp<Tenant>(__instance);
+            TenantComp tenantComp = ThingCompUtility.TryGetComp<TenantComp>(__instance);
             if (tenantComp != null)
-                if ((tenantComp.Contracted || tenantComp.CapturedTenant && !__instance.guest.Released) && __instance.Spawned) {
-                    Utilities.UtilityTenant.TenantDeath(__instance);
+                if ((tenantComp.Contract.Contracted || tenantComp.CapturedTenant && !__instance.guest.Released) && __instance.Spawned) {
+                    Controllers.TenantController.TenantDeath(__instance);
                 }
         }
         public static bool InspirationCanOccur_PreFix(ref Pawn pawn) {
-            Tenant tenantComp = ThingCompUtility.TryGetComp<Tenant>(pawn);
+            TenantComp tenantComp = ThingCompUtility.TryGetComp<TenantComp>(pawn);
             if (tenantComp != null)
-                    return false;
+                return false;
             return true;
         }
         #endregion Functionality
         #region GUI
         public static bool PawnNameColorOf_PreFix(ref Color __result, ref Pawn pawn) {
             if (pawn.IsColonist) {
-                Tenant tenantComp = ThingCompUtility.TryGetComp<Tenant>(pawn);
+                TenantComp tenantComp = ThingCompUtility.TryGetComp<TenantComp>(pawn);
                 if (tenantComp != null) {
                     __result = Settings.SettingsHelper.LatestVersion.Color;
                     return false;
@@ -83,7 +93,7 @@ namespace Tenants {
         }
         public static void GetFloatMenuOptions_PostFix(Building_CommsConsole __instance, ref IEnumerable<FloatMenuOption> __result, Pawn myPawn) {
             List<FloatMenuOption> list = __result.ToList();
-            if (!MapComponent_Tenants.GetComponent(myPawn.Map).Broadcast) {
+            if (!TenantsMapComp.GetComponent(myPawn.Map).Broadcast) {
                 void inviteTenant() {
                     Job job = new Job(Defs.JobDefOf.JobUseCommsConsoleTenants);
                     myPawn.jobs.TryTakeOrderedJob(job);
@@ -92,7 +102,7 @@ namespace Tenants {
                 FloatMenuOption inviteTenants = new FloatMenuOption("InviteTenant".Translate(), inviteTenant, MenuOptionPriority.InitiateSocial);
                 list.Add(inviteTenants);
             }
-            if (!MapComponent_Tenants.GetComponent(myPawn.Map).BroadcastCourier) {
+            if (!TenantsMapComp.GetComponent(myPawn.Map).BroadcastCourier) {
                 void inviteCourier() {
                     Job job = new Job(Defs.JobDefOf.JobUseCommsConsoleInviteCourier, __instance);
                     myPawn.jobs.TryTakeOrderedJob(job);

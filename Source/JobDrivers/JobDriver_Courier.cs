@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using RimWorld;
 using Verse;
 using Verse.AI;
+using Tenants.Comps;
 
 namespace Tenants.JobDrivers {
     public class JobDriver_UseCommsConsoleInviteCourier : JobDriver {
@@ -25,7 +26,7 @@ namespace Tenants.JobDrivers {
                 Pawn actor = invite.actor;
                 Building_CommsConsole building_CommsConsole = (Building_CommsConsole)actor.jobs.curJob.GetTarget(TargetIndex.A).Thing;
                 if (building_CommsConsole.CanUseCommsNow) {
-                    UtilityCourier.CourierInvite(building_CommsConsole, actor);
+                    Controllers.CourierController.CourierInvite(building_CommsConsole, actor);
                 }
             };
             yield return invite;
@@ -45,10 +46,10 @@ namespace Tenants.JobDrivers {
             yield return Toils_Haul.PlaceHauledThingInCell(TargetIndex.B, carryToCell, false);
             Toil checkMailBox = new Toil();
             checkMailBox.initAction = delegate {
-                Thing building_MailBox = checkMailBox.actor.jobs.curJob.GetTarget(TargetIndex.A).Thing;
-                Letter letter = ThingCompUtility.TryGetComp<Letter>(TargetThingB);
+                Thing building_MessageBox = checkMailBox.actor.jobs.curJob.GetTarget(TargetIndex.A).Thing;
+                Comps.LetterComp letter = ThingCompUtility.TryGetComp<Comps.LetterComp>(TargetThingB);
                 letter.Skill = pawn.skills.skills.FirstOrDefault(x => x.def.defName.ToLower() == "social").levelInt;
-                building_MailBox.GetMessageBoxComponent().OutgoingLetters.Add(TargetThingB);
+                ThingCompUtility.TryGetComp<MessageBoxComp>(building_MessageBox).OutgoingLetters.Add(TargetThingB);
                 TargetThingB.Destroy();
             };
             yield return checkMailBox;
@@ -65,9 +66,9 @@ namespace Tenants.JobDrivers {
             Toil CheckLetters = new Toil();
             CheckLetters.initAction = delegate {
                 Thing building_MessageBox = CheckLetters.actor.jobs.curJob.GetTarget(TargetIndex.A).Thing;
-                MessageBox comp = building_MessageBox.GetMessageBoxComponent();
-                UtilityCourier.EmptyMessageBox(ref comp.Items, comp.parent.Position);
-                UtilityCourier.RecieveLetters(ref comp.IncomingLetters, comp.parent.Position, comp.parent.Map);
+                MessageBoxComp comp = ThingCompUtility.TryGetComp<MessageBoxComp>(building_MessageBox);
+                Controllers.CourierController.EmptyMessageBox(ref comp.Items, comp.parent.Position);
+                Controllers.CourierController.RecieveLetters(ref comp.IncomingLetters, comp.parent.Position, comp.parent.Map);
             };
             yield return CheckLetters;
         }

@@ -13,7 +13,7 @@ namespace Tenants.IncidentWorkers {
                 Map map = (Map)parms.target;
                 List<Map> maps = Find.Maps.Where(x => x.IsPlayerHome).ToList();
                 if (map != null && maps.Contains(map)) {
-                    return Utilities.Utility.TryFindSpawnSpot(map, out IntVec3 spawnSpot);
+                    return Controllers.MapUtilities.TryFindSpawnSpot(map, out IntVec3 spawnSpot);
                 }
             }
             return false;
@@ -24,7 +24,7 @@ namespace Tenants.IncidentWorkers {
                 if (map != null) {
                     Building building = map.listerBuildings.allBuildingsColonist.FirstOrDefault(x => x.def == Defs.ThingDefOf.Tenant_MessageBox);
                     if (building != null) {
-                        return Utilities.UtilityCourier.Courier((Map)parms.target, building);
+                        return Controllers.CourierController.Courier((Map)parms.target, building);
                     }
                     else {
                         string letterLabel = "CourierArrivedTitle".Translate((map.Parent.Label));

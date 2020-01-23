@@ -26,7 +26,7 @@ namespace Tenants.JobDrivers {
                 Pawn actor = invite.actor;
                 Building_CommsConsole building_CommsConsole = (Building_CommsConsole)actor.jobs.curJob.GetTarget(TargetIndex.A).Thing;
                 if (building_CommsConsole.CanUseCommsNow) {
-                    UtilityTenant.TenantInvite(building_CommsConsole, actor);
+                    Controllers.TenantController.TenantInvite(building_CommsConsole, actor);
                 }
             };
             yield return invite;
@@ -51,7 +51,7 @@ namespace Tenants.JobDrivers {
                 Pawn actor = mole.actor;
                 Building_CommsConsole building_CommsConsole = (Building_CommsConsole)actor.jobs.curJob.GetTarget(TargetIndex.A).Thing;
                 if (building_CommsConsole.CanUseCommsNow) {
-                    UtilityTenant.TenantMole(actor);
+                    Controllers.TenantController.TenantMole(actor);
                 }
             };
             yield return mole;

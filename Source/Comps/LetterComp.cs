@@ -7,7 +7,7 @@ using Verse.AI;
 namespace Tenants.Comps
 {
     public enum LetterType { Diplomatic = 1, Angry = 2, Invite = 3};
-   public class Letter : ThingComp
+   public class LetterComp : ThingComp
     {
         public CompProps_Letter Props => (CompProps_Letter)props;
         public int Skill;
@@ -25,7 +25,7 @@ namespace Tenants.Comps
     {
         public LetterType letter;
         public CompProps_Letter() {
-            compClass = typeof(Letter);
+            compClass = typeof(LetterComp);
         }
     }
 }

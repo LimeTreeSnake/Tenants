@@ -53,20 +53,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Comps\Courier.cs" />
-    <Compile Include="Comps\GraphicAlternator.cs" />
-    <Compile Include="Comps\Letter.cs" />
-    <Compile Include="Comps\MessageBox.cs" />
-    <Compile Include="Comps\Mole.cs" />
-    <Compile Include="Comps\Wanted.cs" />
+    <Compile Include="Comps\ContractComp.cs" />
+    <Compile Include="Comps\CourierComp.cs" />
+    <Compile Include="Comps\EnvoyComp.cs" />
+    <Compile Include="Comps\GraphicAlternatorComp.cs" />
+    <Compile Include="Comps\LetterComp.cs" />
+    <Compile Include="Comps\MessageBoxComp.cs" />
+    <Compile Include="Comps\MoleComp.cs" />
+    <Compile Include="Comps\WantedComp.cs" />
     <Compile Include="Def\ThingDefOf.cs" />
     <Compile Include="Def\IncidentDefOf.cs" />
     <Compile Include="Def\JobDefOf.cs" />
     <Compile Include="Def\RaidStrategyDefOf.cs" />
     <Compile Include="Def\ThingSetMakerDefOf.cs" />
     <Compile Include="Harmony\HarmonyTenants.cs" />
-    <Compile Include="Comps\MapComponent_Tenants.cs" />
-    <Compile Include="UI\Textures.cs" />
+    <Compile Include="Comps\TenantsMapComp.cs" />
     <Compile Include="UI\Alert_TenantSad.cs" />
     <Compile Include="UI\PawnColumnWorker_Work.cs" />
     <Compile Include="UI\PawnColumnWorker_TenantLabel.cs" />
@@ -74,9 +75,13 @@
     <Compile Include="UI\PawnColumnWorker_AutoRenew.cs" />
     <Compile Include="UI\PawnColumnWorker_CancelContract.cs" />
     <Compile Include="ThinkNode\ThinkNode_ConditionalTenant.cs" />
-    <Compile Include="Utilities\Utility.cs" />
-    <Compile Include="Utilities\UtilityCourier.cs" />
-    <Compile Include="Utilities\UtilityRaid.cs" />
+    <Compile Include="Controllers\ContractController.cs" />
+    <Compile Include="Controllers\EnvoyController.cs" />
+    <Compile Include="Utilities\MapUtilities.cs" />
+    <Compile Include="Controllers\CourierController.cs" />
+    <Compile Include="Controllers\FactionController.cs" />
+    <Compile Include="Controllers\MoleController.cs" />
+    <Compile Include="Utilities\RaidUtility.cs" />
     <Compile Include="IncidentWorkers\IncidentWorker_Courier.cs" />
     <Compile Include="IncidentWorkers\IncidentWorker_Raid.cs" />
     <Compile Include="IncidentWorkers\IncidentWorker_Tenant.cs" />
@@ -86,10 +91,12 @@
     <Compile Include="LordJobs\LordJob_Theft.cs" />
     <Compile Include="UI\MainTabWindow_Tenant.cs" />
     <Compile Include="UI\PawnColumnWorker_ContractIcon.cs" />
-    <Compile Include="Comps\Tenant.cs" />
+    <Compile Include="Comps\TenantComp.cs" />
     <Compile Include="Settings\Settings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utilities\UtilityTenant.cs" />
+    <Compile Include="Controllers\TenantController.cs" />
+    <Compile Include="Utilities\TextureUtility.cs" />
+    <Compile Include="Controllers\WantedController.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

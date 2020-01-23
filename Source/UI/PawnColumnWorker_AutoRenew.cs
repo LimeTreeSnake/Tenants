@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using Tenants.Comps;
 using UnityEngine;
 using Verse;
 
@@ -16,11 +17,11 @@ namespace Tenants.UI {
             return "AutoRenewTip".Translate();
         }
         protected override bool GetValue(Pawn pawn) {
-            return pawn.GetTenantComponent().AutoRenew;
+            return ThingCompUtility.TryGetComp<TenantComp>(pawn).AutoRenew;
         }
 
         protected override void SetValue(Pawn pawn, bool value) {
-            pawn.GetTenantComponent().AutoRenew = value;
+            ThingCompUtility.TryGetComp<TenantComp>(pawn).AutoRenew = value;
             
         }
     }

@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using Tenants.Comps;
 using UnityEngine;
 using Verse;
 
@@ -15,11 +16,11 @@ namespace Tenants.UI {
             return "FireFightingTip".Translate();
         }
         protected override bool GetValue(Pawn pawn) {
-            return pawn.GetTenantComponent().MayFirefight;
+            return ThingCompUtility.TryGetComp<TenantComp>(pawn).MayFirefight;
         }
 
         protected override void SetValue(Pawn pawn, bool value) {
-            Tenant tenantComp = pawn.GetTenantComponent();
+            TenantComp tenantComp = ThingCompUtility.TryGetComp<TenantComp>(pawn);
             if (tenantComp.IsEnvoy) {
                 tenantComp.MayFirefight = false;
             }
@@ -48,11 +49,11 @@ namespace Tenants.UI {
             return "BasicTip".Translate();
         }
         protected override bool GetValue(Pawn pawn) {
-            return pawn.GetTenantComponent().MayBasic;
+            return ThingCompUtility.TryGetComp<TenantComp>(pawn).MayBasic;
         }
 
         protected override void SetValue(Pawn pawn, bool value) {
-            Tenant tenantComp = pawn.GetTenantComponent();
+            TenantComp tenantComp = ThingCompUtility.TryGetComp<TenantComp>(pawn);
             if (tenantComp.IsEnvoy) {
                 tenantComp.MayBasic = false;
             }
@@ -81,11 +82,11 @@ namespace Tenants.UI {
             return "HaulingTip".Translate();
         }
         protected override bool GetValue(Pawn pawn) {
-            return pawn.GetTenantComponent().MayHaul;
+            return ThingCompUtility.TryGetComp<TenantComp>(pawn).MayHaul;
         }
 
         protected override void SetValue(Pawn pawn, bool value) {
-            Tenant tenantComp = pawn.GetTenantComponent();
+            TenantComp tenantComp = ThingCompUtility.TryGetComp<TenantComp>(pawn);
             if (tenantComp.IsEnvoy) {
                 tenantComp.MayHaul = false;
             }
@@ -114,11 +115,11 @@ namespace Tenants.UI {
             return "CleaningTip".Translate();
         }
         protected override bool GetValue(Pawn pawn) {
-            return pawn.GetTenantComponent().MayClean;
+            return ThingCompUtility.TryGetComp<TenantComp>(pawn).MayClean;
         }
 
         protected override void SetValue(Pawn pawn, bool value) {
-            Tenant tenantComp = pawn.GetTenantComponent();
+            TenantComp tenantComp = ThingCompUtility.TryGetComp<TenantComp>(pawn);
             if (tenantComp.IsEnvoy) {
                 tenantComp.MayClean = false;
             }

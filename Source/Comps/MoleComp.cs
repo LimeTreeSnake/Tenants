@@ -2,7 +2,7 @@
 using Verse;
 
 namespace Tenants.Comps {
-    public class Mole : ThingComp {
+    public class MoleComp : ThingComp {
 
         #region Fields
         private bool activated = false;
@@ -13,11 +13,15 @@ namespace Tenants.Comps {
             set => activated = value;
         }
         #endregion Properties
-
         #region Methods
         public override void PostExposeData() {
             Scribe_Values.Look(ref activated, "Activated");
         }
         #endregion Methods
+    }
+    public class CompProps_Mole : CompProperties {
+        public CompProps_Mole() {
+            compClass = typeof(MoleComp);
+        }
     }
 }

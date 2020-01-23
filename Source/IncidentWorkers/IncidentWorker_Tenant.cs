@@ -1,6 +1,7 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
+using Tenants.Comps;
 using Verse;
 
 namespace Tenants.IncidentWorkers {
@@ -13,9 +14,9 @@ namespace Tenants.IncidentWorkers {
                 Map map = (Map)parms.target;
                 List<Map> maps = Find.Maps.Where(x => x.IsPlayerHome).ToList();
                 if (map != null && maps.Contains(map)) {
-                    Pawn pawn = map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false && !x.Dead);
+                    Pawn pawn = map.mapPawns.FreeColonists.FirstOrDefault(x=> !x.Dead);
                     if (pawn != null)
-                        return Utility.TryFindSpawnSpot(map, out IntVec3 spawnSpot);
+                        return Controllers.MapUtilities.TryFindSpawnSpot(map, out IntVec3 spawnSpot);
                 }
             }
             return false;
@@ -24,9 +25,9 @@ namespace Tenants.IncidentWorkers {
             if (parms.target != null) {
                 Map map = (Map)parms.target;
                 if (map != null) {
-                    Pawn pawn = map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false && !x.Dead);
+                    Pawn pawn = map.mapPawns.FreeColonists.FirstOrDefault(x => !x.Dead);
                     if (pawn != null) {
-                        UtilityTenant.Contract((Map)parms.target);                       
+                        Controllers.TenantController.Contract((Map)parms.target);                       
                     }
                 }
             }
@@ -42,9 +43,9 @@ namespace Tenants.IncidentWorkers {
                 Map map = (Map)parms.target;
                 List<Map> maps = Find.Maps.Where(x => x.IsPlayerHome).ToList();
                 if (map != null && maps.Contains(map)) {
-                    Pawn pawn = map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false && !x.Dead);
+                    Pawn pawn = map.mapPawns.FreeColonists.FirstOrDefault(x => !x.Dead);
                     if (pawn != null)
-                        return Utility.TryFindSpawnSpot(map, out IntVec3 spawnSpot);
+                        return Controllers.MapUtilities.TryFindSpawnSpot(map, out IntVec3 spawnSpot);
                     else {
                         Messages.Message("EnvoyArriveFailed".Translate(parms.faction), MessageTypeDefOf.NeutralEvent);
                     }
@@ -56,9 +57,9 @@ namespace Tenants.IncidentWorkers {
             if (parms.target != null) {
                 Map map = (Map)parms.target;
                 if (map != null) {
-                    Pawn pawn = map.mapPawns.FreeColonists.FirstOrDefault(x => x.GetTenantComponent().IsTenant == false && !x.Dead);
+                    Pawn pawn = map.mapPawns.FreeColonists.FirstOrDefault(x => !x.Dead);
                     if (pawn != null) {
-                        return UtilityTenant.EnvoyTenancy((Map)parms.target, parms.faction);
+                        return Controllers.TenantController.EnvoyTenancy((Map)parms.target, parms.faction);
                     }
                     else {
                         Messages.Message("EnvoyArriveFailed".Translate(parms.faction), MessageTypeDefOf.NeutralEvent);

@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using Tenants.Comps;
 using UnityEngine;
 using Verse;
 
@@ -6,8 +7,8 @@ namespace Tenants.UI {
     public class PawnColumnWorker_TenantLabel : PawnColumnWorker_Text {
         
         protected override string GetTextFor(Pawn pawn) {
-            Tenant tenantComp = pawn.GetTenantComponent();
-            if (tenantComp != null && !tenantComp.IsTenant) {
+            TenantComp tenantComp = ThingCompUtility.TryGetComp<TenantComp>(pawn);
+            if (tenantComp != null) {
                 return string.Empty;
             }
             return pawn.Name.ToStringFull;

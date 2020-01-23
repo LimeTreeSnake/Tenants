@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Verse;
 
 namespace Tenants.Comps {
-    public class MapComponent_Tenants : MapComponent {
+    public class TenantsMapComp : MapComponent {
         #region Fields
         private bool broadcast = false;
         private bool broadcastCourier = false;
@@ -73,10 +73,10 @@ namespace Tenants.Comps {
         }
         #endregion Properties
         #region Constructors
-        public MapComponent_Tenants(Map map)
+        public TenantsMapComp(Map map)
             : base(map) {
         }
-        public MapComponent_Tenants(bool generateComponent, Map map)
+        public TenantsMapComp(bool generateComponent, Map map)
             : base(map) {
             if (generateComponent) {
                 map.components.Add(this);
@@ -84,8 +84,8 @@ namespace Tenants.Comps {
         }
         #endregion Constructors
         #region Methods
-        public static MapComponent_Tenants GetComponent(Map map) {
-            return map.GetComponent<MapComponent_Tenants>() ?? new MapComponent_Tenants(generateComponent: true, map);
+        public static TenantsMapComp GetComponent(Map map) {
+            return map.GetComponent<TenantsMapComp>() ?? new TenantsMapComp(generateComponent: true, map);
         }
         public override void ExposeData() {
             Scribe_Collections.Look(ref deadTenantsToAvenge, "DeadTenants", LookMode.Reference);
