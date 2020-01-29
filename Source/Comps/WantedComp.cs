@@ -2,11 +2,12 @@
 using Verse;
 
 namespace Tenants.Comps {
-    public class WantedComp : ThingComp {
+    public class WantedComp : WandererComp {
         #region Fields
         private Faction wantedBy;
         #endregion Fields
         #region Properties
+
         public Faction WantedBy {
             get; set;
         }

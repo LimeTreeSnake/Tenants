@@ -7,10 +7,7 @@ namespace Tenants.Comps {
         #region Fields
         private bool broadcast = false;
         private bool broadcastCourier = false;
-        private int killedCourier = 0;
-        private List<Pawn> deadTenantsToAvenge = new List<Pawn>();
-        private List<Pawn> capturedTenantsToAvenge = new List<Pawn>();
-        private List<Pawn> moles = new List<Pawn>();
+        private int killedCourier = 0;      
         private List<Pawn> wantedTenants = new List<Pawn>();
         private List<Thing> outgoingLetters = new List<Thing>();
         private List<Thing> incomingLetters = new List<Thing>();
@@ -18,25 +15,7 @@ namespace Tenants.Comps {
         private List<Thing> courierCost = new List<Thing>();
         private float karma;
         #endregion Fields
-        #region Properties
-        public List<Pawn> DeadTenantsToAvenge {
-            get {
-                if (deadTenantsToAvenge == null) { deadTenantsToAvenge = new List<Pawn>(); }
-                return deadTenantsToAvenge;
-            }
-        }
-        public List<Pawn> CapturedTenantsToAvenge {
-            get {
-                if (capturedTenantsToAvenge == null) { capturedTenantsToAvenge = new List<Pawn>(); }
-                return capturedTenantsToAvenge;
-            }
-        }
-        public List<Pawn> Moles {
-            get {
-                if (moles == null) { moles = new List<Pawn>(); }
-                return moles;
-            }
-        }
+        #region Properties     
         public List<Pawn> WantedTenants {
             get {
                 if (wantedTenants == null) { wantedTenants = new List<Pawn>(); }
@@ -88,9 +67,6 @@ namespace Tenants.Comps {
             return map.GetComponent<TenantsMapComp>() ?? new TenantsMapComp(generateComponent: true, map);
         }
         public override void ExposeData() {
-            Scribe_Collections.Look(ref deadTenantsToAvenge, "DeadTenants", LookMode.Reference);
-            Scribe_Collections.Look(ref capturedTenantsToAvenge, "CapturedTenants", LookMode.Reference);
-            Scribe_Collections.Look(ref moles, "Moles", LookMode.Reference);
             Scribe_Collections.Look(ref wantedTenants, "WantedTenants", LookMode.Reference);
             Scribe_Collections.Look(ref incomingMail, "IncomingMail", LookMode.Deep);
             Scribe_Collections.Look(ref outgoingLetters, "OutgoingMail", LookMode.Deep);

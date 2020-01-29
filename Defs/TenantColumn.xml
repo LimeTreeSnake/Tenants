@@ -24,20 +24,20 @@
   </PawnColumnDef>
   
   
-  <PawnColumnDef>
-    <defName>TenantWorkFireFighting</defName>
-    <workerClass>Tenants.PawnColumnWorker_FireFight</workerClass>
-  </PawnColumnDef>
-  <PawnColumnDef>
-    <defName>TenantWorkBasic</defName>
-    <workerClass>Tenants.PawnColumnWorker_Basic</workerClass>
-  </PawnColumnDef>
-  <PawnColumnDef>
-    <defName>TenantWorkHauling</defName>
-    <workerClass>Tenants.PawnColumnWorker_Hauling</workerClass>
-  </PawnColumnDef>
-  <PawnColumnDef>
-    <defName>TenantWorkCleaning</defName>
-    <workerClass>Tenants.PawnColumnWorker_Cleaning</workerClass>
-  </PawnColumnDef>
+  <!-- <PawnColumnDef> -->
+    <!-- <defName>TenantWorkFireFighting</defName> -->
+    <!-- <workerClass>Tenants.PawnColumnWorker_FireFight</workerClass> -->
+  <!-- </PawnColumnDef> -->
+  <!-- <PawnColumnDef> -->
+    <!-- <defName>TenantWorkBasic</defName> -->
+    <!-- <workerClass>Tenants.PawnColumnWorker_Basic</workerClass> -->
+  <!-- </PawnColumnDef> -->
+  <!-- <PawnColumnDef> -->
+    <!-- <defName>TenantWorkHauling</defName> -->
+    <!-- <workerClass>Tenants.PawnColumnWorker_Hauling</workerClass> -->
+  <!-- </PawnColumnDef> -->
+  <!-- <PawnColumnDef> -->
+    <!-- <defName>TenantWorkCleaning</defName> -->
+    <!-- <workerClass>Tenants.PawnColumnWorker_Cleaning</workerClass> -->
+  <!-- </PawnColumnDef> -->
 </Defs>

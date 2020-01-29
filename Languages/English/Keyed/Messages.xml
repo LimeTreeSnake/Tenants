@@ -11,15 +11,12 @@
 	<InviteTenantMessage>A broadcast is sent over the rim with your location. The message claims that there is food and comfortable beds for those with silver to spend.</InviteTenantMessage>	
 	
 	<RequestForTenancyTitle>Request for Tenancy in {0}</RequestForTenancyTitle>
-	<RequestForTenancyInitial>{PAWN_nameDef} is looking for a place to take shelter in for a while and {PAWN_pronoun} is willing to pay you for it. Would you kindly consider this proposition?</RequestForTenancyInitial>
 	<RequestForTenancyOpportunity>{PAWN_nameDef} heard your broadcast and asks if {PAWN_pronoun} may live with you for a while.</RequestForTenancyOpportunity>
-	<RequestForTenancyContract>{PAWN_nameDef} lives with you for a total of {0} days and pays {1} silver per day. You shall see to all of {PAWN_possessive} needs including safety. Failure to do so may incur future consequenses.\n\n{PAWN_pronoun} may terminate the contract at any time. Full payment will be recieved by a courier service. You may terminate the contract but any payment due would be void.</RequestForTenancyContract>
-	<RequestForTenancyRejected>{1_labelShort} mutters something along the line 'who'd want to live with you anyways...'</RequestForTenancyRejected>
+	<RequestForTenancyInitial>{PAWN_nameDef} is looking for a place to take shelter in for a while and {PAWN_pronoun} is willing to pay you for it. Would you kindly consider this proposition?</RequestForTenancyInitial>
 	<RequestForTenancyContinued>{PAWN_nameDef} asks to renew the contract. Would you like to extend the contract?</RequestForTenancyContinued>
-	<RequestForTenancyContinuedRejected>{1_labelShort} is saddened but accepts your decision nevertheless.</RequestForTenancyContinuedRejected>
-	<RequestForTenancyWantedTitle>Refugee seeking harbor in {0}</RequestForTenancyWantedTitle>
-	<RequestForTenancyWantedInitial>{1_labelShort} claims that members of {0} is coming for {PAWN_possessive}! Accepting {PAWN_possessive} would anger {0} and there would be severe repercussions for harboring {PAWN_possessive}.</RequestForTenancyWantedInitial>
-	<RequestForTenancyWantedRejected>{1_labelShort} cries something about how the heavens fill punish you...'</RequestForTenancyWantedRejected>
+	<RequestForTenancyContract>{PAWN_nameDef} lives with you for a total of {0} days and pays {1} silver per day. You shall see to all of {PAWN_possessive} needs including safety. Failure to do so may incur future consequenses.\n\n{PAWN_pronoun} may terminate the contract at any time. Full payment will be recieved by a courier service. You may terminate the contract but any payment due would be void.</RequestForTenancyContract>
+	<RequestFromWantedTitle>Refugee seeking harbor in {0}</RequestFromWantedTitle>
+	<RequestFromWantedInitial>{1_labelShort} claims that members of {0} is coming for {PAWN_possessive}! Accepting {PAWN_possessive} would anger {0} and there would be severe repercussions for harboring {PAWN_possessive}.</RequestFromWantedInitial>
 	
 	<RequestFromTenant>Request from tenant in {0}</RequestFromTenant>
 	<RequestWantToJoin>{PAWN_nameDef} loves staying here and wants to stay permanently! Will you accept {PAWN_objective}? </RequestWantToJoin>
@@ -29,13 +26,9 @@
 	<ContractEnd>Contract Ends</ContractEnd>
 	<ContractBreach>Contract Breach</ContractBreach>
 	<ContractRenewedMessage>{PAWN_nameDef} prolongs {PAWN_possessive} tenancy contract.</ContractRenewedMessage>
-	<ContractDoneHappy>The contract with {PAWN_nameDef} is concluded and full a payment of {0} will be delivered. {PAWN_nameDef} is very happy with {PAWN_possessive} stay.</ContractDoneHappy>
-	<ContractDoneSad>The contract with {PAWN_nameDef} is concluded and full a payment of {0} will be delivered. {PAWN_nameDef} is rather disatisfied...</ContractDoneSad>
 	<ContractDone>The contract with {PAWN_nameDef} is concluded and full a payment of {0} will be delivered.</ContractDone>
 	<ContractDoneTerminated>The contract with {PAWN_nameDef} is terminated and full a payment of {0} will be delivered. {PAWN_nameDef} leaves seemingly bitter...</ContractDoneTerminated>
-	<ContractDonePlayerTerminated>The contract with {PAWN_nameDef} is terminated and {PAWN_pronoun} is forced to leave.</ContractDonePlayerTerminated>
 	<ContractDoneTheft>{PAWN_nameDef} decided to sneak away early without paying. {PAWN_pronoun} also has the audacity to try and steal from you! Criminal scum like {PAWN_nameDef} deserves punishment and you are in the right to do with {PAWN_objective} as you please.</ContractDoneTheft>
-	<ContractTerminateFail>You cannot cancel the contract at this time.</ContractTerminateFail>
 	<ContractTenantDescription>{PAWN_nameDef} is {0} years old and is a {1}.</ContractTenantDescription>
 	<ContractEndDate>Ends at: {0}</ContractEndDate>
 	<ContractPayment>Payment: {0}</ContractPayment>
@@ -43,9 +36,7 @@
 	<ContractDaily>Payment/day: {0}</ContractDaily>
 	<ContractAgree>Agree</ContractAgree>
 	<ContractReject>Reject</ContractReject>
-	<AcceptTenant>Accept tenant</AcceptTenant>
-	<RejectTenant>Reject tenant</RejectTenant>
-
+	
 	<!--Envoy-->
 	<EnvoyStays>{PAWN_nameDef} from {0} has decided to prolong {PAWN_possessive} stay. It seems you have no choice in the matter.</EnvoyStays>
 	<Envoy>Envoy from {0}.</Envoy>	
@@ -63,15 +54,11 @@
 	<Opportunists>Opportunists</Opportunists>
 	<Mole>Mole</Mole>
 	<Wanted>Wanted</Wanted>
-	<MoleCaptured>You've captured {PAWN_nameDef}!\n\n On {PAWN_pronoun}'s person you find incriminating evidence!</MoleCaptured>
 	<TenantCaptured>You've captured {PAWN_nameDef}!\n\n Watch out as you might earn the ire of {PAWN_nameDef}'s friends and relatives.</TenantCaptured>
 	<TenantCapturedRetribution>Hello, My name is {PAWN_nameDef}, you disrespected my {0}. Prepare to die.</TenantCapturedRetribution>
 	<TenantDeath>{PAWN_nameDef} died!\n\nYou've failed your duties as a host.</TenantDeath>
 	<EnvoyDeath>{PAWN_nameDef} died!\n\nYou've failed your duties as a host and {0} is outraged by your failure to protect their envoy. This diplomatic incident cost you {1} in relations.</EnvoyDeath>
-	<TenantDeathRetribution>Hello, My name is {PAWN_nameDef}, you killed my {0}. Prepare to die.</TenantDeathRetribution>
 	<TenantOpportunists>A group of raiders intervened and killed a prospecting tenant, they will be here shortly!</TenantOpportunists>
-	<TenantMoles>Raiders have arrived as per detailed instruction of a mole within your colony. Prepare your defenses!</TenantMoles>
-	<TenantMoleMessage>Someone has sent out a secret message from your colony!</TenantMoleMessage>
 	<WantedTenant>Bounty hunters have arrived!</WantedTenant>
 	<TenantFactionOutrage>{0} is outraged at the mistreatment of {PAWN_nameDef} thus you recieve a {1} penalty to relations with them.</TenantFactionOutrage>
 	<HarboringWantedTenant>{0} is frustrated that you willingly harbor a wanted fugitive thus you recieve a {1} penalty to relations with them.</HarboringWantedTenant>

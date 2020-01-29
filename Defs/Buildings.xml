@@ -52,25 +52,25 @@
 					</graphicData>
 				</TextureAlternate>
 			</li>
-			<!-- <li Class="Tenants.Comp.CompProps_EraAlternator"> -->
-				<!-- <Texture> -->
-					<!-- <graphicData> -->
-						<!-- <texPath>Things/Building/MessageBox</texPath> -->
-						<!-- <graphicClass>Graphic_Single</graphicClass> -->
-						<!-- <shaderType>CutoutComplex</shaderType> -->
-						<!-- <drawSize>(1,1)</drawSize> -->
-					<!-- </graphicData> -->
-				<!-- </Texture> -->
-				<!-- <TextureAlternate> -->
-					<!-- <graphicData> -->
-						<!-- <texPath>Things/Building/MessageBoxFull</texPath> -->
-						<!-- <graphicClass>Graphic_Single</graphicClass> -->
-						<!-- <shaderType>CutoutComplex</shaderType> -->
-						<!-- <drawSize>(1,1)</drawSize> -->
-					<!-- </graphicData> -->
-				<!-- </TextureAlternate>				 -->
-				<!-- <TechLevel>3</TechLevel> -->
-			<!-- </li> -->
+			<li Class="Tenants.Comp.CompProps_EraAlternator">
+				<Texture>
+					<graphicData>
+						<texPath>Things/Building/MailBox</texPath>
+						<graphicClass>Graphic_Single</graphicClass>
+						<shaderType>CutoutComplex</shaderType>
+						<drawSize>(1,1)</drawSize>
+					</graphicData>
+				</Texture>
+				<TextureAlternate>
+					<graphicData>
+						<texPath>Things/Building/MailBox</texPath>
+						<graphicClass>Graphic_Single</graphicClass>
+						<shaderType>CutoutComplex</shaderType>
+						<drawSize>(1,1)</drawSize>
+					</graphicData>
+				</TextureAlternate>				
+				<TechLevel>3</TechLevel>
+			</li>
 		</comps>
 		<rotatable>true</rotatable>
 	</ThingDef>

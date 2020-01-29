@@ -10,7 +10,7 @@ using Verse;
 using Verse.AI;
 using Verse.AI.Group;
 
-namespace Tenants.Controllers {
+namespace Tenants.Utilities {
     public static class MapUtilities {     
         public static bool TryFindSpawnSpot(Map map, out IntVec3 spawnSpot) {
             bool validator(IntVec3 c) => map.reachability.CanReachColony(c) && !c.Fogged(map);

@@ -6,12 +6,6 @@
     <reportString>using comms console.</reportString>
     <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
   </JobDef>
-  <JobDef>
-    <defName>JobUseCommsConsoleMole</defName>
-    <driverClass>Tenants.JobDriver_UseCommsConsoleMole</driverClass>
-    <reportString>using comms console.</reportString>
-    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
-  </JobDef>
     <JobDef>
     <defName>JobUseCommsConsoleInviteCourier</defName>
     <driverClass>Tenants.JobDriver_UseCommsConsoleInviteCourier</driverClass>

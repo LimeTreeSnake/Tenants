@@ -1,6 +1,7 @@
 ﻿using Harmony;
 using RimWorld;
 using RimWorld.Planet;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,77 +15,61 @@ namespace Tenants.Controllers {
 
         public static void Tick(Pawn pawn, EnvoyComp comp) {
             ContractComp contract = ThingCompUtility.TryGetComp<ContractComp>(pawn);
-            if (contract == null) {
-                pawn.AllComps.Remove(comp);
+            if (contract == null || pawn.IsColonist) {
+                TenantController.RemoveAllComp(pawn);
+                return;
+            }
+            //Tenant alone with no colonist
+            if (pawn.Map.mapPawns.FreeColonists.FirstOrDefault(x => ThingCompUtility.TryGetComp<WandererComp>(x) == null) == null) {
+                contract.IsTerminated = true;
+                ContractConclusion(pawn);
+                return;
+            }
+            //Tenant contract is out
+            if (Find.TickManager.TicksGame >= contract.ContractEndTick) {
+                ContractConclusion(pawn);
                 return;
             }
 
-        }
-
-
-        public static Pawn FindRandomEnvoy(Faction faction) {
-            List<Pawn> pawns = (from p in Find.WorldPawns.AllPawnsAlive
-                                where ThingCompUtility.TryGetComp<TenantComp>(p) != null && !p.Dead && !p.Spawned && !p.Discarded && p.Faction != null && p.Faction == faction
-                                select p).ToList();
-            if (pawns.Count < 3)
-                for (int i = 0; i < 3; i++)
-                    pawns.Add(GenerateEnvoy(faction));
-            if (pawns.Count == 0)
-                return null;
-            pawns.Shuffle();
-            return pawns[0];
-        }
-        public static Pawn GenerateEnvoy(Faction faction) {
-            bool generation = true;
-            Pawn newTenant = null;
-            while (generation) {
-                string race = Settings.SettingsHelper.LatestVersion.AvailableRaces.RandomElement();
-                PawnKindDef random = DefDatabase<PawnKindDef>.AllDefsListForReading.Where(x => x.race.defName == race && x.defaultFactionType == faction.def).RandomElement();
-                if (random == null)
-                    return null;
-                newTenant = PawnGenerator.GeneratePawn(random, faction);
-                if (newTenant != null && !newTenant.Dead && !newTenant.IsDessicated() && !newTenant.AnimalOrWildMan()) {
-                    {
-                        TenantComp tenantComp = new TenantComp();
-                        tenantComp.HiddenFaction = faction;
-                        newTenant.AllComps.Add(tenantComp);
-                        if (Settings.SettingsHelper.LatestVersion.SimpleClothing) {
-                            FloatRange range = newTenant.kindDef.apparelMoney;
-                            newTenant.kindDef.apparelMoney = new FloatRange(0f, Settings.SettingsHelper.LatestVersion.SimpleClothingMax);
-                            PawnApparelGenerator.GenerateStartingApparelFor(newTenant, new PawnGenerationRequest(random));
-                            newTenant.kindDef.apparelMoney = range;
-                        }
-                        newTenant.SetFaction(faction);
-                        if (Settings.SettingsHelper.LatestVersion.Weapons) {
-                            List<Thing> ammo = newTenant.inventory.innerContainer.Where(x => x.def.defName.Contains("Ammunition")).ToList();
-                            foreach (Thing thing in ammo)
-                                newTenant.inventory.innerContainer.Remove(thing);
-                        }
-                        newTenant.DestroyOrPassToWorld();
-                        generation = false;
-                    }
-                }
+            //Tenancy tick 1/10 per day
+            if (Find.TickManager.TicksGame % 60000 == 0) {
             }
-            return newTenant;
         }
-        public static bool EnvoyTenancy(Map map, Faction faction) {
-            if (!MapUtilities.TryFindSpawnSpot(map, out IntVec3 spawnSpot)) {
+        public static void ContractConclusion(Pawn pawn) {
+            ContractComp contract = ThingCompUtility.TryGetComp<ContractComp>(pawn);
+            EnvoyComp comp = ThingCompUtility.TryGetComp<EnvoyComp>(pawn);
+            if (contract == null || comp == null)
+                return;
+            if (contract.IsTerminated) {
+            }
+        }
+        public static bool Contract(Map map, Faction faction) {
+            if (!Utilities.MapUtilities.TryFindSpawnSpot(map, out IntVec3 spawnSpot)) {
                 Messages.Message("EnvoyArriveFailed".Translate(faction), MessageTypeDefOf.NeutralEvent);
                 return false;
             }
-            Pawn pawn = FindRandomEnvoy(faction);
+            Pawn pawn = TenantController.FindRandomPawn(faction);
             if (pawn == null) {
                 Messages.Message("EnvoyArriveFailed".Translate(faction), MessageTypeDefOf.NeutralEvent);
                 return false;
             }
+            EnvoyComp comp = Generate(pawn);
+            if (comp == null) {
+                Messages.Message("EnvoyArriveFailed".Translate(faction), MessageTypeDefOf.NeutralEvent);
+                return false;
+            }
             pawn.relations.everSeenByPlayer = true;
-            TenantComp tenantComp = pawn.TryGetComp<TenantComp>();
-            tenantComp.IsEnvoy = true;
-            SpawnTenant(pawn, map, spawnSpot);
-            MapUtilities.GenerateBasicContract(tenantComp, 0, 2);
+            ContractComp contract = ContractController.GenerateContract(pawn);
+            contract.Payment = 0;
+            TenantController.SpawnTenant(pawn, map, spawnSpot);
             Messages.Message("EnvoyArriveSuccess".Translate(faction, pawn.Named("PAWN")), MessageTypeDefOf.NeutralEvent);
             CameraJumper.TryJump(pawn);
             return true;
+        }
+        public static EnvoyComp Generate(Pawn pawn) {
+            EnvoyComp comp = new EnvoyComp();
+            pawn.AllComps.Add(comp);
+            return comp;
         }
     }
 }

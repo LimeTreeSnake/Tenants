@@ -27,8 +27,6 @@ namespace Tenants {
             harmonyInstance.Patch(AccessTools.Method(typeof(Pawn_GuestTracker), "CapturedBy"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("CapturedBy_PreFix")), null);
             //Tenant dies
             harmonyInstance.Patch(AccessTools.Method(typeof(Pawn), "Kill"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("Kill_PreFix")), null);
-            //Tenant Inspiration
-            harmonyInstance.Patch(AccessTools.Method(typeof(InspirationWorker), "InspirationCanOccur"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("InspirationCanOccur_PreFix")), null);
             #endregion Functionality
             #region GUI
             //Pawn name color patch
@@ -40,52 +38,47 @@ namespace Tenants {
         #region Ticks
         public static void TickRare_PostFix(ref Pawn __instance) {
             if (__instance.Spawned && __instance.NonHumanlikeOrWildMan()) {
+                WandererComp wanderer = ThingCompUtility.TryGetComp<WandererComp>(__instance);
+                if (wanderer != null) {
+                    Controllers.WandererController.Tick(__instance, wanderer);
+                    return;
+                }
+                EnvoyComp envoy = ThingCompUtility.TryGetComp<EnvoyComp>(__instance);
+                if (envoy != null) {
+                    Controllers.EnvoyController.Tick(__instance, envoy);
+                    return;
+                }
+                WantedComp wanted = ThingCompUtility.TryGetComp<WantedComp>(__instance);
+                if (wanted != null) {
+                    Controllers.WantedController.Tick(__instance, wanted);
+                    return;
+                }
             }
-            TenantComp tenant = ThingCompUtility.TryGetComp<TenantComp>(__instance);
-            EnvoyComp envoy = ThingCompUtility.TryGetComp<EnvoyComp>(__instance);
-            WantedComp wanted = ThingCompUtility.TryGetComp<WantedComp>(__instance);
-            MoleComp mole = ThingCompUtility.TryGetComp<MoleComp>(__instance);
-
-            Controllers.TenantController.Tick(__instance, tenant);
-            Controllers.EnvoyController.Tick(__instance, envoy);
-            Controllers.WantedController.Tick(__instance, wanted);
-            Controllers.MoleController.Tick(__instance, mole);
         }
         #endregion Ticks
         #region Functionality
         public static void CapturedBy_PreFix(ref Pawn_GuestTracker __instance, ref Faction by, ref Pawn byPawn) {
             Pawn pawn = Traverse.Create(__instance).Field("pawn").GetValue<Pawn>();
-            TenantComp tenantComp = ThingCompUtility.TryGetComp<TenantComp>(pawn);
-            if (tenantComp != null) {
-                MoleComp mole = ThingCompUtility.TryGetComp<MoleComp>(pawn);
-                if (mole != null && mole.Activated) {
-                    Controllers.TenantController.TenantMoleCaptured(pawn);
-                }
-                else {
-                    Controllers.TenantController.TenantCaptured(pawn, byPawn);
-                }
+            ContractComp contractComp = ThingCompUtility.TryGetComp<ContractComp>(pawn);
+            if (contractComp != null) {
+                Controllers.TenantController.TenantCaptured(pawn, byPawn);
             }
         }
         public static void Kill_PreFix(ref Pawn __instance, ref DamageInfo? dinfo) {
-            TenantComp tenantComp = ThingCompUtility.TryGetComp<TenantComp>(__instance);
-            if (tenantComp != null)
-                if ((tenantComp.Contract.Contracted || tenantComp.CapturedTenant && !__instance.guest.Released) && __instance.Spawned) {
+            ContractComp contractComp = ThingCompUtility.TryGetComp<ContractComp>(__instance);
+            if (contractComp != null) {
+                if (__instance.IsPrisoner && !__instance.guest.Released && __instance.Spawned) {
                     Controllers.TenantController.TenantDeath(__instance);
                 }
-        }
-        public static bool InspirationCanOccur_PreFix(ref Pawn pawn) {
-            TenantComp tenantComp = ThingCompUtility.TryGetComp<TenantComp>(pawn);
-            if (tenantComp != null)
-                return false;
-            return true;
+            }
         }
         #endregion Functionality
         #region GUI
         public static bool PawnNameColorOf_PreFix(ref Color __result, ref Pawn pawn) {
             if (pawn.IsColonist) {
-                TenantComp tenantComp = ThingCompUtility.TryGetComp<TenantComp>(pawn);
-                if (tenantComp != null) {
-                    __result = Settings.SettingsHelper.LatestVersion.Color;
+                ContractComp contractComp = ThingCompUtility.TryGetComp<ContractComp>(pawn);
+                if (contractComp != null) {
+                    __result = Settings.Settings.Color;
                     return false;
                 }
             }
@@ -108,7 +101,7 @@ namespace Tenants {
                     myPawn.jobs.TryTakeOrderedJob(job);
                     PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.OpeningComms, KnowledgeAmount.Total);
                 }
-                FloatMenuOption inviteCouriers = new FloatMenuOption("CourierInvite".Translate(Settings.SettingsHelper.LatestVersion.CourierCost), inviteCourier, MenuOptionPriority.InitiateSocial);
+                FloatMenuOption inviteCouriers = new FloatMenuOption("CourierInvite".Translate(Settings.Settings.CourierCost), inviteCourier, MenuOptionPriority.InitiateSocial);
                 list.Add(inviteCouriers);
             }
             __result = list.AsEnumerable();

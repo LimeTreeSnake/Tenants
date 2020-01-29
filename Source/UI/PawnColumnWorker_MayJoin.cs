@@ -17,11 +17,11 @@ namespace Tenants.UI {
             return "MayJoinTip".Translate();
         }
         protected override bool GetValue(Pawn pawn) {
-            return ThingCompUtility.TryGetComp<TenantComp>(pawn).MayJoin;
+            return ThingCompUtility.TryGetComp<WandererComp>(pawn).MayJoin;
         }
 
         protected override void SetValue(Pawn pawn, bool value) {
-            ThingCompUtility.TryGetComp<TenantComp>(pawn).MayJoin = value;
+            ThingCompUtility.TryGetComp<WandererComp>(pawn).MayJoin = value;
         }
     }
 }

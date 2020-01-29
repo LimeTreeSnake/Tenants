@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -32,29 +31,5 @@ namespace Tenants.JobDrivers {
             yield return invite;
         }
     }
-    public class JobDriver_UseCommsConsoleMole : JobDriver {
-        public override bool TryMakePreToilReservations(bool errorOnFailed) {
-            Pawn pawn = base.pawn;
-            LocalTargetInfo targetA = base.job.targetA;
-            Job job = base.job;
-            return pawn.Reserve(targetA, job, 1, -1, null, errorOnFailed);
-        }
-
-        protected override IEnumerable<Toil> MakeNewToils() {
-            this.FailOnDespawnedOrNull(TargetIndex.A);
-            yield return Toils_Goto.GotoCell(TargetIndex.A, PathEndMode.InteractionCell).FailOn(delegate (Toil to) {
-                Building_CommsConsole building_CommsConsole = (Building_CommsConsole)to.actor.jobs.curJob.GetTarget(TargetIndex.A).Thing;
-                return !building_CommsConsole.CanUseCommsNow;
-            });
-            Toil mole = new Toil();
-            mole.initAction = delegate {
-                Pawn actor = mole.actor;
-                Building_CommsConsole building_CommsConsole = (Building_CommsConsole)actor.jobs.curJob.GetTarget(TargetIndex.A).Thing;
-                if (building_CommsConsole.CanUseCommsNow) {
-                    Controllers.TenantController.TenantMole(actor);
-                }
-            };
-            yield return mole;
-        }
-    }
+    
 }

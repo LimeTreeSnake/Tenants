@@ -16,20 +16,20 @@ namespace Tenants.Utilities {
 
         public static Graphic GraphicFinder(GraphicAlternatorComp graphicAlternator, EraAlternatorComp eraAlternator, bool useAlternate, Thing thing) {
             if (useAlternate) {
-                switch (Settings.SettingsHelper.LatestVersion.TextureStyle) {
+                switch (Settings.Settings.TextureStyle) {
                     case Settings.Style.Auto: {
                             if (eraAlternator != null && Find.FactionManager.OfPlayer.def.techLevel <= eraAlternator.Props.TechLevel) {
                                 return eraAlternator.Props.Texture.GraphicColoredFor(thing);
                             }
                             return graphicAlternator.Props.Texture.GraphicColoredFor(thing);
                         }
-                    case Settings.Style.LTS: {
+                    case Settings.Style.Medieval: {
                             if (eraAlternator != null) {
                                 return eraAlternator.Props.Texture.GraphicColoredFor(thing);
                             }
                             return graphicAlternator.Props.Texture.GraphicColoredFor(thing);
                         }
-                    case Settings.Style.Oskar:
+                    case Settings.Style.Industrial:
                         return graphicAlternator.Props.Texture.GraphicColoredFor(thing);
                     default:
                         return graphicAlternator.Props.Texture.GraphicColoredFor(thing);
@@ -37,20 +37,20 @@ namespace Tenants.Utilities {
                 }
             }
             else {
-                switch (Settings.SettingsHelper.LatestVersion.TextureStyle) {
+                switch (Settings.Settings.TextureStyle) {
                     case Settings.Style.Auto: {
                             if (eraAlternator != null && Find.FactionManager.OfPlayer.def.techLevel <= eraAlternator.Props.TechLevel) {
                                 return eraAlternator.Props.TextureAlternate.GraphicColoredFor(thing);
                             }
                             return graphicAlternator.Props.TextureAlternate.GraphicColoredFor(thing);
                         }
-                    case Settings.Style.LTS: {
+                    case Settings.Style.Medieval: {
                             if (eraAlternator != null) {
                                 return eraAlternator.Props.TextureAlternate.GraphicColoredFor(thing);
                             }
                             return graphicAlternator.Props.TextureAlternate.GraphicColoredFor(thing);
                         }
-                    case Settings.Style.Oskar:
+                    case Settings.Style.Industrial:
                         return graphicAlternator.Props.TextureAlternate.GraphicColoredFor(thing);
                     default:
                         return graphicAlternator.Props.TextureAlternate.GraphicColoredFor(thing);
@@ -59,3 +59,4 @@ namespace Tenants.Utilities {
             }
         }
     }
+}

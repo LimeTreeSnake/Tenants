@@ -17,12 +17,11 @@ namespace Tenants.UI {
             return "AutoRenewTip".Translate();
         }
         protected override bool GetValue(Pawn pawn) {
-            return ThingCompUtility.TryGetComp<TenantComp>(pawn).AutoRenew;
+            return ThingCompUtility.TryGetComp<ContractComp>(pawn).AutoRenew;
         }
 
         protected override void SetValue(Pawn pawn, bool value) {
-            ThingCompUtility.TryGetComp<TenantComp>(pawn).AutoRenew = value;
-            
+            ThingCompUtility.TryGetComp<ContractComp>(pawn).AutoRenew = value;            
         }
     }
 }

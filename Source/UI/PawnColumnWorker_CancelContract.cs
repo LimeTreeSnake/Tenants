@@ -15,11 +15,11 @@ namespace Tenants.UI {
             return "TerminateTip".Translate();
         }
         protected override bool GetValue(Pawn pawn) {
-            return ThingCompUtility.TryGetComp<TenantComp>(pawn).IsTerminated;
+            return ThingCompUtility.TryGetComp<ContractComp>(pawn).IsTerminated;
         }
 
         protected override void SetValue(Pawn pawn, bool value) {
-            ThingCompUtility.TryGetComp<TenantComp>(pawn).IsTerminated = value;
+            ThingCompUtility.TryGetComp<ContractComp>(pawn).IsTerminated = value;
         }
     }
 }

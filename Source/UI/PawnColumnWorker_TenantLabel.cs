@@ -7,7 +7,7 @@ namespace Tenants.UI {
     public class PawnColumnWorker_TenantLabel : PawnColumnWorker_Text {
         
         protected override string GetTextFor(Pawn pawn) {
-            TenantComp tenantComp = ThingCompUtility.TryGetComp<TenantComp>(pawn);
+            WandererComp tenantComp = ThingCompUtility.TryGetComp<WandererComp>(pawn);
             if (tenantComp != null) {
                 return string.Empty;
             }

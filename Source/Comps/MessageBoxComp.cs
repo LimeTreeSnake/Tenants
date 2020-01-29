@@ -11,7 +11,7 @@ namespace Tenants.Comps {
         private EraAlternatorComp EraAlternatorComp => GetComp<EraAlternatorComp>();
         public override Graphic Graphic {
             get {
-                return MapUtilities.GraphicFinder(GraphicComp, EraAlternatorComp, ThingCompUtility.TryGetComp<MessageBoxComp>(this).IncomingLetters.Count < 1, this);
+                return Utilities.TextureUtility.GraphicFinder(GraphicComp, EraAlternatorComp, ThingCompUtility.TryGetComp<MessageBoxComp>(this).IncomingLetters.Count < 1, this);
             }
         }
     }

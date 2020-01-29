@@ -17,10 +17,6 @@ namespace Tenants.Comps {
             get => isTerminated;
             set => isTerminated = value;
         }
-        public bool Contracted {
-            get => contracted;
-            set => contracted = value;
-        }
         public bool AutoRenew {
             get => autoRenew;
             set => autoRenew = value;

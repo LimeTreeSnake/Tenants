@@ -1,10 +1,11 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
+using Tenants.Comps;
 using Verse;
 
 namespace Tenants.IncidentWorkers {
-    public class IncidentWorker_TenantCourier : IncidentWorker {
+    public class IncidentWorker_WandererProposition : IncidentWorker {
         protected override bool CanFireNowSub(IncidentParms parms) {
             if (!base.CanFireNowSub(parms)) {
                 return false;
@@ -13,7 +14,9 @@ namespace Tenants.IncidentWorkers {
                 Map map = (Map)parms.target;
                 List<Map> maps = Find.Maps.Where(x => x.IsPlayerHome).ToList();
                 if (map != null && maps.Contains(map)) {
-                    return Utilities.MapUtilities.TryFindSpawnSpot(map, out IntVec3 spawnSpot);
+                    Pawn pawn = map.mapPawns.FreeColonists.FirstOrDefault(x => !x.Dead);
+                    if (pawn != null)
+                        return Utilities.MapUtilities.TryFindSpawnSpot(map, out IntVec3 spawnSpot);
                 }
             }
             return false;
@@ -22,14 +25,9 @@ namespace Tenants.IncidentWorkers {
             if (parms.target != null) {
                 Map map = (Map)parms.target;
                 if (map != null) {
-                    Building building = map.listerBuildings.allBuildingsColonist.FirstOrDefault(x => x.def == Defs.ThingDefOf.Tenant_MessageBox);
-                    if (building != null) {
-                        return Controllers.CourierController.Courier((Map)parms.target, building);
-                    }
-                    else {
-                        string letterLabel = "CourierArrivedTitle".Translate((map.Parent.Label));
-                        string letterText = "CourierMiss".Translate();
-                        Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.NeutralEvent);
+                    Pawn pawn = map.mapPawns.FreeColonists.FirstOrDefault(x => !x.Dead);
+                    if (pawn != null) {
+                        Controllers.WandererController.Contract((Map)parms.target);
                     }
                 }
             }
