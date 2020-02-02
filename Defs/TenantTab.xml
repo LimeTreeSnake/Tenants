@@ -5,13 +5,13 @@
     <defName>Tenant</defName>
     <label>tenant</label>
     <description>Current Tenants.</description>
-    <tabWindowClass>Tenants.MainTabWindow_Tenant</tabWindowClass>
+    <tabWindowClass>Tenants.UI.MainTabWindow_Tenant</tabWindowClass>
     <order>55</order>
   </MainButtonDef>
   
   <PawnTableDef>
     <defName>Tenants</defName>
-    <workerClass>Tenants.PawnTable_Tenants</workerClass>
+    <workerClass>Tenants.UI.PawnTable_Tenants</workerClass>
     <columns>
       <li>GapTiny</li>
       <li>TenantLabel</li>

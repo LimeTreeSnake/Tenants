@@ -1,15 +1,12 @@
 2019-12-xx
 Major changes to the sourcecode. Will probably require a new save.
-- New art from Oskar
 - New art from Gloomy
 - New art from Goob
-- Tech affects art chosen, can be changed in mod settings.
 - Remade Mod Settings.
 - Tenants are no longer considered colonists.
 - Tenants now belong to factions. This means, no more moles nor enemy tenants.
 - Removed legacy code
 - Tenant AI
-- Mailbox renamed to Messagebox
 - Messagebox save/load fix
 - Language fixes
 - No prerequisite research for tenant buildings.

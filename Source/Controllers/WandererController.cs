@@ -12,110 +12,79 @@ using Verse.AI.Group;
 
 namespace Tenants.Controllers {
     public static class WandererController {
-        public static void Tick(Pawn pawn, WandererComp comp) {
-            ContractComp contract = ThingCompUtility.TryGetComp<ContractComp>(pawn);
-            if (contract == null || pawn.IsColonist) {
-                TenantController.RemoveAllComp(pawn);
-                return;
+        public static void Tick(Pawn tenant, WandererComp comp, ContractComp contract) {
+            if (contract.IsTerminated) {
+                Find.LetterStack.ReceiveLetter("ContractBreach".Translate(), "ContractDoneTerminated".Translate(tenant.Named("PAWN")), LetterDefOf.NeutralEvent);
+                TenantController.Leave(tenant);
             }
             //Tenant alone with no colonist
-            if (pawn.Map.mapPawns.FreeColonists.FirstOrDefault(x => ThingCompUtility.TryGetComp<WandererComp>(x) == null) == null) {
+            if (tenant.Map.mapPawns.FreeColonists.FirstOrDefault(x => ThingCompUtility.TryGetComp<WandererComp>(x) == null) == null) {
                 contract.IsTerminated = true;
-                ContractConclusion(pawn, 0.75f);
+                ContractConclusion(tenant, comp, contract, 0.75f);
                 return;
             }
             //Tenant contract is out
             if (Find.TickManager.TicksGame >= contract.ContractEndTick) {
-                ContractConclusion(pawn);
+                ContractConclusion(tenant, comp, contract);
                 return;
             }
             //Tenancy tick 1/10 per day
             if (Find.TickManager.TicksGame % 60000 == 0) {
                 //Join
-                if (pawn.needs.mood.CurInstantLevel > 0.8f && Rand.Bool) {
-                    TenantController.TenantWantToJoin(pawn);
+                if (tenant.needs.mood.CurInstantLevel > 0.8f && Rand.Bool) {
+                    TenantController.TenantWantToJoin(tenant);
                     return;
                 }
             }
         }
-        public static bool Contract(Map map) {
+        public static void Contract(Map map) {
             if (!Utilities.MapUtilities.TryFindSpawnSpot(map, out IntVec3 spawnSpot)) {
-                return false;
+                return;
             }
-            Pawn pawn = TenantController.FindRandomPawn();
-            if (pawn == null)
-                return false;
-            WandererComp comp = Generate(pawn);
-            if (comp == null)
-                return false;
-            pawn.relations.everSeenByPlayer = true;
-            ContractComp contract = ContractController.GenerateContract(pawn);
+            Pawn tenant = TenantController.GetContractedPawn();
+            tenant.AllComps.Add(new WandererComp());
             StringBuilder stringBuilder = new StringBuilder("");
             if (TenantsMapComp.GetComponent(map).Broadcast) {
                 TenantsMapComp.GetComponent(map).Broadcast = false;
-                stringBuilder.Append("RequestForTenancyOpportunity".Translate(pawn.Named("PAWN")));
+                stringBuilder.Append("RequestForTenancyOpportunity".Translate(tenant.Named("PAWN")));
             }
             else {
-                stringBuilder.Append("RequestForTenancyInitial".Translate(pawn.Named("PAWN")));
+                stringBuilder.Append("RequestForTenancyInitial".Translate(tenant.Named("PAWN")));
             }
-            stringBuilder.Append(ContractController.GenerateContractMessage(pawn));
-            bool agree = ContractController.GenerateContractDialogue("RequestForTenancyTitle".Translate(map.Parent.Label), stringBuilder.ToString());
-            if (agree) {
-                TenantController.SpawnTenant(pawn, map, spawnSpot);
-            }
-            else {
-                pawn.AllComps.Remove(contract);
-                pawn.AllComps.Remove(comp);
-                return false;
-            }
-            return true;
+            stringBuilder.Append(ContractController.GenerateContractMessage(tenant));
+            ContractController.GenerateContractDialogue("RequestForTenancyTitle".Translate(map.Parent.Label), stringBuilder.ToString(), tenant, map, spawnSpot);
         }
-        public static void ContractConclusion(Pawn pawn, float stealChance = 0.5f) {
-            ContractComp contract = ThingCompUtility.TryGetComp<ContractComp>(pawn);
-            WandererComp comp = ThingCompUtility.TryGetComp<WandererComp>(pawn);
+        public static void ContractConclusion(Pawn tenant, WandererComp comp, ContractComp contract, float stealChance = 0.5f) {
             if (contract == null || comp == null)
                 return;
             if (contract.IsTerminated) {
                 if (Rand.Value > stealChance) {
-                    ContractController.ContractPayment(pawn);
-                    Find.LetterStack.ReceiveLetter("ContractEnd".Translate(), "ContractDoneTerminated".Translate(contract.Payment * contract.ContractLength / 60000, pawn.Named("PAWN")), LetterDefOf.NeutralEvent);
-                    TenantController.Leave(pawn);
+                    ContractController.ContractPayment(tenant);
+                    Find.LetterStack.ReceiveLetter("ContractEnd".Translate(), "ContractDoneTerminated".Translate(contract.Payment * contract.ContractLength / 60000, tenant.Named("PAWN")), LetterDefOf.NeutralEvent);
+                    TenantController.Leave(tenant);
                 }
                 else {
-                    Find.LetterStack.ReceiveLetter("ContractEnd".Translate(), "ContractDoneTheft".Translate(pawn.Named("PAWN")), LetterDefOf.NegativeEvent);
-                    pawn.AllComps.Remove(comp);
-                    TenantController.Theft(pawn);
+                    Find.LetterStack.ReceiveLetter("ContractEnd".Translate(), "ContractDoneTheft".Translate(tenant.Named("PAWN")), LetterDefOf.NegativeEvent);
+                    TenantController.Theft(tenant);
                 }
                 return;
             }
             else {
-                ContractController.ContractPayment(pawn);
-                Find.LetterStack.ReceiveLetter("ContractEnd".Translate(), "ContractDone".Translate(contract.Payment * contract.ContractLength / 60000, pawn.Named("PAWN")), LetterDefOf.PositiveEvent);
+                ContractController.ContractPayment(tenant);
+                Find.LetterStack.ReceiveLetter("ContractEnd".Translate(), "ContractDone".Translate(contract.Payment * contract.ContractLength / 60000, tenant.Named("PAWN")), LetterDefOf.PositiveEvent);
                 if (contract.AutoRenew) {
                     string letterLabel = "ContractNew".Translate();
-                    string letterText = "ContractRenewedMessage".Translate(pawn.Named("PAWN"));
+                    string letterText = "ContractRenewedMessage".Translate(tenant.Named("PAWN"));
                     Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.PositiveEvent);
                 }
                 else {
                     StringBuilder stringBuilder = new StringBuilder("");
-                    stringBuilder.Append("RequestForTenancyContinued".Translate(pawn.Named("PAWN")));
-                    stringBuilder.Append(ContractController.GenerateContractMessage(pawn));
-                    bool stay = ContractController.GenerateContractDialogue("RequestForTenancyTitle".Translate(pawn.Map.Parent.Label), stringBuilder.ToString());
-                    if (stay) {
-                        ContractController.ContractProlong(pawn);
-                    }
-                    else {
-                        TenantController.Leave(pawn);
-                    }
+                    stringBuilder.Append("RequestForTenancyContinued".Translate(tenant.Named("PAWN")));
+                    stringBuilder.Append(ContractController.GenerateContractMessage(tenant));
+                    ContractController.GenerateContractDialogue("RequestForTenancyTitle".Translate(tenant.Map.Parent.Label), stringBuilder.ToString(), tenant);
                 }
             }
 
-        }
-        public static WandererComp Generate(Pawn pawn) {
-            WandererComp comp = new WandererComp();
-
-            pawn.AllComps.Add(comp);
-            return comp;
         }
     }
 }

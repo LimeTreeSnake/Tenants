@@ -12,13 +12,8 @@ using Verse.AI.Group;
 
 namespace Tenants.Controllers {
     public static class WantedController {
-        public static void Tick(Pawn pawn, WantedComp comp) {
-            ContractComp contract = ThingCompUtility.TryGetComp<ContractComp>(pawn);
-            if (contract == null || pawn.IsColonist) {
-                TenantController.RemoveAllComp(pawn);
-                return;
-            }
-            WandererController.Tick(pawn, comp);
+        public static void Tick(Pawn pawn, WantedComp comp, ContractComp contract) {
+            WandererController.Tick(pawn, comp, contract);
             //Tenancy tick per day
             if (Find.TickManager.TicksGame % 60000 == 0) {
                 if (ThingCompUtility.TryGetComp<WantedComp>(pawn) != null) {
@@ -35,32 +30,20 @@ namespace Tenants.Controllers {
                 Messages.Message("HarboringWantedTenant".Translate(wantedComp.WantedBy, val, pawn.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
             }
         }
-        internal static bool Contract(Map map) {
+        internal static void Contract(Map map) {
             if (!Utilities.MapUtilities.TryFindSpawnSpot(map, out IntVec3 spawnSpot)) {
-                return false;
+                return;
             }
-            Pawn pawn = TenantController.FindRandomPawn();
-            if (pawn == null)
-                return false;
-            WantedComp comp = Generate(pawn);
-            if (comp == null)
-                return false;
-
-            pawn.relations.everSeenByPlayer = true;
-            ContractComp contract = ContractController.GenerateContract(pawn);
+            Pawn tenant = TenantController.GetContractedPawn();
+            WantedComp comp = Generate(tenant);
+            if(comp == null) {
+                TenantController.RemoveAllComp(tenant);
+                return;
+            }
             StringBuilder stringBuilder = new StringBuilder("");
-            stringBuilder.Append("RequestFromWantedInitial".Translate(pawn.Named("PAWN")));
-            stringBuilder.Append(ContractController.GenerateContractMessage(pawn));
-            bool agree = ContractController.GenerateContractDialogue("RequestFromWantedTitle".Translate(map.Parent.Label), stringBuilder.ToString());
-            if (agree) {
-                TenantController.SpawnTenant(pawn, map, spawnSpot);
-            }
-            else {
-                pawn.AllComps.Remove(contract);
-                pawn.AllComps.Remove(comp);
-                return false;
-            }
-            return true;
+            stringBuilder.Append("RequestFromWantedInitial".Translate(tenant.Named("PAWN")));
+            stringBuilder.Append(ContractController.GenerateContractMessage(tenant));
+            ContractController.GenerateContractDialogue("RequestFromWantedTitle".Translate(map.Parent.Label), stringBuilder.ToString(), tenant, map, spawnSpot);
         }
         public static WantedComp Generate(Pawn pawn) {
             WantedComp comp = new WantedComp();

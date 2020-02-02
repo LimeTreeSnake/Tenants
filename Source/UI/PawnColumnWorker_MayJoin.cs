@@ -7,8 +7,8 @@ namespace Tenants.UI {
     public class PawnColumnWorker_MayJoin : PawnColumnWorker_Checkbox {
 
         public PawnColumnWorker_MayJoin() {
-            foreach(PawnColumnDef def in DefDatabase<PawnColumnDef>.AllDefs) {
-                if(def.defName == "MayJoin") {
+            foreach (PawnColumnDef def in DefDatabase<PawnColumnDef>.AllDefs) {
+                if (def.defName == "MayJoin") {
                     def.label = "MayJoin".Translate();
                 }
             }
@@ -17,11 +17,16 @@ namespace Tenants.UI {
             return "MayJoinTip".Translate();
         }
         protected override bool GetValue(Pawn pawn) {
-            return ThingCompUtility.TryGetComp<WandererComp>(pawn).MayJoin;
-        }
 
+            WandererComp comp = ThingCompUtility.TryGetComp<WandererComp>(pawn);
+            if (comp != null) 
+                return ThingCompUtility.TryGetComp<WandererComp>(pawn).MayJoin;
+            else
+                return false;
+        }
         protected override void SetValue(Pawn pawn, bool value) {
-            ThingCompUtility.TryGetComp<WandererComp>(pawn).MayJoin = value;
+            WandererComp comp = ThingCompUtility.TryGetComp<WandererComp>(pawn);
+            if (comp != null) comp.MayJoin = value;
         }
     }
 }

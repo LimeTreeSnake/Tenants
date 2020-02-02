@@ -30,7 +30,7 @@ namespace Tenants.IncidentWorkers {
                 if (map != null) {
                     Pawn pawn = map.mapPawns.FreeColonists.FirstOrDefault(x => !x.Dead);
                     if (pawn != null) {
-                        return Controllers.EnvoyController.Contract((Map)parms.target, parms.faction);
+                        Controllers.EnvoyController.Contract((Map)parms.target, parms.faction);
                     }
                     else {
                         Messages.Message("EnvoyArriveFailed".Translate(parms.faction), MessageTypeDefOf.NeutralEvent);

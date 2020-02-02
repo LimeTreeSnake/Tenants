@@ -76,7 +76,7 @@
 	<CourierDeniedTitle>Courier denied in {0}.</CourierDeniedTitle>
 	<CourierDeniedMessage>It seems the scheduled courier for your outpost has been upheld.</CourierDeniedMessage>
 	<CourierDeniedRadioMessage>You make contact but are told that they won't send any couriers your way anytime soon due to one of their couriers missing in your area.</CourierDeniedRadioMessage>
-	<CheckMessageBox>Check message box</CheckMessageBox>
+	<CheckMailBox>Check message box</CheckMailBox>
 	<SendLetterDiplomatic>send a Diplomatic message to {0}</SendLetterDiplomatic>
 	<SendLetterAngry>send an Angry message to {0}</SendLetterAngry>
 	<SendLetterInvite>send an invitation message to {0}</SendLetterInvite>

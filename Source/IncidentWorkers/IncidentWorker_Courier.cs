@@ -22,7 +22,7 @@ namespace Tenants.IncidentWorkers {
             if (parms.target != null) {
                 Map map = (Map)parms.target;
                 if (map != null) {
-                    Building building = map.listerBuildings.allBuildingsColonist.FirstOrDefault(x => x.def == Defs.ThingDefOf.Tenant_MessageBox);
+                    Building building = map.listerBuildings.allBuildingsColonist.FirstOrDefault(x => x.def == Defs.ThingDefOf.Tenant_MailBox);
                     if (building != null) {
                         return Controllers.CourierController.Courier((Map)parms.target, building);
                     }

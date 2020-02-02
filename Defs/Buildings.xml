@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>	
 	<ThingDef ParentName="BuildingBase">
-		<defName>Tenant_MessageBox</defName>
-		<label>messagebox</label>
-		<description>A message box, commonly used to send messages to friends and/or enemies. Couriers tend to demand these as they are a fickle bunch.</description>
-		<thingClass>Tenants.Building_MessageBox</thingClass>
+		<defName>Tenant_MailBox</defName>
+		<label>mailbox</label>
+		<description>A mail box, commonly used to send messages to friends and/or enemies. Couriers tend to demand these as they are a fickle bunch.</description>
+		<thingClass>Tenants.Comps.Building_MailBox</thingClass>
 		<altitudeLayer>Building</altitudeLayer>
 		<passability>PassThroughOnly</passability>
 		<minifiedDef>MinifiedThing</minifiedDef>
+		<graphicData>
+			<texPath>Gloomy/MailBox/MailBox</texPath>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<shaderType>CutoutComplex</shaderType>
+			<drawSize>(1,2)</drawSize>
+		</graphicData>
 		<thingCategories>
 			<li>BuildingsMisc</li>
 		</thingCategories>
-		<uiIconPath>Things/Building/LetterBox</uiIconPath>
-		<uiIconScale>0.7</uiIconScale>
+		<uiIconPath>Gloomy/MailBox/MailBox_south</uiIconPath>
+		<uiIconScale>0.8</uiIconScale>
 		<pathCost>20</pathCost>
 		<canOverlapZones>false</canOverlapZones>
 		<statBases>
@@ -33,44 +39,7 @@
 		<designationCategory>Misc</designationCategory>
 		<resourcesFractionWhenDeconstructed>0.2</resourcesFractionWhenDeconstructed>
 		<comps>
-			<li Class="Tenants.Comp.MessageBox"/>
-			<li Class="Tenants.Comp.GraphicAlternator">
-				<Texture>
-					<graphicData>
-						<texPath>Things/Building/LetterBox</texPath>
-						<graphicClass>Graphic_Single</graphicClass>
-						<shaderType>CutoutComplex</shaderType>
-						<drawSize>(1,1)</drawSize>
-					</graphicData>
-				</Texture>
-				<TextureAlternate>
-					<graphicData>
-						<texPath>Things/Building/LetterBoxFull</texPath>
-						<graphicClass>Graphic_Single</graphicClass>
-						<shaderType>CutoutComplex</shaderType>
-						<drawSize>(1,1)</drawSize>
-					</graphicData>
-				</TextureAlternate>
-			</li>
-			<li Class="Tenants.Comp.CompProps_EraAlternator">
-				<Texture>
-					<graphicData>
-						<texPath>Things/Building/MailBox</texPath>
-						<graphicClass>Graphic_Single</graphicClass>
-						<shaderType>CutoutComplex</shaderType>
-						<drawSize>(1,1)</drawSize>
-					</graphicData>
-				</Texture>
-				<TextureAlternate>
-					<graphicData>
-						<texPath>Things/Building/MailBox</texPath>
-						<graphicClass>Graphic_Single</graphicClass>
-						<shaderType>CutoutComplex</shaderType>
-						<drawSize>(1,1)</drawSize>
-					</graphicData>
-				</TextureAlternate>				
-				<TechLevel>3</TechLevel>
-			</li>
+			<li Class="Tenants.Comps.CompProps_MailBox"/>
 		</comps>
 		<rotatable>true</rotatable>
 	</ThingDef>

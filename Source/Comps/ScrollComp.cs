@@ -6,10 +6,10 @@ using Verse.AI;
 
 namespace Tenants.Comps
 {
-    public enum LetterType { Diplomatic = 1, Angry = 2, Invite = 3};
-   public class LetterComp : ThingComp
+    public enum ScrollType { Diplomatic = 1, Angry = 2, Invite = 3};
+   public class ScrollComp : ThingComp
     {
-        public CompProps_Letter Props => (CompProps_Letter)props;
+        public CompProps_Scroll Props => (CompProps_Scroll)props;
         public int Skill;
         public int TypeValue;
         public Faction Faction;
@@ -21,11 +21,11 @@ namespace Tenants.Comps
     }
 
 
-    public class CompProps_Letter : CompProperties
+    public class CompProps_Scroll : CompProperties
     {
-        public LetterType letter;
-        public CompProps_Letter() {
-            compClass = typeof(LetterComp);
+        public ScrollType scroll;
+        public CompProps_Scroll() {
+            compClass = typeof(ScrollComp);
         }
     }
 }

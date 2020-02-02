@@ -27,6 +27,7 @@ namespace Tenants {
             harmonyInstance.Patch(AccessTools.Method(typeof(Pawn_GuestTracker), "CapturedBy"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("CapturedBy_PreFix")), null);
             //Tenant dies
             harmonyInstance.Patch(AccessTools.Method(typeof(Pawn), "Kill"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("Kill_PreFix")), null);
+            harmonyInstance.Patch(AccessTools.Method(typeof(Pawn_NeedsTracker), "ShouldHaveNeed"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("ShouldHaveNeed_PostFix")), null);
             #endregion Functionality
             #region GUI
             //Pawn name color patch
@@ -37,21 +38,25 @@ namespace Tenants {
         }
         #region Ticks
         public static void TickRare_PostFix(ref Pawn __instance) {
-            if (__instance.Spawned && __instance.NonHumanlikeOrWildMan()) {
-                WandererComp wanderer = ThingCompUtility.TryGetComp<WandererComp>(__instance);
-                if (wanderer != null) {
-                    Controllers.WandererController.Tick(__instance, wanderer);
-                    return;
-                }
-                EnvoyComp envoy = ThingCompUtility.TryGetComp<EnvoyComp>(__instance);
-                if (envoy != null) {
-                    Controllers.EnvoyController.Tick(__instance, envoy);
-                    return;
-                }
-                WantedComp wanted = ThingCompUtility.TryGetComp<WantedComp>(__instance);
-                if (wanted != null) {
-                    Controllers.WantedController.Tick(__instance, wanted);
-                    return;
+            if (__instance.Spawned && !__instance.NonHumanlikeOrWildMan()) {
+                ContractComp contract = ThingCompUtility.TryGetComp<ContractComp>(__instance);
+                if (contract != null) {
+                    Controllers.TenantController.TenantTick(__instance);
+                    WantedComp wanted = ThingCompUtility.TryGetComp<WantedComp>(__instance);
+                    if (wanted != null) {
+                        Controllers.WantedController.Tick(__instance, wanted, contract);
+                        return;
+                    }
+                    WandererComp wanderer = ThingCompUtility.TryGetComp<WandererComp>(__instance);
+                    if (wanderer != null) {
+                        Controllers.WandererController.Tick(__instance, wanderer, contract);
+                        return;
+                    }
+                    EnvoyComp envoy = ThingCompUtility.TryGetComp<EnvoyComp>(__instance);
+                    if (envoy != null) {
+                        Controllers.EnvoyController.Tick(__instance, envoy, contract);
+                        return;
+                    }
                 }
             }
         }
@@ -75,12 +80,10 @@ namespace Tenants {
         #endregion Functionality
         #region GUI
         public static bool PawnNameColorOf_PreFix(ref Color __result, ref Pawn pawn) {
-            if (pawn.IsColonist) {
-                ContractComp contractComp = ThingCompUtility.TryGetComp<ContractComp>(pawn);
-                if (contractComp != null) {
-                    __result = Settings.Settings.Color;
-                    return false;
-                }
+            ContractComp contractComp = ThingCompUtility.TryGetComp<ContractComp>(pawn);
+            if (contractComp != null) {
+                __result = Settings.Settings.Color;
+                return false;
             }
             return true;
         }

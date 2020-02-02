@@ -4,8 +4,6 @@ using Verse;
 namespace Tenants.Defs {
     [DefOf]
     public static class RaidStrategyDefOf {
-        public static RaidStrategyDef Retribution;
-        public static RaidStrategyDef MoleRaid;
         public static RaidStrategyDef WantedRaid;
 
         static RaidStrategyDefOf() {

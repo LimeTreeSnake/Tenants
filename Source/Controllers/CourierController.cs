@@ -39,7 +39,7 @@ namespace Tenants.Controllers {
                 string letterLabel = "CourierArrivedTitle".Translate(map.Parent.Label);
                 string letterText = "CourierArrivedMessage".Translate(pawn.Named("PAWN"));
                 Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.PositiveEvent, pawn);
-                LordMaker.MakeNewLord(pawn.Faction, new LordJobs.LordJob_CourierDeliver(map.listerThings.ThingsOfDef(Defs.ThingDefOf.Tenant_MessageBox).RandomElement()), pawn.Map, new List<Pawn> { pawn });
+                LordMaker.MakeNewLord(pawn.Faction, new LordJobs.LordJob_CourierDeliver(map.listerThings.ThingsOfDef(Defs.ThingDefOf.Tenant_MailBox).RandomElement()), pawn.Map, new List<Pawn> { pawn });
                 return true;
             }
             catch (Exception ex) {
@@ -125,7 +125,7 @@ namespace Tenants.Controllers {
             Thing bow = ThingMaker.MakeThing(bowDef, GenStuff.RandomStuffByCommonalityFor(bowDef));
             pawn.equipment.AddEquipment((ThingWithComps)bow);
         }
-        public static void EmptyMessageBox(ref List<Thing> content, IntVec3 pos) {
+        public static void EmptyMailBox(ref List<Thing> content, IntVec3 pos) {
             if (content.Count > 0) {
                 foreach (Thing thing in content) {
                     DebugThingPlaceHelper.DebugSpawn(thing.def, pos, thing.stackCount);
@@ -136,9 +136,9 @@ namespace Tenants.Controllers {
         public static void RecieveLetters(ref List<Thing> content, IntVec3 pos, Map map) {
             if (content.Count > 0) {
                 foreach (Thing letter in content) {
-                    Comps.LetterComp letterComp = ThingCompUtility.TryGetComp<Comps.LetterComp>(letter);
-                    switch ((LetterType)letterComp.TypeValue) {
-                        case LetterType.Diplomatic: {
+                    Comps.ScrollComp letterComp = ThingCompUtility.TryGetComp<Comps.ScrollComp>(letter);
+                    switch ((ScrollType)letterComp.TypeValue) {
+                        case ScrollType.Diplomatic: {
                                 if (Rand.Value < 0.2f + ((letterComp.Skill * 3.5f) / 100f)) {
                                     if (Rand.Value < letterComp.Skill / 100f) {
                                         int val = Utilities.FactionUtilities.ChangeRelations(letterComp.Faction);
@@ -164,7 +164,7 @@ namespace Tenants.Controllers {
                                 }
                                 break;
                             }
-                        case LetterType.Angry: {
+                        case ScrollType.Angry: {
                                 if (letter.Faction.RelationKindWith(Find.FactionManager.OfPlayer) == FactionRelationKind.Ally) {
                                     int val = Utilities.FactionUtilities.ChangeRelations(letterComp.Faction);
                                     val += Utilities.FactionUtilities.ChangeRelations(letterComp.Faction);
@@ -191,11 +191,11 @@ namespace Tenants.Controllers {
                                 }
                                 break;
                             }
-                        case LetterType.Invite: {
+                        case ScrollType.Invite: {
                                 if (Rand.Value < 0.4f + ((letterComp.Skill * 2.5f) / 100f)) {
                                     Find.LetterStack.ReceiveLetter("LetterInviteTitle".Translate(), "LetterInvitePositive".Translate(letterComp.Faction), LetterDefOf.PositiveEvent);
                                     IncidentParms parms = new IncidentParms() { target = map, forced = true, faction = letterComp.Faction };
-                                    Find.Storyteller.incidentQueue.Add(Defs.IncidentDefOf.RequestForTenancy, Find.TickManager.TicksGame + Rand.Range(15000, 30000), parms, 240000);
+                                    Find.Storyteller.incidentQueue.Add(Defs.IncidentDefOf.WandererProposition, Find.TickManager.TicksGame + Rand.Range(15000, 30000), parms, 240000);
                                 }
                                 else {
                                     Find.LetterStack.ReceiveLetter("LetterInviteTitle".Translate(), "LetterInviteResponse".Translate(letterComp.Faction), LetterDefOf.NeutralEvent);

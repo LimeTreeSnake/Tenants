@@ -45,7 +45,7 @@
 		<targetTags>
 			<li>Map_PlayerHome</li>
 		</targetTags>
-		<workerClass>Tenants.IncidentWorker_TenantCourier</workerClass>
+		<workerClass>Tenants.IncidentWorkers.IncidentWorker_TenantCourier</workerClass>
 		<category>Misc</category>
 		<baseChance>4</baseChance>
 		<pointsScaleable>true</pointsScaleable>
@@ -60,7 +60,7 @@
 		<targetTags>
 			<li>Map_PlayerHome</li>
 		</targetTags>
-		<workerClass>Tenants.IncidentWorker_Opportunists</workerClass>
+		<workerClass>Tenants.IncidentWorkers.IncidentWorker_Opportunists</workerClass>
 		<category>ThreatBig</category>
 		<baseChance>0</baseChance>
 		<pointsScaleable>true</pointsScaleable>
@@ -73,7 +73,7 @@
 		<targetTags>
 			<li>Map_PlayerHome</li>
 		</targetTags>
-		<workerClass>Tenants.IncidentWorker_Wanted</workerClass>
+		<workerClass>Tenants.IncidentWorkers.IncidentWorker_Wanted</workerClass>
 		<category>ThreatBig</category>
 		<baseChance>0</baseChance>
 		<pointsScaleable>true</pointsScaleable>

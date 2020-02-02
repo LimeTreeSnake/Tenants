@@ -7,7 +7,7 @@ using Verse.AI;
 using Tenants.Comps;
 
 namespace Tenants.JobDrivers {
-    public class JobDriver_SendLetter : JobDriver {
+    public class JobDriver_SendMail : JobDriver {
         public override bool TryMakePreToilReservations(bool errorOnFailed) {
             return true;
         }
@@ -21,10 +21,10 @@ namespace Tenants.JobDrivers {
             yield return Toils_Haul.PlaceHauledThingInCell(TargetIndex.B, carryToCell, false);
             Toil checkMailBox = new Toil();
             checkMailBox.initAction = delegate {
-                Thing building_MessageBox = checkMailBox.actor.jobs.curJob.GetTarget(TargetIndex.A).Thing;
-                Comps.LetterComp letter = ThingCompUtility.TryGetComp<Comps.LetterComp>(TargetThingB);
-                letter.Skill = pawn.skills.skills.FirstOrDefault(x => x.def.defName.ToLower() == "social").levelInt;
-                ThingCompUtility.TryGetComp<MessageBoxComp>(building_MessageBox).OutgoingLetters.Add(TargetThingB);
+                Thing building_MailBox = checkMailBox.actor.jobs.curJob.GetTarget(TargetIndex.A).Thing;
+                ScrollComp scroll = ThingCompUtility.TryGetComp<Comps.ScrollComp>(TargetThingB);
+                scroll.Skill = pawn.skills.skills.FirstOrDefault(x => x.def.defName.ToLower() == "social").levelInt;
+                ThingCompUtility.TryGetComp<MailBoxComp>(building_MailBox).OutgoingLetters.Add(TargetThingB);
                 TargetThingB.Destroy();
             };
             yield return checkMailBox;

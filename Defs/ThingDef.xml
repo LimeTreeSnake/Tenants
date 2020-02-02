@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>	
-	<ThingDef Name="Tenants_LetterBase" ParentName="ResourceBase" Abstract="True">
+	<ThingDef Name="Tenants_ScrollBase" ParentName="ResourceBase" Abstract="True">
 		<thingClass>ThingWithComps</thingClass>
 		<stackLimit>75</stackLimit>
 		<soundInteract>Standard_Drop</soundInteract>
@@ -14,7 +14,7 @@
 		</statBases>
 		<tickerType>Normal</tickerType>
 		<thingCategories>
-			<li>Tenants_Letters</li>
+			<li>Tenants_Scrolls</li>
 		</thingCategories>		
 		<costStuffCount>5</costStuffCount>
 		<stuffCategories>
@@ -23,12 +23,12 @@
 		</stuffCategories>
 	</ThingDef>
 
-	<ThingDef Name="Tenant_LetterDiplomatic" ParentName="Tenants_LetterBase" >
-		<defName>Tenant_LetterDiplomatic</defName>
-		<label>diplomatic letter</label>
-		<description>A diplomatic letter that tries to appeal to the masses.</description>
+	<ThingDef Name="Tenant_ScrollDiplomatic" ParentName="Tenants_ScrollBase" >
+		<defName>Tenant_ScrollDiplomatic</defName>
+		<label>diplomatic scroll</label>
+		<description>A diplomatic scroll that tries to appeal to the masses.</description>
 		<graphicData>
-			<texPath>Things/Letters/LetterDiplomatic</texPath>
+			<texPath>Goob/Scrolls/ScrollDiplomatic</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 		</graphicData>
 		<statBases>
@@ -53,18 +53,18 @@
 			</skillRequirements>
 		</recipeMaker>
 		<comps>
-			<li Class="Tenants.CompProps_Letter">
-				<letter>1</letter>
+			<li Class="Tenants.Comps.CompProps_Scroll">
+				<scroll>1</scroll>
 			</li>
 		</comps>
 	</ThingDef>
 
-	<ThingDef Name="Tenant_LetterMean" ParentName="Tenants_LetterBase" >
-		<defName>Tenant_LetterAngry</defName>
-		<label>angry letter</label>
-		<description>A letter most vile, anyone reading this will be filled with disdain.</description>
+	<ThingDef Name="Tenant_ScrollMean" ParentName="Tenants_ScrollBase" >
+		<defName>Tenant_ScrollMean</defName>
+		<label>mean scroll</label>
+		<description>A scroll most vile, anyone reading this will be filled with utter contempt.</description>
 		<graphicData>
-			<texPath>Things/Letters/LetterAngry</texPath>
+			<texPath>Goob/Scrolls/ScrollMean</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 		</graphicData>
 		<statBases>
@@ -89,18 +89,18 @@
 			</skillRequirements>
 		</recipeMaker>
 		<comps>
-			<li Class="Tenants.CompProps_Letter">
-				<letter>2</letter>
+			<li Class="Tenants.Comps.CompProps_Scroll">
+				<scroll>2</scroll>
 			</li>
 		</comps>
 	</ThingDef>
 
-	<ThingDef Name="Tenant_LetterInvite" ParentName="Tenants_LetterBase" >
-		<defName>Tenant_LetterInvite</defName>
-		<label>Invitation letter</label>
-		<description>A letter of invitation towards a certain faction.</description>
+	<ThingDef Name="Tenant_ScrollInvite" ParentName="Tenants_ScrollBase" >
+		<defName>Tenant_ScrollInvite</defName>
+		<label>Invitation scroll</label>
+		<description>A scroll of invitation towards a certain faction.</description>
 		<graphicData>
-			<texPath>Things/Letters/LetterInvite</texPath>
+			<texPath>Goob/Scrolls/ScrollInvite</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 		</graphicData>
 		<statBases>
@@ -125,16 +125,16 @@
 			</skillRequirements>
 		</recipeMaker>
 		<comps>
-			<li Class="Tenants.CompProps_Letter">
-				<letter>3</letter>
+			<li Class="Tenants.Comps.CompProps_Scroll">
+				<scroll>3</scroll>
 			</li>
 		</comps>
 	</ThingDef>
 
 	<ThingCategoryDef>
-		<defName>Tenants_Letters</defName>
-		<label>letters</label>
+		<defName>Tenants_Scrolls</defName>
+		<label>scrolls</label>
 		<parent>Manufactured</parent>
-		<iconPath>Things/Letters/LetterDiplomatic</iconPath>
+		<iconPath>Goob/Scrolls/ScrollDiplomatic</iconPath>
 	</ThingCategoryDef>
 </Defs>	

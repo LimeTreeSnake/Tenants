@@ -20,7 +20,7 @@ namespace Tenants.LordJobs {
         public override StateGraph CreateGraph() {
             StateGraph StateGraph = new StateGraph();
             if (Mailbox == null) {
-                Mailbox = Map.listerThings.ThingsOfDef(Defs.ThingDefOf.Tenant_MessageBox).RandomElement();
+                Mailbox = Map.listerThings.ThingsOfDef(Defs.ThingDefOf.Tenant_MailBox).RandomElement();
             }
 
             LordToil toilTravel = new LordToil_Travel(Mailbox.Position) {
@@ -62,7 +62,7 @@ namespace Tenants.LordJobs {
             }
             if (MailBox != null) {
                 TenantsMapComp MapComp = TenantsMapComp.GetComponent(MailBox.Map);
-                MessageBoxComp mailBoxComp = ThingCompUtility.TryGetComp<MessageBoxComp>(MailBox);
+                MailBoxComp mailBoxComp = ThingCompUtility.TryGetComp<MailBoxComp>(MailBox);
 
                 //Incoming Gifts
                 if (MapComp.IncomingMail.Count > 0) {
@@ -107,7 +107,7 @@ namespace Tenants.LordJobs {
                 //Outgoing Letters
                 if (mailBoxComp.OutgoingLetters.Count > 0) {
                     foreach (Thing letter in mailBoxComp.OutgoingLetters) {
-                        if (MapComp.IncomingLetters.FirstOrDefault(x => x.Faction == letter.Faction && ThingCompUtility.TryGetComp<Comps.LetterComp>(x).TypeValue == ThingCompUtility.TryGetComp<Comps.LetterComp>(letter).TypeValue) == null) {
+                        if (MapComp.IncomingLetters.FirstOrDefault(x => x.Faction == letter.Faction && ThingCompUtility.TryGetComp<Comps.ScrollComp>(x).TypeValue == ThingCompUtility.TryGetComp<Comps.ScrollComp>(letter).TypeValue) == null) {
                             MapComp.IncomingLetters.Add(letter);
                         }
                     }

@@ -13,50 +13,8 @@ namespace Tenants.Utilities {
     public static class TextureUtility {
         public static Texture2D ContractIcon => ContentFinder<Texture2D>.Get("LTS/Icons/Contract");
         public static Texture2D EnvoyIcon => ContentFinder<Texture2D>.Get("LTS/Icons/Envoy");
+        public static Texture2D WantedIcon => ContentFinder<Texture2D>.Get("LTS/Icons/Wanted");
 
-        public static Graphic GraphicFinder(GraphicAlternatorComp graphicAlternator, EraAlternatorComp eraAlternator, bool useAlternate, Thing thing) {
-            if (useAlternate) {
-                switch (Settings.Settings.TextureStyle) {
-                    case Settings.Style.Auto: {
-                            if (eraAlternator != null && Find.FactionManager.OfPlayer.def.techLevel <= eraAlternator.Props.TechLevel) {
-                                return eraAlternator.Props.Texture.GraphicColoredFor(thing);
-                            }
-                            return graphicAlternator.Props.Texture.GraphicColoredFor(thing);
-                        }
-                    case Settings.Style.Medieval: {
-                            if (eraAlternator != null) {
-                                return eraAlternator.Props.Texture.GraphicColoredFor(thing);
-                            }
-                            return graphicAlternator.Props.Texture.GraphicColoredFor(thing);
-                        }
-                    case Settings.Style.Industrial:
-                        return graphicAlternator.Props.Texture.GraphicColoredFor(thing);
-                    default:
-                        return graphicAlternator.Props.Texture.GraphicColoredFor(thing);
 
-                }
-            }
-            else {
-                switch (Settings.Settings.TextureStyle) {
-                    case Settings.Style.Auto: {
-                            if (eraAlternator != null && Find.FactionManager.OfPlayer.def.techLevel <= eraAlternator.Props.TechLevel) {
-                                return eraAlternator.Props.TextureAlternate.GraphicColoredFor(thing);
-                            }
-                            return graphicAlternator.Props.TextureAlternate.GraphicColoredFor(thing);
-                        }
-                    case Settings.Style.Medieval: {
-                            if (eraAlternator != null) {
-                                return eraAlternator.Props.TextureAlternate.GraphicColoredFor(thing);
-                            }
-                            return graphicAlternator.Props.TextureAlternate.GraphicColoredFor(thing);
-                        }
-                    case Settings.Style.Industrial:
-                        return graphicAlternator.Props.TextureAlternate.GraphicColoredFor(thing);
-                    default:
-                        return graphicAlternator.Props.TextureAlternate.GraphicColoredFor(thing);
-                }
-
-            }
-        }
     }
 }

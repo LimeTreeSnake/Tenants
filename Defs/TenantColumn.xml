@@ -2,25 +2,25 @@
 <Defs>
   <PawnColumnDef>
     <defName>ContractIcon</defName>
-    <workerClass>Tenants.PawnColumnWorker_ContractIcon</workerClass>
+    <workerClass>Tenants.UI.PawnColumnWorker_ContractIcon</workerClass>
   </PawnColumnDef>
   <PawnColumnDef>
     <defName>TenantLabel</defName>
-    <workerClass>Tenants.PawnColumnWorker_TenantLabel</workerClass>
+    <workerClass>Tenants.UI.PawnColumnWorker_TenantLabel</workerClass>
     <sortable>true</sortable>
     <width>200</width>
   </PawnColumnDef>
   <PawnColumnDef>
     <defName>CancelContract</defName>
-    <workerClass>Tenants.PawnColumnWorker_CancelContract</workerClass>
+    <workerClass>Tenants.UI.PawnColumnWorker_CancelContract</workerClass>
   </PawnColumnDef>
   <PawnColumnDef>
     <defName>MayJoin</defName>
-    <workerClass>Tenants.PawnColumnWorker_MayJoin</workerClass>
+    <workerClass>Tenants.UI.PawnColumnWorker_MayJoin</workerClass>
   </PawnColumnDef>
   <PawnColumnDef>
     <defName>AutoRenew</defName>
-    <workerClass>Tenants.PawnColumnWorker_AutoRenew</workerClass>
+    <workerClass>Tenants.UI.PawnColumnWorker_AutoRenew</workerClass>
   </PawnColumnDef>
   
   

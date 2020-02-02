@@ -18,15 +18,13 @@ namespace Tenants.Controllers {
             int payment = (contract.ContractLength / 60000) * contract.Payment;
             Thing silver = ThingMaker.MakeThing(ThingDefOf.Silver);
             silver.stackCount = payment;
-            TenantsMapComp.GetComponent(contract.parent.Map).IncomingMail.Add(silver);
+            TenantsMapComp.GetComponent(pawn.Map).IncomingMail.Add(silver);
         }
         public static void Payment(Map map, int payment) {
             Thing silver = ThingMaker.MakeThing(ThingDefOf.Silver);
             silver.stackCount = payment;
             TenantsMapComp.GetComponent(map).IncomingMail.Add(silver);
         }
-
-
         public static ContractComp GenerateContract(Pawn pawn) {
             int payment = Rand.Range(Settings.Settings.MinDailyCost, Settings.Settings.MaxDailyCost);
             ContractComp contract = new ContractComp();
@@ -65,26 +63,30 @@ namespace Tenants.Controllers {
             text = stringBuilder.ToString();
             return text.AdjustedFor(pawn);
         }
-        public static bool GenerateContractDialogue(string title, string text) {
-            bool confirmedTenancy = false;
+        public static void GenerateContractDialogue(string title, string text, Pawn tenant, Map map = null, IntVec3? spawnSpot = null) {
             DiaNode diaNode = new DiaNode(text);
-            //Accepted offer, generating tenant.
             DiaOption diaOptionAgree = new DiaOption("ContractAgree".Translate()) {
                 action = delegate {
-                    confirmedTenancy = true;
+                    if (tenant.Spawned)
+                        ContractProlong(tenant);
+                    else
+                        TenantController.SpawnTenant(tenant, map, spawnSpot.Value);
                 },
                 resolveTree = true
             };
             diaNode.options.Add(diaOptionAgree);
             DiaOption diaOptionReject = new DiaOption("ContractReject".Translate()) {
                 action = delegate {
+                    if (tenant.Spawned)
+                        TenantController.Leave(tenant);
+                    else
+                        TenantController.RemoveAllComp(tenant);
                 },
                 resolveTree = true
             };
             diaNode.options.Add(diaOptionReject);
             Find.WindowStack.Add(new Dialog_NodeTree(diaNode, delayInteractivity: false, radioMode: true, title));
             Find.Archive.Add(new ArchivedDialog(diaNode.text, title));
-            return confirmedTenancy;
         }
         private static string GenerateContractDetails(Pawn pawn, ContractComp comp = null) {
             comp = comp ?? ThingCompUtility.TryGetComp<ContractComp>(pawn);

@@ -12,8 +12,28 @@ using Verse.AI.Group;
 namespace Tenants.Controllers {
     public static class TenantController {
 
+        public static void TenantTick(Pawn pawn) {
+            if (pawn.IsColonist) {
+                RemoveAllComp(pawn);
+                return;
+            }
+        }
+        public static Pawn GetContractedPawn(Faction faction = null) {
+            Pawn tenant;
+            if (faction != null)
+                tenant = FindRandomPawn(faction);
+            else
+                tenant = FindRandomPawn();
+            if (tenant == null)
+                return null;
+            tenant.relations.everSeenByPlayer = true;
+            ContractComp comp = ContractController.GenerateContract(tenant);
+            if (faction != null)
+                comp.Payment = 0;
+            return tenant;
+        }
         public static void Leave(Pawn pawn) {
-            pawn.AllComps.Remove(ThingCompUtility.TryGetComp<ContractComp>(pawn));
+            RemoveAllComp(pawn);
             pawn.jobs.ClearQueuedJobs();
             LordMaker.MakeNewLord(pawn.Faction, new LordJob_ExitMapBest(), pawn.Map, new List<Pawn> { pawn });
             if (TenantsMapComp.GetComponent(pawn.Map).WantedTenants.Contains(pawn)) {
@@ -21,6 +41,7 @@ namespace Tenants.Controllers {
             }
         }
         public static void Theft(Pawn pawn) {
+            RemoveAllComp(pawn);
             pawn.jobs.ClearQueuedJobs();
             ThingCompUtility.TryGetComp<WandererComp>(pawn);
             LordMaker.MakeNewLord(pawn.Faction, new LordJobs.LordJob_TenantTheft(), pawn.Map, new List<Pawn> { pawn });
@@ -45,10 +66,10 @@ namespace Tenants.Controllers {
             string label = "Captured".Translate() + ": " + pawn.LabelShortCap;
             Find.LetterStack.ReceiveLetter(label, text, LetterDefOf.NeutralEvent, pawn);
             if (Rand.Value < 0.66f) {
-                    int val = Utilities.FactionUtilities.ChangeRelations(pawn.Faction, true);
-                    Messages.Message("TenantFactionOutrage".Translate(pawn.Faction, val, pawn.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
-
+                int val = Utilities.FactionUtilities.ChangeRelations(pawn.Faction, true);
+                Messages.Message("TenantFactionOutrage".Translate(pawn.Faction, val, pawn.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
             }
+            RemoveAllComp(pawn);
         }
         public static void TenantWantToJoin(Pawn pawn) {
             WandererComp tenantComp = ThingCompUtility.TryGetComp<WandererComp>(pawn);
@@ -85,23 +106,23 @@ namespace Tenants.Controllers {
             }
         }
         public static void SpawnTenant(Pawn pawn, Map map, IntVec3 spawnSpot) {
+            pawn.workSettings.EnableAndInitializeIfNotAlreadyInitialized();
             GenSpawn.Spawn(pawn, spawnSpot, map);
             pawn.needs.SetInitialLevels();
             CameraJumper.TryJump(pawn);
-            //Go to base
         }
         public static void TenantInvite(Building_CommsConsole comms, Pawn pawn) {
             Messages.Message("InviteTenantMessage".Translate(), MessageTypeDefOf.NeutralEvent);
             TenantsMapComp.GetComponent(pawn.Map).Broadcast = true;
             if (Rand.Value < 0.20f) {
                 IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, pawn.Map);
-                parms.raidStrategy = Defs.RaidStrategyDefOf.Retribution;
+                parms.raidStrategy = RaidStrategyDefOf.ImmediateAttack;
                 parms.forced = true;
                 Find.Storyteller.incidentQueue.Add(Defs.IncidentDefOf.Opportunists, Find.TickManager.TicksGame + Rand.Range(25000, 150000), parms, 240000);
             }
             else {
                 IncidentParms parms = new IncidentParms() { target = pawn.Map, forced = true };
-                Find.Storyteller.incidentQueue.Add(Defs.IncidentDefOf.RequestForTenancy, Find.TickManager.TicksGame + Rand.Range(15000, 120000), parms, 240000);
+                Find.Storyteller.incidentQueue.Add(Defs.IncidentDefOf.WandererProposition, Find.TickManager.TicksGame + Rand.Range(15000, 120000), parms, 240000);
             }
 
         }
@@ -123,7 +144,6 @@ namespace Tenants.Controllers {
             pawns.Shuffle();
             return pawns.RandomElement();
         }
-
         public static void RemoveAllComp(Pawn pawn) {
             pawn.AllComps.Remove(ThingCompUtility.TryGetComp<ContractComp>(pawn));
             pawn.AllComps.Remove(ThingCompUtility.TryGetComp<WantedComp>(pawn));

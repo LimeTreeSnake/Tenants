@@ -2,25 +2,25 @@
 <Defs>
   <JobDef>
     <defName>JobUseCommsConsoleTenants</defName>
-    <driverClass>Tenants.JobDriver_UseCommsConsoleTenants</driverClass>
+    <driverClass>Tenants.JobDrivers.JobDriver_UseCommsConsoleTenants</driverClass>
     <reportString>using comms console.</reportString>
     <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
   </JobDef>
     <JobDef>
     <defName>JobUseCommsConsoleInviteCourier</defName>
-    <driverClass>Tenants.JobDriver_UseCommsConsoleInviteCourier</driverClass>
+    <driverClass>Tenants.JobDrivers.JobDriver_UseCommsConsoleInviteCourier</driverClass>
     <reportString>using comms console.</reportString>
     <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
   </JobDef>
   <JobDef>
-    <defName>JobSendLetter</defName>
-    <driverClass>Tenants.JobDriver_SendLetter</driverClass>
+    <defName>JobSendMail</defName>
+    <driverClass>Tenants.JobDrivers.JobDriver_SendMail</driverClass>
     <reportString>sending mail.</reportString>
     <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
   </JobDef>
   <JobDef>
-    <defName>JobCheckLetters</defName>
-    <driverClass>Tenants.JobDriver_CheckLetters</driverClass>
+    <defName>JobCheckMail</defName>
+    <driverClass>Tenants.JobDrivers.JobDriver_CheckMail</driverClass>
     <reportString>sending mail.</reportString>
     <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
   </JobDef>
