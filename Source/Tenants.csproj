@@ -53,14 +53,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Comps\ContractComp.cs" />
     <Compile Include="Comps\CourierComp.cs" />
-    <Compile Include="Comps\EnvoyComp.cs" />
     <Compile Include="Comps\ScrollComp.cs" />
     <Compile Include="Comps\MailBoxComp.cs" />
     <Compile Include="Comps\TenantComp.cs" />
-    <Compile Include="Comps\WantedComp.cs" />
-    <Compile Include="Controllers\WandererController.cs" />
+    <Compile Include="Controllers\TenantController.cs" />
+    <Compile Include="Def\NeedDefOf.cs" />
     <Compile Include="Def\ThingDefOf.cs" />
     <Compile Include="Def\IncidentDefOf.cs" />
     <Compile Include="Def\JobDefOf.cs" />
@@ -68,17 +66,21 @@
     <Compile Include="Def\ThingSetMakerDefOf.cs" />
     <Compile Include="Harmony\HarmonyTenants.cs" />
     <Compile Include="Comps\TenantsMapComp.cs" />
-    <Compile Include="IncidentWorkers\IncidentWorker_WandererProposition.cs" />
+    <Compile Include="IncidentWorkers\IncidentWorker_TenantProposition.cs" />
     <Compile Include="IncidentWorkers\IncidentWorker_WantedProposition.cs" />
     <Compile Include="JobDrivers\JobDriver_CheckMail.cs" />
     <Compile Include="JobDrivers\JobDriver_SendMail.cs" />
+    <Compile Include="Models\Contract.cs" />
+    <Compile Include="Needs\Need_Satisfaction.cs" />
+    <Compile Include="Translation\Language.cs" />
     <Compile Include="UI\Alert_TenantSad.cs" />
+    <Compile Include="UI\PawnColumnWorker_Satisfaction.cs" />
     <Compile Include="UI\PawnColumnWorker_TenantLabel.cs" />
     <Compile Include="UI\PawnColumnWorker_MayJoin.cs" />
     <Compile Include="UI\PawnColumnWorker_AutoRenew.cs" />
     <Compile Include="UI\PawnColumnWorker_CancelContract.cs" />
     <Compile Include="ThinkNode\ThinkNode_ConditionalTenant.cs" />
-    <Compile Include="Controllers\ContractController.cs" />
+    <Compile Include="Utilities\ContractUtility.cs" />
     <Compile Include="Controllers\EnvoyController.cs" />
     <Compile Include="Utilities\MapUtilities.cs" />
     <Compile Include="Controllers\CourierController.cs" />
@@ -93,10 +95,9 @@
     <Compile Include="LordJobs\LordJob_Theft.cs" />
     <Compile Include="UI\MainTabWindow_Tenant.cs" />
     <Compile Include="UI\PawnColumnWorker_ContractIcon.cs" />
-    <Compile Include="Comps\WandererComp.cs" />
     <Compile Include="Settings\Settings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Controllers\TenantController.cs" />
+    <Compile Include="Utilities\TenantUtilities.cs" />
     <Compile Include="Utilities\TextureUtility.cs" />
     <Compile Include="Controllers\WantedController.cs" />
     <Compile Include="JobGivers\JobGiver_Tenants.cs" />

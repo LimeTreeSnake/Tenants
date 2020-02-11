@@ -25,7 +25,7 @@ namespace Tenants.JobDrivers {
                 Pawn actor = invite.actor;
                 Building_CommsConsole building_CommsConsole = (Building_CommsConsole)actor.jobs.curJob.GetTarget(TargetIndex.A).Thing;
                 if (building_CommsConsole.CanUseCommsNow) {
-                    Controllers.TenantController.TenantInvite(building_CommsConsole, actor);
+                    Controllers.TenantController.Invite(building_CommsConsole, actor);
                 }
             };
             yield return invite;

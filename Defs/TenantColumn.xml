@@ -22,6 +22,10 @@
     <defName>AutoRenew</defName>
     <workerClass>Tenants.UI.PawnColumnWorker_AutoRenew</workerClass>
   </PawnColumnDef>
+  <PawnColumnDef>
+    <defName>TenantSatisfaction</defName>
+    <workerClass>Tenants.UI.PawnColumnWorker_Satisfaction</workerClass>
+  </PawnColumnDef>
   
   
   <!-- <PawnColumnDef> -->

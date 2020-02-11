@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	<Captured>Captured</Captured>
+	<Opportunists>Opportunists</Opportunists>
+	<Wanted>Wanted</Wanted>
+	<TenantDeath>{PAWN_nameDef} died!\n\nYou've failed your duties as a host.</TenantDeath>
+	<EnvoyDeath>{PAWN_nameDef} died!\n\nYou've failed your duties as a host and {0} is outraged by your failure to protect their envoy. This diplomatic incident cost you {1} in relations.</EnvoyDeath>
+	<TenantOpportunists>A group of raiders intervened and killed a prospecting tenant, they will be here shortly!</TenantOpportunists>
+	<WantedTenant>Bounty hunters have arrived!</WantedTenant>
+	<TenantFactionOutrage>{0} is outraged at the mistreatment of {PAWN_nameDef} thus you recieve a {1} penalty to relations with them.</TenantFactionOutrage>
+	<HarboringWantedTenant>{0} is frustrated that you willingly harbor a wanted fugitive thus you recieve a {1} penalty to relations with them.</HarboringWantedTenant>	
+</LanguageData>

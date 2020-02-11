@@ -14,6 +14,7 @@ namespace Tenants.Comps {
         public List<Thing> OutgoingLetters = new List<Thing>();
         public List<Thing> IncomingLetters = new List<Thing>();
         public override void PostExposeData() {
+            base.PostExposeData();
             Scribe_Collections.Look(ref Items, "Items", LookMode.Deep);
             Scribe_Collections.Look(ref OutgoingLetters, "OutgoingLetters", LookMode.Deep);
             Scribe_Collections.Look(ref IncomingLetters, "IncomingLetters", LookMode.Deep);

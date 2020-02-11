@@ -15,7 +15,7 @@ namespace Tenants.UI {
                 for (int i = 0; i < maps.Count; i++) {
                     if (maps[i].IsPlayerHome) {
                         foreach (Pawn item in maps[i].mapPawns.FreeColonistsSpawned) {
-                            if (ThingCompUtility.TryGetComp<WandererComp>(item) != null && item.needs.mood.CurInstantLevel < item.mindState.mentalBreaker.BreakThresholdMinor) {
+                            if (ThingCompUtility.TryGetComp<TenantComp>(item) != null && item.needs.mood.CurInstantLevel < item.mindState.mentalBreaker.BreakThresholdMinor) {
                                 yield return item;
                             }
                         }

@@ -8,17 +8,18 @@ namespace Tenants.UI {
     public class PawnColumnWorker_ContractIcon : PawnColumnWorker_Icon {
 
         protected override Texture2D GetIconFor(Pawn pawn) {
-            EnvoyComp envoy = ThingCompUtility.TryGetComp<EnvoyComp>(pawn);
-            if (envoy != null)
+            TenancyType tenancyType = ThingCompUtility.TryGetComp<TenantComp>(pawn).Tenancy;
+            if (tenancyType == TenancyType.Envoy)
                 return Utilities.TextureUtility.EnvoyIcon;
-            WantedComp wanted = ThingCompUtility.TryGetComp<WantedComp>(pawn);
-            if (wanted != null)
+            else if (tenancyType == TenancyType.Wanted)
                 return Utilities.TextureUtility.WantedIcon;
-            return Utilities.TextureUtility.ContractIcon;
+            else
+                return Utilities.TextureUtility.ContractIcon;
+
         }
 
         protected override string GetIconTip(Pawn pawn) {
-            ContractComp comp = ThingCompUtility.TryGetComp<ContractComp>(pawn);
+            Models.Contract comp = ThingCompUtility.TryGetComp<TenantComp>(pawn).Contract;
             if (comp == null) {
                 return string.Empty;
             }

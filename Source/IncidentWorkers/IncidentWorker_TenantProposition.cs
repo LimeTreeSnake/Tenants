@@ -5,7 +5,7 @@ using Tenants.Comps;
 using Verse;
 
 namespace Tenants.IncidentWorkers {
-    public class IncidentWorker_WandererProposition : IncidentWorker {
+    public class IncidentWorker_TenantProposition : IncidentWorker {
         protected override bool CanFireNowSub(IncidentParms parms) {
             if (!base.CanFireNowSub(parms)) {
                 return false;
@@ -27,7 +27,7 @@ namespace Tenants.IncidentWorkers {
                 if (map != null) {
                     Pawn pawn = map.mapPawns.FreeColonists.FirstOrDefault(x => !x.Dead);
                     if (pawn != null) {
-                        Controllers.WandererController.Contract((Map)parms.target);
+                        Controllers.TenantController.Contract((Map)parms.target);
                     }
                 }
             }

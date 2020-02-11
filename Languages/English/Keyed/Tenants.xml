@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	<TenantInvite>Invite a tenant</TenantInvite>
+	<TenantInviteMessage>A broadcast is sent over the rim with your location. The message claims that there is food and comfortable beds for those with silver to spend.</TenantInviteMessage>	
+
+	<TenancyTitle>Tenancy offer in {0}</TenancyTitle>
+	<TenancyOpportunity>{PAWN_nameDef} heard your broadcast and asks if {PAWN_pronoun} may live with you for a while.</TenancyOpportunity>
+	<TenancyInitial>{PAWN_nameDef} is looking for a place to take shelter in for a while and {PAWN_pronoun} is willing to pay you for it. Would you kindly consider this proposition?</TenancyInitial>
+	<TenancyContinued>{PAWN_nameDef} asks to renew the contract. Would you like to extend the contract?</TenancyContinued>
+	<TenancyContract>{PAWN_nameDef} lives with you for a total of {0} days and pays {1} silver per day. You shall see to all of {PAWN_possessive} needs including safety. Failure to do so may incur future consequenses.\n\n{PAWN_pronoun} may terminate the contract at any time. Full payment will be recieved by a courier service. You may terminate the contract but any payment due would be void.</TenancyContract>
+	<RequestFromWantedTitle>Refugee seeking harbor in {0}</RequestFromWantedTitle>
+	<RequestFromWantedInitial>{1_labelShort} claims that members of {0} is coming for {PAWN_possessive}! Accepting {PAWN_possessive} would anger {0} and there would be severe repercussions for harboring {PAWN_possessive}.</RequestFromWantedInitial>
+
+	<RequestFromTenant>Request from tenant in {0}</RequestFromTenant>
+	<RequestWantToJoin>{PAWN_nameDef} loves staying here and wants to stay permanently! Will you accept {PAWN_objective}? </RequestWantToJoin>
+	<RequestWantToJoinRejected>{PAWN_nameDef} claims {PAWN_pronoun} will change your mind somehow!</RequestWantToJoinRejected>
+
+	<ContractNew>New Contract</ContractNew>
+	<ContractEnd>Contract Ends</ContractEnd>
+	<ContractBreach>Contract Breach</ContractBreach>
+	<ContractRenewedMessage>{PAWN_nameDef} prolongs {PAWN_possessive} tenancy contract.</ContractRenewedMessage>
+	<ContractDone>The contract with {PAWN_nameDef} is concluded and full a payment of {0} will be delivered.</ContractDone>
+	<ContractDoneTerminated>The contract with {PAWN_nameDef} is terminated. Thus any payment is forfeit.</ContractDoneTerminated>
+	<ContractDoneTheft>{PAWN_nameDef} decided to sneak away early without paying. {PAWN_pronoun} also has the audacity to try and steal from you! Criminal scum like {PAWN_nameDef} deserves punishment and you are in the right to do with {PAWN_objective} as you please.</ContractDoneTheft>
+	<ContractTenantDescription>{PAWN_nameDef} is {0} years old and is a {1}.</ContractTenantDescription>
+	<ContractEndDate>Ends at: {0}</ContractEndDate>
+	<ContractPayment>Payment: {0}</ContractPayment>
+	<ContractLength>Days: {0}</ContractLength>
+	<ContractDaily>Payment/day: {0}</ContractDaily>
+	<ContractAgree>Agree</ContractAgree>
+	<ContractReject>Reject</ContractReject>
+
+	<!--Envoy-->
+	<EnvoyStays>{PAWN_nameDef} from {0} has decided to prolong {PAWN_possessive} stay. It seems you have no choice in the matter.</EnvoyStays>
+	<Envoy>Envoy from {0}.</Envoy>	
+	<ContractDoneEnvoy>The envoy {PAWN_nameDef} from {0} is content with {PAWN_possessive} stay and will surely speak well of you.</ContractDoneEnvoy>	
+	<ContractDoneEnvoyHappy>The envoy {PAWN_nameDef} from {0} is astonished by your hospitality and will surely speak well of you.</ContractDoneEnvoyHappy>
+	<ContractDoneEnvoySad>The envoy {PAWN_nameDef} from {0} is very disappointed with you and their treatment while under your care.</ContractDoneEnvoySad>
+	<ContractDoneEnvoyTerminated>The contract with {PAWN_nameDef} is terminated and {PAWN_pronoun} is forced to leave. {0} has taken slight from your mistreatment. Your relations with them suffers a penalty of {1}</ContractDoneEnvoyTerminated>
+	<EnvoyArriveFailed>{0}'s envoy failed to find their way to your home.</EnvoyArriveFailed>
+	<EnvoyArriveSuccess>{0}'s envoy {1} has arrived!</EnvoyArriveSuccess>
+
+</LanguageData>

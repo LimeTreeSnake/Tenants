@@ -14,6 +14,7 @@ namespace Tenants.Comps
         public int TypeValue;
         public Faction Faction;
         public override void PostExposeData() {
+            base.PostExposeData();
             Scribe_Values.Look(ref Skill, "Skill");
             Scribe_References.Look(ref Faction, "Faction");
             Scribe_Values.Look(ref TypeValue, "TypeValue");

@@ -195,7 +195,7 @@ namespace Tenants.Controllers {
                                 if (Rand.Value < 0.4f + ((letterComp.Skill * 2.5f) / 100f)) {
                                     Find.LetterStack.ReceiveLetter("LetterInviteTitle".Translate(), "LetterInvitePositive".Translate(letterComp.Faction), LetterDefOf.PositiveEvent);
                                     IncidentParms parms = new IncidentParms() { target = map, forced = true, faction = letterComp.Faction };
-                                    Find.Storyteller.incidentQueue.Add(Defs.IncidentDefOf.WandererProposition, Find.TickManager.TicksGame + Rand.Range(15000, 30000), parms, 240000);
+                                    Find.Storyteller.incidentQueue.Add(Defs.IncidentDefOf.TenantProposition, Find.TickManager.TicksGame + Rand.Range(15000, 30000), parms, 240000);
                                 }
                                 else {
                                     Find.LetterStack.ReceiveLetter("LetterInviteTitle".Translate(), "LetterInviteResponse".Translate(letterComp.Faction), LetterDefOf.NeutralEvent);

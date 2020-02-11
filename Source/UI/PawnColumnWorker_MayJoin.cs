@@ -18,14 +18,14 @@ namespace Tenants.UI {
         }
         protected override bool GetValue(Pawn pawn) {
 
-            WandererComp comp = ThingCompUtility.TryGetComp<WandererComp>(pawn);
+            TenantComp comp = ThingCompUtility.TryGetComp<TenantComp>(pawn);
             if (comp != null) 
-                return ThingCompUtility.TryGetComp<WandererComp>(pawn).MayJoin;
+                return ThingCompUtility.TryGetComp<TenantComp>(pawn).MayJoin;
             else
                 return false;
         }
         protected override void SetValue(Pawn pawn, bool value) {
-            WandererComp comp = ThingCompUtility.TryGetComp<WandererComp>(pawn);
+            TenantComp comp = ThingCompUtility.TryGetComp<TenantComp>(pawn);
             if (comp != null) comp.MayJoin = value;
         }
     }

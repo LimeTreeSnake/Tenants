@@ -1,43 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-<!-- Tenant Tab -->
-	<TenantTurnedColonist>Colonist</TenantTurnedColonist>
-	<Tenant>Tenant</Tenant>
-	<Tenants>Tenants</Tenants>
-	<FireFighting>FireFight</FireFighting>
-	<FireFightingTip>Whether a tenant should help with fighting fires.</FireFightingTip>
-	<FireFightingError>{PAWN_nameDef} won't fight fires!</FireFightingError>
-	<Basic>Basic</Basic>
-	<BasicTip>Whether a tenant should help with basic work like flicking.</BasicTip>
-	<BasicError>{PAWN_nameDef} won't do basic work!</BasicError>
-	<Hauling>Haul</Hauling>
-	<HaulingTip>Whether a tenant should help with hauling.</HaulingTip>
-	<HaulingError>{PAWN_nameDef} won't haul!</HaulingError>
-	<Cleaning>Clean</Cleaning>
-	<CleaningTip>Whether a tenant should help with cleaning.</CleaningTip>
-	<CleaningError>{PAWN_nameDef} won't clean!</CleaningError>
+	<Satisfaction>Satisfaction</Satisfaction>
 	<MayJoin>May join</MayJoin>
 	<MayJoinTip>Whether a tenant may request to join your colony permanently.</MayJoinTip>
 	<Terminate>Terminate</Terminate>
 	<TerminateTip>Terminate the contract early thus making the payment void.</TerminateTip>
 	<AutoRenew>Auto renew</AutoRenew>
 	<AutoRenewTip>Whether a tenant can automagically renew the contract at the expiry date.</AutoRenewTip>
-	
-	<!-- Mod Settings -->
-	<MinDailyCost>The minimum a tenant must pay to stay daily: {0}</MinDailyCost>
-	<MaxDailyCost>The maximum a tenant must pay to stay daily: {0}</MaxDailyCost>
-	<MinContractTime>The minimum amount of days a contract entails: {0}</MinContractTime>
-	<MaxContractTime>The maximum amount of days a contract entails: {0}</MaxContractTime>
-	<StayChanceHappy>The chance a tenant will ask to prolong a contract if happy: {0}</StayChanceHappy>
-	<StayChanceNeutral>The chance a tenant will ask to prolong a contract if satisfied: {0}</StayChanceNeutral>
-	<LevelOfHappiness>The amount of happiness needed for a tenant to be considered happy: {0}</LevelOfHappiness>
-	<TenantWeaponry>If a tenant may spawn with a weapon.</TenantWeaponry>
-	<TenantApparel>If a tenant should spawn with less costly clothing.</TenantApparel>
-	<SimpleClothingMax>The maximum amount a tenants clothing may be worth: {0}</SimpleClothingMax>
-	<CourierCost>The cost for calling for courier services: {0}</CourierCost>
-	<MinRelation>The minimum amount of relation change events and envoys gives: {0}</MinRelation>
-	<MaxRelation>The minimum amount of relation change events and envoys gives: {0}</MaxRelation>
-	<TenantRGB>Tenants RGB</TenantRGB>
-	<AvailableRaces>The amount of races available for tenancy.</AvailableRaces>
-	<Filter>Filter</Filter>
 </LanguageData>

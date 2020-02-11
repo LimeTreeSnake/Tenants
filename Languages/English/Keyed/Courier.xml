@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>	
+	<CourierArrivedTitle>Courier in {0}</CourierArrivedTitle>
+	<CourierArrivedMessage>A courier has arrived to the colony. Perhaps {PAWN_pronoun} carries letters and gifts for you?</CourierArrivedMessage>
+	<CourierMiss>A Courier wandered nearby but it seems you have no mailbox to deliver to. Build one should you wish to receive letters.</CourierMiss>
+	<CourierDelivered>A courier has delivered rent.</CourierDelivered>
+	<CourierOutgoingLetters>A courier has fetched your outgoing letters.</CourierOutgoingLetters>
+	<CourierLetters>A courier has delivered letters.</CourierLetters>
+	<CourierCost>A sum of {0} has been taken from your gains to cover the courier cost.</CourierCost>
+	<CourierInvite>Send for courier. Cost:{0} silver</CourierInvite>
+	<CourierInvited>You have sent a broadcast for a courier. One will be dispatched to your location soon. A future cost of {0} silver will be taken upon arrival.</CourierInvited>
+	<CourierDeniedTitle>Courier denied in {0}.</CourierDeniedTitle>
+	<CourierDeniedMessage>It seems the scheduled courier for your outpost has been upheld.</CourierDeniedMessage>
+	<CourierDeniedRadioMessage>You make contact but are told that they won't send any couriers your way anytime soon due to one of their couriers missing in your area.</CourierDeniedRadioMessage>
+	<CheckMailBox>Check message box</CheckMailBox>
+	<SendLetterDiplomatic>send a Diplomatic message to {0}</SendLetterDiplomatic>
+	<SendLetterAngry>send an Angry message to {0}</SendLetterAngry>
+	<SendLetterInvite>send an invitation message to {0}</SendLetterInvite>
+	<LetterDiplomaticTitle>Diplomatic response from {0}</LetterDiplomaticTitle>
+	<LetterDiplomaticResponse>{0} was delighted by your message.</LetterDiplomaticResponse>
+	<LetterDiplomaticPositive>{0} was delighted by your message and decided to send gifts.</LetterDiplomaticPositive>
+	<LetterDiplomaticNegative>{0} seems to have taken slight from your message.</LetterDiplomaticNegative>
+	<LetterAngryTitle>Message response from {0}</LetterAngryTitle>
+	<LetterAngryResponse1>{0} claims your mother is a hamster and your father reeks of elderberries.</LetterAngryResponse1>
+	<LetterAngryResponse2>{0} claims that your ways of life is both sad and pathetic.</LetterAngryResponse2>
+	<LetterAngryResponse3>{0} has sent a picture of some genetials in response, how childish.</LetterAngryResponse3>
+	<LetterAngryResponse4>{0} claims they've seen insectoids with more wit than you.</LetterAngryResponse4>
+	<LetterAngryResponse5>{0} has sent a drawing of a muffalo and yourself conducting an act you wont describe further.</LetterAngryResponse5>
+	<LetterAngryPositive>{0} apologies for their misconduct and wishes to improve their relations with you.</LetterAngryPositive>
+	<LetterAngryNegative>A red paper with no content. What could that mean?</LetterAngryNegative>
+	<LetterAngrySad>{0} asks why you would send such a horrid thing?</LetterAngrySad>
+	<LetterInviteTitle>Invitation response from {0}</LetterInviteTitle>
+	<LetterInviteResponse>{0} thanks for the offer but sadly have none to spare as of this time.</LetterInviteResponse>
+	<LetterInvitePositive>{0} is delighted and claims that a prospecting tenant is on its way.</LetterInvitePositive>
+	<LetterRelationPenalty>You recieve a decrease of {0} to relations with them</LetterRelationPenalty>
+	<LetterRelationIncrease>You recieve an increase of {0} to relations with them</LetterRelationIncrease>
+</LanguageData>

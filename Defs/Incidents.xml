@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
-	<!--Wanderer-->
+	<!--Tenant-->
 	<IncidentDef>
-		<defName>WandererProposition</defName>
-		<label>Wanderer proposition</label>
+		<defName>TenantProposition</defName>
+		<label>tenant proposition</label>
 		<targetTags>
 			<li>Map_PlayerHome</li>
 		</targetTags>
-		<workerClass>Tenants.IncidentWorkers.IncidentWorker_WandererProposition</workerClass>
+		<workerClass>Tenants.IncidentWorkers.IncidentWorker_TenantProposition</workerClass>
 		<category>Misc</category>
 		<baseChance>7</baseChance>
 		<pointsScaleable>true</pointsScaleable>

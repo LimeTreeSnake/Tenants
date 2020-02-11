@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	<!-- Mod Settings -->
+	<MinDailyCost>The minimum a tenant must pay to stay daily: {0}</MinDailyCost>
+	<MaxDailyCost>The maximum a tenant must pay to stay daily: {0}</MaxDailyCost>
+	<MinContractTime>The minimum amount of days a contract entails: {0}</MinContractTime>
+	<MaxContractTime>The maximum amount of days a contract entails: {0}</MaxContractTime>
+	<CourierCost>The cost for calling for courier services: {0}</CourierCost>
+	<MinRelation>The minimum amount of relation change events and envoys gives: {0}</MinRelation>
+	<MaxRelation>The minimum amount of relation change events and envoys gives: {0}</MaxRelation>
+	<AvailableRaces>The amount of races available for tenancy.</AvailableRaces>
+	<Filter>Filter</Filter>
+</LanguageData>

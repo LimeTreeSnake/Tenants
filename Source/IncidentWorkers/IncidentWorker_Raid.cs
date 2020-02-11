@@ -61,7 +61,7 @@ namespace Tenants.IncidentWorkers {
         }
         protected override bool TryResolveRaidFaction(IncidentParms parms) {
             try {
-                parms.faction = ThingCompUtility.TryGetComp<WantedComp>(TenantsMapComp.GetComponent((Map)parms.target).WantedTenants[0]).WantedBy;
+                parms.faction = ThingCompUtility.TryGetComp<TenantComp>(TenantsMapComp.GetComponent((Map)parms.target).WantedTenants[0]).WantedBy;
                 if (FactionCanBeGroupSource(parms.faction, (Map)parms.target)) {
                     return true;
                 }

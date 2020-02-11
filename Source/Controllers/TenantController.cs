@@ -1,87 +1,93 @@
-﻿using Harmony;
-using RimWorld;
-using RimWorld.Planet;
-using System.Collections.Generic;
+﻿using RimWorld;
 using System.Linq;
 using System.Text;
 using Tenants.Comps;
 using Verse;
-using Verse.AI;
-using Verse.AI.Group;
+using Tenants.Utilities;
 
 namespace Tenants.Controllers {
     public static class TenantController {
-
-        public static void TenantTick(Pawn pawn) {
-            if (pawn.IsColonist) {
-                RemoveAllComp(pawn);
+        public static void Tick(Pawn tenant, TenantComp comp) {
+            //Tenant alone with no colonist
+            if (tenant.Map.mapPawns.FreeColonists.FirstOrDefault(x => ThingCompUtility.TryGetComp<TenantComp>(x)?.Tenancy == TenancyType.None) == null) {
+                comp.Contract.IsTerminated = true;
+                ContractConclusion(tenant, comp, 0.75f);
                 return;
             }
-        }
-        public static Pawn GetContractedPawn(Faction faction = null) {
-            Pawn tenant;
-            if (faction != null)
-                tenant = FindRandomPawn(faction);
-            else
-                tenant = FindRandomPawn();
-            if (tenant == null)
-                return null;
-            tenant.relations.everSeenByPlayer = true;
-            ContractComp comp = ContractController.GenerateContract(tenant);
-            if (faction != null)
-                comp.Payment = 0;
-            return tenant;
-        }
-        public static void Leave(Pawn pawn) {
-            RemoveAllComp(pawn);
-            pawn.jobs.ClearQueuedJobs();
-            LordMaker.MakeNewLord(pawn.Faction, new LordJob_ExitMapBest(), pawn.Map, new List<Pawn> { pawn });
-            if (TenantsMapComp.GetComponent(pawn.Map).WantedTenants.Contains(pawn)) {
-                TenantsMapComp.GetComponent(pawn.Map).WantedTenants.Remove(pawn);
-            }
-        }
-        public static void Theft(Pawn pawn) {
-            RemoveAllComp(pawn);
-            pawn.jobs.ClearQueuedJobs();
-            ThingCompUtility.TryGetComp<WandererComp>(pawn);
-            LordMaker.MakeNewLord(pawn.Faction, new LordJobs.LordJob_TenantTheft(), pawn.Map, new List<Pawn> { pawn });
-        }
-        public static void TenantDeath(Pawn pawn) {
-            string label = "Death".Translate() + ": " + pawn.LabelShortCap;
-            string text = "TenantDeath".Translate(pawn.Named("PAWN"));
-            text = text.AdjustedFor(pawn);
-            if (pawn.Faction.def != FactionDefOf.Ancients) {
-                int val = Utilities.FactionUtilities.ChangeRelations(pawn.Faction, true);
-                val += Utilities.FactionUtilities.ChangeRelations(pawn.Faction, true);
-                Messages.Message("TenantFactionOutrage".Translate(pawn.Faction, val, pawn.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
-            }
-            Find.LetterStack.ReceiveLetter(label, text, LetterDefOf.Death, pawn);
-        }
-        public static void TenantCaptured(Pawn pawn, Pawn byPawn) {
-            if (pawn.HostileTo(Find.FactionManager.OfPlayer)) {
+            if (comp.Contract.IsTerminated) {
+                Find.LetterStack.ReceiveLetter("ContractBreach".Translate(), "ContractDoneTerminated".Translate(tenant.Named("PAWN")), LetterDefOf.NeutralEvent);
+                TenantUtilities.Leave(tenant, comp);
                 return;
             }
-            string text = "TenantCaptured".Translate(pawn.Named("PAWN"));
-            text = text.AdjustedFor(pawn);
-            string label = "Captured".Translate() + ": " + pawn.LabelShortCap;
-            Find.LetterStack.ReceiveLetter(label, text, LetterDefOf.NeutralEvent, pawn);
-            if (Rand.Value < 0.66f) {
-                int val = Utilities.FactionUtilities.ChangeRelations(pawn.Faction, true);
-                Messages.Message("TenantFactionOutrage".Translate(pawn.Faction, val, pawn.Named("PAWN")), MessageTypeDefOf.NegativeEvent);
+            //Tenant contract is out
+            if (Find.TickManager.TicksGame >= comp.Contract.ContractEndTick) {
+                ContractConclusion(tenant, comp);
+                return;
             }
-            RemoveAllComp(pawn);
+            //Tenancy tick 1/10 per day
+            if (Find.TickManager.TicksGame % 60000 == 0) {
+                //Join
+                if (tenant.needs.mood.CurInstantLevel > 0.8f && Rand.Bool) {
+                    TenantWantToJoin(tenant, comp);
+                    return;
+                }
+            }
         }
-        public static void TenantWantToJoin(Pawn pawn) {
-            WandererComp tenantComp = ThingCompUtility.TryGetComp<WandererComp>(pawn);
-            ContractComp contract = ThingCompUtility.TryGetComp<ContractComp>(pawn);
+        public static void Contract(Map map) {
+            if (!MapUtilities.TryFindSpawnSpot(map, out IntVec3 spawnSpot)) {
+                return;
+            }
+            Pawn tenant = TenantUtilities.CreateContractedPawn(out TenantComp comp);
+            StringBuilder stringBuilder = new StringBuilder("");
+            if (TenantsMapComp.GetComponent(map).Broadcast) {
+                TenantsMapComp.GetComponent(map).Broadcast = false;
+                stringBuilder.Append("TenancyOpportunity".Translate(tenant.Named("PAWN")));
+            }
+            else {
+                stringBuilder.Append("TenancyInitial".Translate(tenant.Named("PAWN")));
+            }
+            stringBuilder.Append(GenerateContractMessage(tenant, comp));
+            GenerateContractDialogue("TenancyTitle".Translate(map.Parent.Label), stringBuilder.ToString(), tenant, comp, map, spawnSpot);
+        }
+        public static void ContractConclusion(Pawn tenant, TenantComp comp, float stealChance = 0.5f) {
+            if (comp.Contract.IsTerminated) {
+                if (Rand.Value > stealChance) {
+                    ContractUtility.ContractPayment(comp.Contract, tenant.Map);
+                    Find.LetterStack.ReceiveLetter("ContractEnd".Translate(), "ContractDoneTerminated".Translate(comp.Contract.Payment * comp.Contract.ContractLength / 60000, tenant.Named("PAWN")), LetterDefOf.NeutralEvent);
+                    TenantUtilities.Leave(tenant, comp);
+                }
+                else {
+                    Find.LetterStack.ReceiveLetter("ContractEnd".Translate(), "ContractDoneTheft".Translate(tenant.Named("PAWN")), LetterDefOf.NegativeEvent);
+                    TenantUtilities.Theft(tenant, comp);
+                }
+                return;
+            }
+            else {
+                ContractUtility.ContractPayment(comp.Contract, tenant.Map);
+                Find.LetterStack.ReceiveLetter("ContractEnd".Translate(), "ContractDone".Translate(comp.Contract.Payment * comp.Contract.ContractLength / 60000, tenant.Named("PAWN")), LetterDefOf.PositiveEvent);
+                if (comp.Contract.AutoRenew) {
+                    string letterLabel = "ContractNew".Translate();
+                    string letterText = "ContractRenewedMessage".Translate(tenant.Named("PAWN"));
+                    Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.PositiveEvent);
+                }
+                else {
+                    StringBuilder stringBuilder = new StringBuilder("");
+                    stringBuilder.Append("TenancyContinued".Translate(tenant.Named("PAWN")));
+                    stringBuilder.Append(GenerateContractMessage(tenant, comp));
+                    GenerateContractDialogue("TenancyTitle".Translate(tenant.Map.Parent.Label), stringBuilder.ToString(), tenant, comp);
+                }
+            }
+        }
+        public static void TenantWantToJoin(Pawn pawn, TenantComp comp) {
+            TenantComp tenantComp = ThingCompUtility.TryGetComp<TenantComp>(pawn);
             if (tenantComp.MayJoin) {
                 string text = "RequestWantToJoin".Translate(pawn.Named("PAWN"));
 
                 DiaNode diaNode = new DiaNode(text);
                 DiaOption diaOption = new DiaOption("ContractAgree".Translate()) {
                     action = delegate {
-                        ContractController.ContractPayment(pawn);
-                        Messages.Message("ContractDone".Translate(pawn.Name.ToStringFull, contract.Payment * contract.ContractLength / 60000, pawn.Named("PAWN")), MessageTypeDefOf.PositiveEvent);
+                        ContractUtility.ContractPayment(comp.Contract, pawn.Map);
+                        Messages.Message("ContractDone".Translate(pawn.Name.ToStringFull, comp.Contract.Payment * comp.Contract.ContractLength / 60000, pawn.Named("PAWN")), MessageTypeDefOf.PositiveEvent);
                         Find.ColonistBar.MarkColonistsDirty();
                     },
                     resolveTree = true,
@@ -105,14 +111,8 @@ namespace Tenants.Controllers {
                 Find.Archive.Add(new ArchivedDialog(diaNode.text, title));
             }
         }
-        public static void SpawnTenant(Pawn pawn, Map map, IntVec3 spawnSpot) {
-            pawn.workSettings.EnableAndInitializeIfNotAlreadyInitialized();
-            GenSpawn.Spawn(pawn, spawnSpot, map);
-            pawn.needs.SetInitialLevels();
-            CameraJumper.TryJump(pawn);
-        }
-        public static void TenantInvite(Building_CommsConsole comms, Pawn pawn) {
-            Messages.Message("InviteTenantMessage".Translate(), MessageTypeDefOf.NeutralEvent);
+        public static void Invite(Building_CommsConsole comms, Pawn pawn) {
+            Messages.Message("TenantInviteMessage".Translate(), MessageTypeDefOf.NeutralEvent);
             TenantsMapComp.GetComponent(pawn.Map).Broadcast = true;
             if (Rand.Value < 0.20f) {
                 IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, pawn.Map);
@@ -122,33 +122,73 @@ namespace Tenants.Controllers {
             }
             else {
                 IncidentParms parms = new IncidentParms() { target = pawn.Map, forced = true };
-                Find.Storyteller.incidentQueue.Add(Defs.IncidentDefOf.WandererProposition, Find.TickManager.TicksGame + Rand.Range(15000, 120000), parms, 240000);
+                Find.Storyteller.incidentQueue.Add(Defs.IncidentDefOf.TenantProposition, Find.TickManager.TicksGame + Rand.Range(15000, 120000), parms, 240000);
             }
+        }
+        public static void GenerateContractDialogue(string title, string text, Pawn tenant, TenantComp comp, Map map = null, IntVec3? spawnSpot = null) {
+            DiaNode diaNode = new DiaNode(text);
+            DiaOption diaOptionAgree = new DiaOption("ContractAgree".Translate()) {
+                action = delegate {
+                    if (tenant.Spawned)
+                        ContractUtility.ContractProlong(comp.Contract);
+                    else
+                        TenantUtilities.SpawnTenant(tenant, map, spawnSpot.Value);
+                },
+                resolveTree = true
+            };
+            diaNode.options.Add(diaOptionAgree);
+            DiaOption diaOptionReject = new DiaOption("ContractReject".Translate()) {
+                action = delegate {
+                    if (tenant.Spawned)
+                        TenantUtilities.Leave(tenant, comp);
+                    else
+                        TenantUtilities.CleanComp(comp);
+                },
+                resolveTree = true
+            };
+            diaNode.options.Add(diaOptionReject);
+            Find.WindowStack.Add(new Dialog_NodeTree(diaNode, delayInteractivity: false, radioMode: true, title));
+            Find.Archive.Add(new ArchivedDialog(diaNode.text, title));
+        }
+        private static string GenerateContractDetails(Pawn pawn, TenantComp comp) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine();
+            stringBuilder.Append("TenancyContract".Translate(comp.Contract.ContractLength / 60000, comp.Contract.Payment, pawn.Named("PAWN")));
 
+            return stringBuilder.ToString();
         }
-        public static Pawn FindRandomPawn() {
-            List<Pawn> pawns = (from p in Find.WorldPawns.AllPawnsAlive
-                                where Settings.Settings.AvailableRaces.Contains(p.kindDef.race.defName) && !p.Faction.HostileTo(Find.FactionManager.OfPlayer) && !p.Dead && !p.Spawned && !p.Discarded && !PawnUtility.IsFactionLeader(p)
-                                select p).ToList();
-            if (pawns.Count == 0)
-                return null;
-            pawns.Shuffle();
-            return pawns.RandomElement();
+        public static string GenerateContractMessage(Pawn pawn, TenantComp comp) {
+            StringBuilder stringBuilder = new StringBuilder("");
+            stringBuilder.Append(GenerateContractDetails(pawn, comp));
+            stringBuilder.Append(GeneratePawnDescription(pawn));
+            string text = "";
+            PawnRelationUtility.TryAppendRelationsWithColonistsInfo(ref text, pawn);
+            stringBuilder.Append(text);
+            text = stringBuilder.ToString();
+            return text.AdjustedFor(pawn);
         }
-        public static Pawn FindRandomPawn(Faction faction) {
-            List<Pawn> pawns = (from p in Find.WorldPawns.AllPawnsAlive
-                                where p.Faction == faction && Settings.Settings.AvailableRaces.Contains(p.kindDef.race.defName) && !p.Faction.HostileTo(Find.FactionManager.OfPlayer) && !p.Dead && !p.Spawned && !p.Discarded && !PawnUtility.IsFactionLeader(p)
-                                select p).ToList();
-            if (pawns.Count == 0)
-                return null;
-            pawns.Shuffle();
-            return pawns.RandomElement();
-        }
-        public static void RemoveAllComp(Pawn pawn) {
-            pawn.AllComps.Remove(ThingCompUtility.TryGetComp<ContractComp>(pawn));
-            pawn.AllComps.Remove(ThingCompUtility.TryGetComp<WantedComp>(pawn));
-            pawn.AllComps.Remove(ThingCompUtility.TryGetComp<TenantComp>(pawn));
-            pawn.AllComps.Remove(ThingCompUtility.TryGetComp<EnvoyComp>(pawn));
+        private static string GeneratePawnDescription(Pawn pawn) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine();
+            stringBuilder.AppendLine();
+            stringBuilder.Append("ContractTenantDescription".Translate(pawn.ageTracker.AgeBiologicalYears, pawn.def.label, pawn.Named("PAWN")));
+            stringBuilder.AppendLine();
+            stringBuilder.Append("Traits".Translate() + ": ");
+            if (pawn.story.traits.allTraits.Count == 0) {
+                stringBuilder.AppendLine();
+                stringBuilder.Append("(" + "NoneLower".Translate() + ")");
+            }
+            else {
+                stringBuilder.Append("(");
+                for (int i = 0; i < pawn.story.traits.allTraits.Count; i++) {
+                    if (i != 0) {
+                        stringBuilder.Append(" ,");
+                    }
+                    stringBuilder.Append(pawn.story.traits.allTraits[i].LabelCap);
+                }
+                stringBuilder.Append(")");
+            }
+            return stringBuilder.ToString();
         }
     }
 }

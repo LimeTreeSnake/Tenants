@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>	
+	<TenantSad>{0} tenants sad.</TenantSad>
+	<TenantSadDesc>These tenants are sad:\n\n{0}\nYou should probably look into this matter.</TenantSadDesc>
+</LanguageData>

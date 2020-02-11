@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using System;
+using Tenants.Translation;
 
 namespace Tenants.Settings {
     public enum Style { Auto = 1, Medieval = 2, Industrial = 3 };
@@ -45,27 +46,27 @@ namespace Tenants.Settings {
                 Widgets.BeginScrollView(rect, ref scrollPosition, rect2, true);
                 list.Begin(rect2);
                 list.Label("Texture Style : " + TextureStyle);
-                list.Label("1 = Auto, 2 = Medieval, 3 = Industrial");
-                TextureStyle = (Style)Mathf.Round(list.Slider((float)TextureStyle, 1f, 3f));
-                list.Label("MinDailyCost".Translate(MinDailyCost));
+                list.Label("2 = Medieval, 3 = Industrial");
+                TextureStyle = (Style)Mathf.Round(list.Slider((float)TextureStyle, 2f, 3f));
+                list.Label(Language.MinDailyCost.Translate(MinDailyCost));
                 MinDailyCost = (int)Mathf.Round(list.Slider(MinDailyCost, 0, 100));
-                list.Label("MaxDailyCost".Translate(MaxDailyCost));
+                list.Label(Language.MaxDailyCost.Translate(MaxDailyCost));
                 MaxDailyCost = (int)Mathf.Round(list.Slider(MaxDailyCost, MinDailyCost, 1000));
-                list.Label("MinContractTime".Translate(MinContractTime));
+                list.Label(Language.MinContractTime.Translate(MinContractTime));
                 MinContractTime = (int)Mathf.Round(list.Slider(MinContractTime, 1, 100));
-                list.Label("MaxContractTime".Translate(MaxContractTime));
+                list.Label(Language.MaxContractTime.Translate(MaxContractTime));
                 MaxContractTime = (int)Mathf.Round(list.Slider(MaxContractTime, 1, 100));
-                list.Label("CourierCost".Translate(CourierCost));
+                list.Label(Language.CourierCost.Translate(CourierCost));
                 CourierCost = (byte)Mathf.Round(list.Slider(CourierCost, 10f, 100f));
-                list.Label("MinRelation".Translate(MinRelation));
+                list.Label(Language.MinRelation.Translate(MinRelation));
                 MinRelation = (byte)Mathf.Round(list.Slider(MinRelation, 1f, 10));
-                list.Label("MaxRelation".Translate(MaxRelation));
+                list.Label(Language.MaxRelation.Translate(MaxRelation));
                 MaxRelation = (byte)Mathf.Round(list.Slider(MaxRelation, MinRelation, 20f));
                 list.Gap();
                 list.GapLine();
                 if (Races != null && Races.Count() > 0) {
-                    list.Label("AvailableRaces".Translate());
-                    Filter = list.TextEntryLabeled("Filter".Translate(), Filter, 1);
+                    list.Label(Language.AvailableRaces.Translate());
+                    Filter = list.TextEntryLabeled(Language.Filter.Translate(), Filter, 1);
                     Listing_Standard list2 = list.BeginSection(RaceViewHeight);
                     list2.ColumnWidth = (rect2.width - 50) / 4;
                     foreach (ThingDef def in Races) {

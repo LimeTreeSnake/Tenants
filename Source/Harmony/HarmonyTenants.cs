@@ -1,15 +1,11 @@
 ﻿using Harmony;
 using RimWorld;
-using RimWorld.Planet;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Tenants.Comps;
 using UnityEngine;
 using Verse;
 using Verse.AI;
-using static RimWorld.ColonistBar;
 
 namespace Tenants {
     [StaticConstructorOnStartup]
@@ -27,36 +23,27 @@ namespace Tenants {
             harmonyInstance.Patch(AccessTools.Method(typeof(Pawn_GuestTracker), "CapturedBy"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("CapturedBy_PreFix")), null);
             //Tenant dies
             harmonyInstance.Patch(AccessTools.Method(typeof(Pawn), "Kill"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("Kill_PreFix")), null);
-            harmonyInstance.Patch(AccessTools.Method(typeof(Pawn_NeedsTracker), "ShouldHaveNeed"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("ShouldHaveNeed_PostFix")), null);
             #endregion Functionality
             #region GUI
             //Pawn name color patch
-            harmonyInstance.Patch(AccessTools.Method(typeof(PawnNameColorUtility), "PawnNameColorOf"), new HarmonyMethod(typeof(HarmonyTenants).GetMethod("PawnNameColorOf_PreFix")), null);
+            harmonyInstance.Patch(AccessTools.Method(typeof(PawnNameColorUtility), "PawnNameColorOf"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("PawnNameColorOf_PostFix")));
             //Comms Console Float Menu Option
             harmonyInstance.Patch(AccessTools.Method(typeof(Building_CommsConsole), "GetFloatMenuOptions"), null, new HarmonyMethod(typeof(HarmonyTenants).GetMethod("GetFloatMenuOptions_PostFix")));
             #endregion GUI
+
+            foreach (ThingDef def in DefDatabase<ThingDef>.AllDefs) {
+                if (def.race != null) {
+                    def.comps.Add(new CompProps_Tenant());
+                    def.comps.Add(new CompProps_Courier());
+                }
+            }
         }
         #region Ticks
         public static void TickRare_PostFix(ref Pawn __instance) {
             if (__instance.Spawned && !__instance.NonHumanlikeOrWildMan()) {
-                ContractComp contract = ThingCompUtility.TryGetComp<ContractComp>(__instance);
-                if (contract != null) {
-                    Controllers.TenantController.TenantTick(__instance);
-                    WantedComp wanted = ThingCompUtility.TryGetComp<WantedComp>(__instance);
-                    if (wanted != null) {
-                        Controllers.WantedController.Tick(__instance, wanted, contract);
-                        return;
-                    }
-                    WandererComp wanderer = ThingCompUtility.TryGetComp<WandererComp>(__instance);
-                    if (wanderer != null) {
-                        Controllers.WandererController.Tick(__instance, wanderer, contract);
-                        return;
-                    }
-                    EnvoyComp envoy = ThingCompUtility.TryGetComp<EnvoyComp>(__instance);
-                    if (envoy != null) {
-                        Controllers.EnvoyController.Tick(__instance, envoy, contract);
-                        return;
-                    }
+                TenantComp comp = ThingCompUtility.TryGetComp<TenantComp>(__instance);
+                if (comp.Contract != null) {
+                    Utilities.TenantUtilities.TenantTick(__instance, comp);                   
                 }
             }
         }
@@ -64,28 +51,26 @@ namespace Tenants {
         #region Functionality
         public static void CapturedBy_PreFix(ref Pawn_GuestTracker __instance, ref Faction by, ref Pawn byPawn) {
             Pawn pawn = Traverse.Create(__instance).Field("pawn").GetValue<Pawn>();
-            ContractComp contractComp = ThingCompUtility.TryGetComp<ContractComp>(pawn);
-            if (contractComp != null) {
-                Controllers.TenantController.TenantCaptured(pawn, byPawn);
+            TenantComp comp = ThingCompUtility.TryGetComp<TenantComp>(pawn);
+            if (comp.Contract != null) {
+                Utilities.TenantUtilities.TenantCaptured(pawn, byPawn, comp);
             }
         }
         public static void Kill_PreFix(ref Pawn __instance, ref DamageInfo? dinfo) {
-            ContractComp contractComp = ThingCompUtility.TryGetComp<ContractComp>(__instance);
-            if (contractComp != null) {
+            TenantComp comp = ThingCompUtility.TryGetComp<TenantComp>(__instance);
+            if (comp.Contract != null) {
                 if (__instance.IsPrisoner && !__instance.guest.Released && __instance.Spawned) {
-                    Controllers.TenantController.TenantDeath(__instance);
+                    Utilities.TenantUtilities.TenantDeath(__instance, comp);
                 }
             }
         }
         #endregion Functionality
         #region GUI
-        public static bool PawnNameColorOf_PreFix(ref Color __result, ref Pawn pawn) {
-            ContractComp contractComp = ThingCompUtility.TryGetComp<ContractComp>(pawn);
-            if (contractComp != null) {
+        public static void PawnNameColorOf_PostFix(ref Color __result, ref Pawn pawn) {
+            TenantComp comp = ThingCompUtility.TryGetComp<TenantComp>(pawn);
+            if (comp.Contract != null) {
                 __result = Settings.Settings.Color;
-                return false;
             }
-            return true;
         }
         public static void GetFloatMenuOptions_PostFix(Building_CommsConsole __instance, ref IEnumerable<FloatMenuOption> __result, Pawn myPawn) {
             List<FloatMenuOption> list = __result.ToList();
@@ -95,7 +80,7 @@ namespace Tenants {
                     myPawn.jobs.TryTakeOrderedJob(job);
                     PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.OpeningComms, KnowledgeAmount.Total);
                 }
-                FloatMenuOption inviteTenants = new FloatMenuOption("InviteTenant".Translate(), inviteTenant, MenuOptionPriority.InitiateSocial);
+                FloatMenuOption inviteTenants = new FloatMenuOption("TenantInvite".Translate(), inviteTenant, MenuOptionPriority.InitiateSocial);
                 list.Add(inviteTenants);
             }
             if (!TenantsMapComp.GetComponent(myPawn.Map).BroadcastCourier) {
