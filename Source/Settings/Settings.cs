@@ -9,6 +9,7 @@ using Tenants.Translation;
 namespace Tenants.Settings {
     public enum Style { Auto = 1, Medieval = 2, Industrial = 3 };
     internal class Settings : ModSettings {
+        public static int TickFrequency = 1000;
         public static Style TextureStyle = (Style)1;
         public static List<string> AvailableRaces = new List<string>() { "Human" };
         public static IEnumerable<ThingDef> Races = DefDatabase<PawnKindDef>.AllDefsListForReading.Where(x => x.race != null && x.RaceProps.Humanlike && x.RaceProps.IsFlesh && x.RaceProps.ResolvedDietCategory != DietCategory.NeverEats).Select(s => s.race).Distinct();
@@ -26,7 +27,8 @@ namespace Tenants.Settings {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref TextureStyle, "TextureStyle", (Style)1);
+            Scribe_Values.Look(ref TickFrequency, "TickFrequency", 1000);
+            Scribe_Values.Look(ref TextureStyle, "TextureStyle", Style.Medieval);
             Scribe_Collections.Look(ref AvailableRaces, "AvailableRaces", LookMode.Value);
             Scribe_Values.Look(ref MinDailyCost, "MinDailyCost", 50);
             Scribe_Values.Look(ref MaxDailyCost, "MaxDailyCost", 100);
@@ -45,6 +47,8 @@ namespace Tenants.Settings {
                 Rect rect2 = new Rect(0f, 0f, inRect.width - 30f, inRect.height * 2 + RaceViewHeight);
                 Widgets.BeginScrollView(rect, ref scrollPosition, rect2, true);
                 list.Begin(rect2);
+                list.Label(Language.TickFrequency.Translate(TickFrequency));
+                TickFrequency = (int)Mathf.Round(list.Slider(TickFrequency, 250, 2500));
                 list.Label("Texture Style : " + TextureStyle);
                 list.Label("2 = Medieval, 3 = Industrial");
                 TextureStyle = (Style)Mathf.Round(list.Slider((float)TextureStyle, 2f, 3f));

@@ -16,6 +16,7 @@ namespace Tenants.Translation {
         public const string AutoRenewTip = "AutoRenewTip";
         #endregion GUI
         #region Settings
+        public const string TickFrequency = "TickFrequency";
         public const string MinDailyCost = "MinDailyCost";
         public const string MaxDailyCost = "MaxDailyCost";
         public const string MinContractTime = "MinContractTime";

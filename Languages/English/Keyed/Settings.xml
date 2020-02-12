@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
 	<!-- Mod Settings -->
+	<TickFrequency>The minimum a tenant must pay to stay daily: {0}</TickFrequency>
 	<MinDailyCost>The minimum a tenant must pay to stay daily: {0}</MinDailyCost>
 	<MaxDailyCost>The maximum a tenant must pay to stay daily: {0}</MaxDailyCost>
 	<MinContractTime>The minimum amount of days a contract entails: {0}</MinContractTime>
